@@ -4,75 +4,75 @@
 <xsd:import namespace="http://ws/" schemaLocation="http://localhost:8080/PreferencesWS/PreferencesWS?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="remove">
-<part name="parameters" element="tns:remove"/>
+<message name="editPreferences">
+<part name="parameters" element="tns:editPreferences"/>
 </message>
-<message name="count">
-<part name="parameters" element="tns:count"/>
+<message name="findPreferences">
+<part name="parameters" element="tns:findPreferences"/>
 </message>
-<message name="countResponse">
-<part name="parameters" element="tns:countResponse"/>
+<message name="findPreferencesResponse">
+<part name="parameters" element="tns:findPreferencesResponse"/>
 </message>
-<message name="find">
-<part name="parameters" element="tns:find"/>
+<message name="countPreferences">
+<part name="parameters" element="tns:countPreferences"/>
 </message>
-<message name="findResponse">
-<part name="parameters" element="tns:findResponse"/>
+<message name="countPreferencesResponse">
+<part name="parameters" element="tns:countPreferencesResponse"/>
 </message>
-<message name="create">
-<part name="parameters" element="tns:create"/>
+<message name="createPreferences">
+<part name="parameters" element="tns:createPreferences"/>
 </message>
-<message name="findAll">
-<part name="parameters" element="tns:findAll"/>
+<message name="findAllPreferences">
+<part name="parameters" element="tns:findAllPreferences"/>
 </message>
-<message name="findAllResponse">
-<part name="parameters" element="tns:findAllResponse"/>
+<message name="findAllPreferencesResponse">
+<part name="parameters" element="tns:findAllPreferencesResponse"/>
 </message>
-<message name="edit">
-<part name="parameters" element="tns:edit"/>
+<message name="findRangePreferences">
+<part name="parameters" element="tns:findRangePreferences"/>
 </message>
-<message name="findRange">
-<part name="parameters" element="tns:findRange"/>
+<message name="findRangePreferencesResponse">
+<part name="parameters" element="tns:findRangePreferencesResponse"/>
 </message>
-<message name="findRangeResponse">
-<part name="parameters" element="tns:findRangeResponse"/>
+<message name="removePreferences">
+<part name="parameters" element="tns:removePreferences"/>
 </message>
 <portType name="PreferencesWS">
-<operation name="remove">
-<input wsam:Action="http://ws/PreferencesWS/remove" message="tns:remove"/>
+<operation name="editPreferences">
+<input wsam:Action="http://ws/PreferencesWS/editPreferences" message="tns:editPreferences"/>
 </operation>
-<operation name="count">
-<input wsam:Action="http://ws/PreferencesWS/countRequest" message="tns:count"/>
-<output wsam:Action="http://ws/PreferencesWS/countResponse" message="tns:countResponse"/>
+<operation name="findPreferences">
+<input wsam:Action="http://ws/PreferencesWS/findPreferencesRequest" message="tns:findPreferences"/>
+<output wsam:Action="http://ws/PreferencesWS/findPreferencesResponse" message="tns:findPreferencesResponse"/>
 </operation>
-<operation name="find">
-<input wsam:Action="http://ws/PreferencesWS/findRequest" message="tns:find"/>
-<output wsam:Action="http://ws/PreferencesWS/findResponse" message="tns:findResponse"/>
+<operation name="countPreferences">
+<input wsam:Action="http://ws/PreferencesWS/countPreferencesRequest" message="tns:countPreferences"/>
+<output wsam:Action="http://ws/PreferencesWS/countPreferencesResponse" message="tns:countPreferencesResponse"/>
 </operation>
-<operation name="create">
-<input wsam:Action="http://ws/PreferencesWS/create" message="tns:create"/>
+<operation name="createPreferences">
+<input wsam:Action="http://ws/PreferencesWS/createPreferences" message="tns:createPreferences"/>
 </operation>
-<operation name="findAll">
-<input wsam:Action="http://ws/PreferencesWS/findAllRequest" message="tns:findAll"/>
-<output wsam:Action="http://ws/PreferencesWS/findAllResponse" message="tns:findAllResponse"/>
+<operation name="findAllPreferences">
+<input wsam:Action="http://ws/PreferencesWS/findAllPreferencesRequest" message="tns:findAllPreferences"/>
+<output wsam:Action="http://ws/PreferencesWS/findAllPreferencesResponse" message="tns:findAllPreferencesResponse"/>
 </operation>
-<operation name="edit">
-<input wsam:Action="http://ws/PreferencesWS/edit" message="tns:edit"/>
+<operation name="findRangePreferences">
+<input wsam:Action="http://ws/PreferencesWS/findRangePreferencesRequest" message="tns:findRangePreferences"/>
+<output wsam:Action="http://ws/PreferencesWS/findRangePreferencesResponse" message="tns:findRangePreferencesResponse"/>
 </operation>
-<operation name="findRange">
-<input wsam:Action="http://ws/PreferencesWS/findRangeRequest" message="tns:findRange"/>
-<output wsam:Action="http://ws/PreferencesWS/findRangeResponse" message="tns:findRangeResponse"/>
+<operation name="removePreferences">
+<input wsam:Action="http://ws/PreferencesWS/removePreferences" message="tns:removePreferences"/>
 </operation>
 </portType>
 <binding name="PreferencesWSPortBinding" type="tns:PreferencesWS">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="remove">
+<operation name="editPreferences">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
 </input>
 </operation>
-<operation name="count">
+<operation name="findPreferences">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -81,7 +81,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="find">
+<operation name="countPreferences">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -90,13 +90,13 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="create">
+<operation name="createPreferences">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
 </input>
 </operation>
-<operation name="findAll">
+<operation name="findAllPreferences">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -105,13 +105,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="edit">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-</operation>
-<operation name="findRange">
+<operation name="findRangePreferences">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -119,6 +113,12 @@
 <output>
 <soap:body use="literal"/>
 </output>
+</operation>
+<operation name="removePreferences">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
 </operation>
 </binding>
 <service name="PreferencesWS">

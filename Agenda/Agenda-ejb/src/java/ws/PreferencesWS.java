@@ -5,8 +5,8 @@
  */
 package ws;
 
-import bean.PreferencesFacade;
-import entity.Preferences;
+import beans.PreferencesFacade;
+import entities.Preferences;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.jws.WebService;
@@ -24,45 +24,44 @@ import javax.jws.WebParam;
 public class PreferencesWS {
 
     @EJB
-    private PreferencesFacade ejbRef;// Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Web Service Operation")
+    private PreferencesFacade preferencesEJB;
 
-    @WebMethod(operationName = "create")
+    @WebMethod(operationName = "createPreferences")
     @Oneway
-    public void create(@WebParam(name = "entity") Preferences entity) {
-        ejbRef.create(entity);
+    public void createPreferences(@WebParam(name = "preferences") Preferences preferences) {
+        preferencesEJB.create(preferences);
     }
 
-    @WebMethod(operationName = "edit")
+    @WebMethod(operationName = "editPreferences")
     @Oneway
-    public void edit(@WebParam(name = "entity") Preferences entity) {
-        ejbRef.edit(entity);
+    public void editPreferences(@WebParam(name = "preferences") Preferences preferences) {
+        preferencesEJB.edit(preferences);
     }
 
-    @WebMethod(operationName = "remove")
+    @WebMethod(operationName = "removePreferences")
     @Oneway
-    public void remove(@WebParam(name = "entity") Preferences entity) {
-        ejbRef.remove(entity);
+    public void removePreferences(@WebParam(name = "preferences") Preferences preferences) {
+        preferencesEJB.remove(preferences);
     }
 
-    @WebMethod(operationName = "find")
-    public Preferences find(@WebParam(name = "id") Object id) {
-        return ejbRef.find(id);
+    @WebMethod(operationName = "findPreferences")
+    public Preferences findPreferences(@WebParam(name = "id") Object id) {
+        return preferencesEJB.find(id);
     }
 
-    @WebMethod(operationName = "findAll")
-    public List<Preferences> findAll() {
-        return ejbRef.findAll();
+    @WebMethod(operationName = "findAllPreferences")
+    public List<Preferences> findAllPreferences() {
+        return preferencesEJB.findAll();
     }
 
-    @WebMethod(operationName = "findRange")
-    public List<Preferences> findRange(@WebParam(name = "range") int[] range) {
-        return ejbRef.findRange(range);
+    @WebMethod(operationName = "findRangePreferences")
+    public List<Preferences> findRangePreferences(@WebParam(name = "range") int[] range) {
+        return preferencesEJB.findRange(range);
     }
 
-    @WebMethod(operationName = "count")
-    public int count() {
-        return ejbRef.count();
+    @WebMethod(operationName = "countPreferences")
+    public int countPreferences() {
+        return preferencesEJB.count();
     }
     
 }

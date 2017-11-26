@@ -1,7 +1,12 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package ws;
 
-import bean.EventFacade;
-import entity.Event;
+import beans.EventFacade;
+import entities.Event;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.jws.WebService;
@@ -10,47 +15,53 @@ import javax.jws.Oneway;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 
+/**
+ *
+ * @author neko250
+ */
 @WebService(serviceName = "EventWS")
 @Stateless()
 public class EventWS {
+
     @EJB
-    private EventFacade ejbRef;
+    private EventFacade eventEJB;
 
-    @WebMethod(operationName = "create")
+    @WebMethod(operationName = "createEvent")
     @Oneway
-    public void create(@WebParam(name = "entity") Event entity) {
-        ejbRef.create(entity);
+    public void createEvent(@WebParam(name = "event") Event event) {
+        eventEJB.create(event);
     }
 
-    @WebMethod(operationName = "edit")
+    @WebMethod(operationName = "editEvent")
     @Oneway
-    public void edit(@WebParam(name = "entity") Event entity) {
-        ejbRef.edit(entity);
+    public void editEvent(@WebParam(name = "event") Event event) {
+        eventEJB.edit(event);
     }
 
-    @WebMethod(operationName = "remove")
+    @WebMethod(operationName = "removeEvent")
     @Oneway
-    public void remove(@WebParam(name = "entity") Event entity) {
-        ejbRef.remove(entity);
+    public void removeEvent(@WebParam(name = "event") Event event) {
+        eventEJB.remove(event);
     }
 
-    @WebMethod(operationName = "find")
-    public Event find(@WebParam(name = "id") Object id) {
-        return ejbRef.find(id);
+    @WebMethod(operationName = "findEvent")
+    public Event findEvent(@WebParam(name = "id") Object id) {
+        return eventEJB.find(id);
     }
 
-    @WebMethod(operationName = "findAll")
-    public List<Event> findAll() {
-        return ejbRef.findAll();
+    @WebMethod(operationName = "findAllEvents")
+    public List<Event> findAllEvents() {
+        return eventEJB.findAll();
     }
 
-    @WebMethod(operationName = "findRange")
-    public List<Event> findRange(@WebParam(name = "range") int[] range) {
-        return ejbRef.findRange(range);
+    @WebMethod(operationName = "findRangeEvents")
+    public List<Event> findRangeEvents(@WebParam(name = "range") int[] range) {
+        return eventEJB.findRange(range);
     }
 
-    @WebMethod(operationName = "count")
-    public int count() {
-        return ejbRef.count();
+    @WebMethod(operationName = "countEvents")
+    public int countEvents() {
+        return eventEJB.count();
     }
+    
 }

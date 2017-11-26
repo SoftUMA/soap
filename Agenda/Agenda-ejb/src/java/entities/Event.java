@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package entity;
+package entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,10 +15,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -31,11 +34,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Event.findById", query = "SELECT e FROM Event e WHERE e.id = :id")
     , @NamedQuery(name = "Event.findByName", query = "SELECT e FROM Event e WHERE e.name = :name")
     , @NamedQuery(name = "Event.findByDescription", query = "SELECT e FROM Event e WHERE e.description = :description")
+    , @NamedQuery(name = "Event.findByImage", query = "SELECT e FROM Event e WHERE e.image = :image")
     , @NamedQuery(name = "Event.findByStartDate", query = "SELECT e FROM Event e WHERE e.startDate = :startDate")
     , @NamedQuery(name = "Event.findByEndDate", query = "SELECT e FROM Event e WHERE e.endDate = :endDate")
+    , @NamedQuery(name = "Event.findByAddress", query = "SELECT e FROM Event e WHERE e.address = :address")
     , @NamedQuery(name = "Event.findByPrice", query = "SELECT e FROM Event e WHERE e.price = :price")
-    , @NamedQuery(name = "Event.findByScore", query = "SELECT e FROM Event e WHERE e.score = :score")
-    , @NamedQuery(name = "Event.findByUrlBuy", query = "SELECT e FROM Event e WHERE e.urlBuy = :urlBuy")
+    , @NamedQuery(name = "Event.findByShopUrl", query = "SELECT e FROM Event e WHERE e.shopUrl = :shopUrl")
     , @NamedQuery(name = "Event.findByApproved", query = "SELECT e FROM Event e WHERE e.approved = :approved")})
 public class Event implements Serializable {
 
@@ -51,6 +55,9 @@ public class Event implements Serializable {
     @Size(max = 2000000000)
     @Column(name = "description")
     private String description;
+    @Size(max = 2000000000)
+    @Column(name = "image")
+    private String image;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2000000000)
@@ -61,16 +68,17 @@ public class Event implements Serializable {
     @Size(min = 1, max = 2000000000)
     @Column(name = "endDate")
     private String endDate;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2000000000)
+    @Column(name = "address")
+    private String address;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "price")
     private Double price;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "score")
-    private double score;
     @Size(max = 2000000000)
-    @Column(name = "urlBuy")
-    private String urlBuy;
+    @Column(name = "shopUrl")
+    private String shopUrl;
     @Basic(optional = false)
     @NotNull
     @Column(name = "approved")
@@ -81,6 +89,8 @@ public class Event implements Serializable {
     @JoinColumn(name = "author", referencedColumnName = "email")
     @ManyToOne(optional = false)
     private User author;
+    @OneToMany(mappedBy = "event1")
+    private Collection<Review> reviewCollection;
 
     public Event() {
     }
@@ -89,12 +99,12 @@ public class Event implements Serializable {
         this.id = id;
     }
 
-    public Event(Integer id, String name, String startDate, String endDate, double score, int approved) {
+    public Event(Integer id, String name, String startDate, String endDate, String address, int approved) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.score = score;
+        this.address = address;
         this.approved = approved;
     }
 
@@ -122,6 +132,14 @@ public class Event implements Serializable {
         this.description = description;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public String getStartDate() {
         return startDate;
     }
@@ -138,6 +156,14 @@ public class Event implements Serializable {
         this.endDate = endDate;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public Double getPrice() {
         return price;
     }
@@ -146,20 +172,12 @@ public class Event implements Serializable {
         this.price = price;
     }
 
-    public double getScore() {
-        return score;
+    public String getShopUrl() {
+        return shopUrl;
     }
 
-    public void setScore(double score) {
-        this.score = score;
-    }
-
-    public String getUrlBuy() {
-        return urlBuy;
-    }
-
-    public void setUrlBuy(String urlBuy) {
-        this.urlBuy = urlBuy;
+    public void setShopUrl(String shopUrl) {
+        this.shopUrl = shopUrl;
     }
 
     public int getApproved() {
@@ -186,6 +204,15 @@ public class Event implements Serializable {
         this.author = author;
     }
 
+    @XmlTransient
+    public Collection<Review> getReviewCollection() {
+        return reviewCollection;
+    }
+
+    public void setReviewCollection(Collection<Review> reviewCollection) {
+        this.reviewCollection = reviewCollection;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -208,7 +235,7 @@ public class Event implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Event[ id=" + id + " ]";
+        return "entities.Event[ id=" + id + " ]";
     }
     
 }

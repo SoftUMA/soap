@@ -2,70 +2,31 @@
 
 <xs:element name="category" type="tns:category"/>
 
-<xs:element name="count" type="tns:count"/>
+<xs:element name="countCategories" type="tns:countCategories"/>
 
-<xs:element name="countResponse" type="tns:countResponse"/>
+<xs:element name="countCategoriesResponse" type="tns:countCategoriesResponse"/>
 
-<xs:element name="create" type="tns:create"/>
+<xs:element name="createCategory" type="tns:createCategory"/>
 
-<xs:element name="edit" type="tns:edit"/>
+<xs:element name="editCategory" type="tns:editCategory"/>
 
-<xs:element name="event" type="tns:event"/>
+<xs:element name="findAllCategories" type="tns:findAllCategories"/>
 
-<xs:element name="find" type="tns:find"/>
+<xs:element name="findAllCategoriesResponse" type="tns:findAllCategoriesResponse"/>
 
-<xs:element name="findAll" type="tns:findAll"/>
+<xs:element name="findCategory" type="tns:findCategory"/>
 
-<xs:element name="findAllResponse" type="tns:findAllResponse"/>
+<xs:element name="findCategoryResponse" type="tns:findCategoryResponse"/>
 
-<xs:element name="findRange" type="tns:findRange"/>
+<xs:element name="findRangeCategories" type="tns:findRangeCategories"/>
 
-<xs:element name="findRangeResponse" type="tns:findRangeResponse"/>
+<xs:element name="findRangeCategoriesResponse" type="tns:findRangeCategoriesResponse"/>
 
-<xs:element name="findResponse" type="tns:findResponse"/>
+<xs:element name="removeCategory" type="tns:removeCategory"/>
 
-<xs:element name="remove" type="tns:remove"/>
-
-<xs:element name="user" type="tns:user"/>
-
-<xs:complexType name="count">
-<xs:sequence/>
-</xs:complexType>
-
-<xs:complexType name="countResponse">
+<xs:complexType name="createCategory">
 <xs:sequence>
-<xs:element name="return" type="xs:int"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="create">
-<xs:sequence>
-<xs:element name="entity" type="tns:event" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="event">
-<xs:sequence>
-<xs:element name="approved" type="xs:int"/>
-<xs:element name="author" type="tns:user" minOccurs="0"/>
 <xs:element name="category" type="tns:category" minOccurs="0"/>
-<xs:element name="description" type="xs:string" minOccurs="0"/>
-<xs:element name="endDate" type="xs:string" minOccurs="0"/>
-<xs:element name="id" type="xs:int" minOccurs="0"/>
-<xs:element name="name" type="xs:string" minOccurs="0"/>
-<xs:element name="price" type="xs:double" minOccurs="0"/>
-<xs:element name="score" type="xs:double"/>
-<xs:element name="startDate" type="xs:string" minOccurs="0"/>
-<xs:element name="urlBuy" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="user">
-<xs:sequence>
-<xs:element name="email" type="xs:string" minOccurs="0"/>
-<xs:element name="name" type="xs:string" minOccurs="0"/>
-<xs:element name="role" type="xs:int"/>
-<xs:element name="surname" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -75,49 +36,59 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="remove">
+<xs:complexType name="removeCategory">
 <xs:sequence>
-<xs:element name="entity" type="tns:event" minOccurs="0"/>
+<xs:element name="category" type="tns:category" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="findAll">
-<xs:sequence/>
-</xs:complexType>
-
-<xs:complexType name="findAllResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:event" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="find">
+<xs:complexType name="findCategory">
 <xs:sequence>
 <xs:element name="id" type="xs:anyType" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="findResponse">
+<xs:complexType name="findCategoryResponse">
 <xs:sequence>
-<xs:element name="return" type="tns:event" minOccurs="0"/>
+<xs:element name="return" type="tns:category" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="findRange">
+<xs:complexType name="countCategories">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="countCategoriesResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="findRangeCategories">
 <xs:sequence>
 <xs:element name="range" type="xs:int" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="findRangeResponse">
+<xs:complexType name="findRangeCategoriesResponse">
 <xs:sequence>
-<xs:element name="return" type="tns:event" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="return" type="tns:category" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="edit">
+<xs:complexType name="editCategory">
 <xs:sequence>
-<xs:element name="entity" type="tns:event" minOccurs="0"/>
+<xs:element name="category" type="tns:category" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="findAllCategories">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="findAllCategoriesResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:category" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 </xs:schema>

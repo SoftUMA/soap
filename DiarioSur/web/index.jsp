@@ -64,8 +64,7 @@
 
                 <div class="col-lg-9">
                     <div class="card-columns">
-                        <%
-                            for (int i = 0; i < EVENTOS; i++) {
+                        <%                            for (int i = 0; i < EVENTOS; i++) {
                         %>
                         <div class="card border-dark">
                             <img class="card-img-top" src="http://33.media.tumblr.com/d3ebcd0a28b27595c8056fa28b2d4466/tumblr_nhf7es5vnV1qfhrgko1_500.gif" alt="Imagen de evento">
@@ -112,6 +111,11 @@
                                     </div>
                                     <div class="col-8">
                                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <iframe width="100%" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBvwu9R5x0YwukwkoaynDNNKVR2z2RH6p4&q=Calle+Ramirez+de+Madrid,+9,+Malaga,+Spain" allowfullscreen></iframe>
                                     </div>
                                 </div>
                             </div>

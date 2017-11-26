@@ -5,8 +5,8 @@
  */
 package ws;
 
-import bean.CategoryFacade;
-import entity.Category;
+import beans.CategoryFacade;
+import entities.Category;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.jws.WebService;
@@ -24,45 +24,44 @@ import javax.jws.WebParam;
 public class CategoryWS {
 
     @EJB
-    private CategoryFacade ejbRef;// Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Web Service Operation")
+    private CategoryFacade categoryEJB;
 
-    @WebMethod(operationName = "create")
+    @WebMethod(operationName = "createCategory")
     @Oneway
-    public void create(@WebParam(name = "entity") Category entity) {
-        ejbRef.create(entity);
+    public void createCategory(@WebParam(name = "category") Category category) {
+        categoryEJB.create(category);
     }
 
-    @WebMethod(operationName = "edit")
+    @WebMethod(operationName = "editCategory")
     @Oneway
-    public void edit(@WebParam(name = "entity") Category entity) {
-        ejbRef.edit(entity);
+    public void editCategory(@WebParam(name = "category") Category category) {
+        categoryEJB.edit(category);
     }
 
-    @WebMethod(operationName = "remove")
+    @WebMethod(operationName = "removeCategory")
     @Oneway
-    public void remove(@WebParam(name = "entity") Category entity) {
-        ejbRef.remove(entity);
+    public void removeCategory(@WebParam(name = "category") Category category) {
+        categoryEJB.remove(category);
     }
 
-    @WebMethod(operationName = "find")
-    public Category find(@WebParam(name = "id") Object id) {
-        return ejbRef.find(id);
+    @WebMethod(operationName = "findCategory")
+    public Category findCategory(@WebParam(name = "id") Object id) {
+        return categoryEJB.find(id);
     }
 
-    @WebMethod(operationName = "findAll")
-    public List<Category> findAll() {
-        return ejbRef.findAll();
+    @WebMethod(operationName = "findAllCategories")
+    public List<Category> findAllCategories() {
+        return categoryEJB.findAll();
     }
 
-    @WebMethod(operationName = "findRange")
-    public List<Category> findRange(@WebParam(name = "range") int[] range) {
-        return ejbRef.findRange(range);
+    @WebMethod(operationName = "findRangeCategories")
+    public List<Category> findRangeCategories(@WebParam(name = "range") int[] range) {
+        return categoryEJB.findRange(range);
     }
 
-    @WebMethod(operationName = "count")
-    public int count() {
-        return ejbRef.count();
+    @WebMethod(operationName = "countCategories")
+    public int countCategories() {
+        return categoryEJB.count();
     }
     
 }
