@@ -57,11 +57,11 @@
                 <div class="col-lg-3 mb-4">
                     <h1>Filtritoh</h1>
                     <form>
-                        
+
                         <button type="submit" class="btn btn-primary">Filtrar</button>
                     </form>
                 </div>
-                
+
                 <div class="col-lg-9">
                     <div class="card-columns">
                         <%
@@ -98,12 +98,25 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-4">
-                                <img class="img-fluid" src="http://33.media.tumblr.com/d3ebcd0a28b27595c8056fa28b2d4466/tumblr_nhf7es5vnV1qfhrgko1_500.gif">
+                        <nav class="nav nav-tabs nav-fill" id="myTab" role="tablist">
+                            <!-- TODO: add event id -->
+                            <a class="nav-item nav-link active" id="nav-info-tab<%= i%>" data-toggle="tab" href="#nav-info<%= i%>" role="tab" aria-controls="nav-info<%= i%>" aria-selected="true">Info</a>
+                            <a class="nav-item nav-link" id="nav-edit-tab<%= i%>" data-toggle="tab" href="#nav-edit<%= i%>" role="tab" aria-controls="nav-edit<%= i%>" aria-selected="false">Editar</a>
+                        </nav>
+                        <div class="tab-content mt-4" id="nav-tabContent">
+                            <!-- TODO: add event id -->
+                            <div class="tab-pane fade show active" id="nav-info<%= i%>" role="tabpanel" aria-labelledby="nav-info-tab<%= i%>">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <img class="img-fluid" src="http://33.media.tumblr.com/d3ebcd0a28b27595c8056fa28b2d4466/tumblr_nhf7es5vnV1qfhrgko1_500.gif">
+                                    </div>
+                                    <div class="col-8">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-8">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                            <div class="tab-pane fade" id="nav-edit<%= i%>" role="tabpanel" aria-labelledby="nav-edit-tab<%= i%>">
+                                <!-- editor -->
                             </div>
                         </div>
                     </div>
