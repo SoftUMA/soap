@@ -22,6 +22,12 @@
 <message name="create">
 <part name="parameters" element="tns:create"/>
 </message>
+<message name="findRange">
+<part name="parameters" element="tns:findRange"/>
+</message>
+<message name="findRangeResponse">
+<part name="parameters" element="tns:findRangeResponse"/>
+</message>
 <message name="findAll">
 <part name="parameters" element="tns:findAll"/>
 </message>
@@ -30,12 +36,6 @@
 </message>
 <message name="edit">
 <part name="parameters" element="tns:edit"/>
-</message>
-<message name="findRange">
-<part name="parameters" element="tns:findRange"/>
-</message>
-<message name="findRangeResponse">
-<part name="parameters" element="tns:findRangeResponse"/>
 </message>
 <portType name="EventWS">
 <operation name="remove">
@@ -52,16 +52,16 @@
 <operation name="create">
 <input wsam:Action="http://ws/EventWS/create" message="tns:create"/>
 </operation>
+<operation name="findRange">
+<input wsam:Action="http://ws/EventWS/findRangeRequest" message="tns:findRange"/>
+<output wsam:Action="http://ws/EventWS/findRangeResponse" message="tns:findRangeResponse"/>
+</operation>
 <operation name="findAll">
 <input wsam:Action="http://ws/EventWS/findAllRequest" message="tns:findAll"/>
 <output wsam:Action="http://ws/EventWS/findAllResponse" message="tns:findAllResponse"/>
 </operation>
 <operation name="edit">
 <input wsam:Action="http://ws/EventWS/edit" message="tns:edit"/>
-</operation>
-<operation name="findRange">
-<input wsam:Action="http://ws/EventWS/findRangeRequest" message="tns:findRange"/>
-<output wsam:Action="http://ws/EventWS/findRangeResponse" message="tns:findRangeResponse"/>
 </operation>
 </portType>
 <binding name="EventWSPortBinding" type="tns:EventWS">
@@ -96,6 +96,15 @@
 <soap:body use="literal"/>
 </input>
 </operation>
+<operation name="findRange">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
 <operation name="findAll">
 <soap:operation soapAction=""/>
 <input>
@@ -110,15 +119,6 @@
 <input>
 <soap:body use="literal"/>
 </input>
-</operation>
-<operation name="findRange">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
 </operation>
 </binding>
 <service name="EventWS">
