@@ -7,14 +7,14 @@
     <service name="PreferencesWS">
       <implementation-class>ws.PreferencesWS</implementation-class>
     </service>
+    <service name="AgendaWS">
+      <implementation-class>ws.AgendaWS</implementation-class>
+    </service>
     <service name="CategoryWS">
       <implementation-class>ws.CategoryWS</implementation-class>
     </service>
     <service name="UserWS">
       <implementation-class>ws.UserWS</implementation-class>
-    </service>
-    <service name="AgendaWS">
-      <implementation-class>ws.AgendaWS</implementation-class>
     </service>
   </services>
   <clients/>
