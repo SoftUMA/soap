@@ -13,7 +13,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
-<f:view>
+
     <html>
         <head>
             <meta charset="UTF-8">
@@ -108,4 +108,4 @@
             <script src="js/bootstrap.min.js"></script>
         </body>
     </html>
-</f:view>
+
