@@ -1,0 +1,40 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# NetBeans
+nbactions.xml
+nb-configuration.xml
+nbproject/private/
+# build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Project
+/Agenda/nbproject/private/
+/Agenda/build/
+/Agenda/Agenda-war/nbproject/private/
+/Agenda/Agenda-ejb/nbproject/private/
+/Agenda/Agenda-war/build/
+/Agenda/Agenda-ejb/build/
+/Agenda/Agenda-ejb/src/conf/META-INF/
+/DiarioSur/nbproject/private/
+/DiarioSur/build/
