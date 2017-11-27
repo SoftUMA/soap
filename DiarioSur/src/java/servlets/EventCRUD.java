@@ -15,7 +15,6 @@ import javax.servlet.http.HttpSession;
 import javax.xml.ws.WebServiceRef;
 import ws.*;
 
-
 /**
  *
  * @author Asde
@@ -32,7 +31,7 @@ public class EventCRUD extends HttpServlet {
     // Reference to Service at Generated Sources
     @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/localhost_8080/EventWS/EventWS.wsdl")
     private EventWS_Service eventService;
-    
+
     // Reference to an explicit WS
     private EventWS eventPort;
     private UserWS userPort;
@@ -48,81 +47,115 @@ public class EventCRUD extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
-        
+            throws ServletException, IOException {
+
         HttpSession session = request.getSession();
-        
-        int OPcode;
-        int eventId;
-        
-        // Retrieving information about what to do.
-        if (request.getParameter("opcode") != null)
-             OPcode = Integer.parseInt(request.getParameter("opcode"));
-        else
-            OPcode = -1;
-        
-        if (request.getParameter("id") != null)
-            eventId = Integer.parseInt(request.getParameter("id"));
-        else
-            eventId = -1;
-        
-        switch(OPcode){
+
+        int opcode = request.getParameter("opcode") != null ? Integer.parseInt(request.getParameter("opcode")) : -1;
+        int id = request.getParameter("id") != null ? Integer.parseInt(request.getParameter("id")) : -1;
+
+        String name;
+        String author;
+        String description;
+        String image;
+        String category;
+        // TODO startDate
+        // TODO endDate
+        String address;
+        double price;
+        String shopUrl;
+        int approved;
+
+        Event refereeEvent;
+        User sessionUser;
+        Category eventCategory;
+
+        switch (opcode) {
             case 0:
                 // Create Event Code
-                
+
                 // Event information from formulary
-                int id = 0;
-                String name =  request.getParameter("name");
-                String author = request.getParameter("author");
-                String description = request.getParameter("description");
-                String image = request.getParameter("image");
-                String category = request.getParameter("category");
+                id = 0;
+                name = request.getParameter("name");
+                author = request.getParameter("author");
+                description = request.getParameter("description");
+                image = request.getParameter("image");
+                category = request.getParameter("category");
                 // TODO startDate
                 // TODO endDate
-                String address = request.getParameter("address");
-                double price = Double.parseDouble(request.getParameter("price"));
-                String shopUrl = request.getParameter("shopurl");
+                address = request.getParameter("address");
+                price = Double.parseDouble(request.getParameter("price"));
+                shopUrl = request.getParameter("shopurl");
                 // TODO checkUser
-                int approved = Integer.parseInt(request.getParameter("approved"));
-                
+                approved = Integer.parseInt(request.getParameter("approved"));
+
                 // New Event to insert
-                Event newEvent = new Event();
-                
+                refereeEvent = new Event();
+
                 // Retrieving session User and Category of the new Event
-                User sessionUser = (User)session.getAttribute("role");
-                
-                Category eventCategory = findCategory(request.getParameter("category"));
-                
+                sessionUser = (User) session.getAttribute("role");
+
+                eventCategory = findCategory(request.getParameter("category"));
+
                 // Setting new Event
-                newEvent.setId(id);
-                newEvent.setName(name);
-                newEvent.setAuthor(sessionUser);
-                newEvent.setDescription(description);                
-                newEvent.setImage(image);
-                newEvent.setCategory(eventCategory);
-                newEvent.setStartDate("1111-22-33 00:00:00.000");
-                newEvent.setEndDate("2222-33-44 00:00:00.000");
-                newEvent.setAddress(address);
-                newEvent.setPrice(price);
-                newEvent.setShopUrl(shopUrl);
-                newEvent.setApproved(approved);
-                
-                createEvent(newEvent);               
+                refereeEvent.setId(id);
+                refereeEvent.setName(name);
+                refereeEvent.setAuthor(sessionUser);
+                refereeEvent.setDescription(description);
+                refereeEvent.setImage(image);
+                refereeEvent.setCategory(eventCategory);
+                refereeEvent.setStartDate("1111-22-33 00:00:00.000");
+                refereeEvent.setEndDate("2222-33-44 00:00:00.000");
+                refereeEvent.setAddress(address);
+                refereeEvent.setPrice(price);
+                refereeEvent.setShopUrl(shopUrl);
+                refereeEvent.setApproved(approved);
+
+                createEvent(refereeEvent);
                 break;
             case 1:
                 // Edit Event Code
-                
-                
+
+                name = request.getParameter("name");
+                description = request.getParameter("description");
+                image = request.getParameter("image");
+                category = request.getParameter("category");
+                // TODO startDate
+                // TODO endDate
+                address = request.getParameter("address");
+                price = Double.parseDouble(request.getParameter("price"));
+                shopUrl = request.getParameter("shopurl");
+                // TODO checkUser
+                approved = Integer.parseInt(request.getParameter("approved"));
+
+                // New Event to insert
+                refereeEvent = findEvent(id);
+
+                eventCategory = findCategory(request.getParameter("category"));
+
+                // Setting new Event
+                refereeEvent.setName(name);
+                refereeEvent.setDescription(description);
+                refereeEvent.setImage(image);
+                refereeEvent.setCategory(eventCategory);
+                refereeEvent.setStartDate("1111-22-33 00:00:00.000");
+                refereeEvent.setEndDate("2222-33-44 00:00:00.000");
+                refereeEvent.setAddress(address);
+                refereeEvent.setPrice(price);
+                refereeEvent.setShopUrl(shopUrl);
+                refereeEvent.setApproved(approved);
+
+                editEvent(refereeEvent);
                 break;
             case 2:
                 // Delete Event Code
-                
-                removeEvent(findEvent(eventId));
+
+                removeEvent(findEvent(id));
                 break;
             default:
                 System.err.println("Error en OPcode");
                 break;
-        }      
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
