@@ -117,9 +117,9 @@ public class EventCRUD extends HttpServlet {
             case 2:
                 // Delete Event Code
                 
-                
+                removeEvent(findEvent(eventId));
                 break;
-            case -1:
+            default:
                 System.err.println("Error en OPcode");
                 break;
         }      
@@ -164,46 +164,45 @@ public class EventCRUD extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private void createEvent(ws.Event event) {
+    private void createEvent(Event event) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         eventPort = eventService.getEventWSPort();
         eventPort.createEvent(event);
     }
 
-    private void editEvent(ws.Event event) {
+    private void editEvent(Event event) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         eventPort = eventService.getEventWSPort();
         eventPort.editEvent(event);
     }
 
-    private void removeEvent(ws.Event event) {
+    private void removeEvent(Event event) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         eventPort = eventService.getEventWSPort();
         eventPort.removeEvent(event);
     }
 
-    private Event findEvent(java.lang.Object id) {
+    private Event findEvent(Object id) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         eventPort = eventService.getEventWSPort();
         return eventPort.findEvent(id);
     }
 
-    private User findUser(java.lang.Object id) {
+    private User findUser(Object id) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         userPort = userService.getUserWSPort();
         return userPort.findUser(id);
     }
 
-    private Category findCategory(java.lang.Object id) {
+    private Category findCategory(Object id) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         categoryPort = categoryService.getCategoryWSPort();
         return categoryPort.findCategory(id);
     }
-
 }
