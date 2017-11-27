@@ -1,9 +1,7 @@
-/*
-body {
-    background-color: #383838;
+i {
+    font-size: 1rem;
 }
 
-.jumbotron {
-    background-color: #585858;
+button:hover {
+    cursor: pointer;
 }
-*/
