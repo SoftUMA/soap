@@ -27,6 +27,16 @@
         System.err.println("Error getting events from service");
         ex.printStackTrace();
     }
+
+    List<Category> categories = null;
+    try {
+        CategoryWS_Service categoryService = new CategoryWS_Service();
+        CategoryWS categoryPort = categoryService.getCategoryWSPort();
+        categories = categoryPort.findAllCategories();
+    } catch (Exception ex) {
+        System.err.println("Error getting categories from service");
+        ex.printStackTrace();
+    }
 %>
 
 <!DOCTYPE html>
@@ -55,45 +65,50 @@
         <meta name="msapplication-square150x150logo" content="//static2.diariosur.es/squido/latest/assets/icons/diario-sur/mediumtile.png"/>
         <meta name="msapplication-wide310x150logo" content="//static.diariosur.es/squido/latest/assets/icons/diario-sur/widetile.png"/>
         <meta name="msapplication-square310x310logo" content="//static2.diariosur.es/squido/latest/assets/icons/diario-sur/largetile.png"/>
+
         <link rel="stylesheet" href="https://bootswatch.com/4/darkly/bootstrap.min.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="css/animate.css">
+        <link rel="stylesheet" href="css/daterangepicker.css">
         <link rel="stylesheet" href="css/app.css">
     </head>
     <body>
         <nav class="navbar navbar-dark bg-warning navbar-expand-lg sticky-top">
-            <a class="navbar-brand" href="/DiarioSur/">
-                <img src="img/logo.png" height="30" class="d-inline-block align-top" alt="logo">
-                <span class="text-secondary" style="margin-left: 16px;">Agenda</span>
-            </a>
+            <div class="container">
+                <a class="navbar-brand" href="/DiarioSur/">
+                    <img src="img/logo.png" height="30" class="d-inline-block align-top" alt="logo">
+                    <span class="text-secondary" style="margin-left: 16px;">Agenda</span>
+                </a>
 
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Expandir navegación">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Expandir navegación">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-            <div class="collapse navbar-collapse" id="navbarContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <!-- a class="nav-link text-secondary" href="#">Home <span class="sr-only">(current)</span></a -->
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <button class="btn btn-secondary nav-link dropdown-toggle px-2" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Cambiar Usuario
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= Properties.USER_GUEST%>">Invitado</a>
-                            <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, "UTF-8")%>">Usuario</a>
-                            <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, "UTF-8")%>">SuperUsuario</a>
-                            <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, "UTF-8")%>">Redactor</a>
-                        </div>
-                    </li>
-                </ul>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <!-- a class="nav-link text-secondary" href="#">Home <span class="sr-only">(current)</span></a -->
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <button class="btn btn-secondary nav-link dropdown-toggle px-2" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Cambiar Usuario
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= Properties.USER_GUEST%>">Invitado</a>
+                                <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, "UTF-8")%>">Usuario</a>
+                                <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, "UTF-8")%>">SuperUsuario</a>
+                                <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, "UTF-8")%>">Redactor</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </nav>
 
-        <div class="container" style="margin-top: 16px;">
-            <div class="jumbotron" style="padding-top: 16px;">
+        <div class="container mt-4">
+            <div class="jumbotron pt-4">
                 <h1 class="display-4">¡Bienvenido!</h1>
                 <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
                 <hr class="my-4">
@@ -118,7 +133,7 @@
                                 Event e = events.get(i);
                                 if (user.equals(e.getAuthor().getEmail()) || e.getApproved() == 1 || user.equals(Properties.USER_EDITOR)) {
                         %>
-                        <div class="card <% if (e.getApproved() == 0 && user.equals(Properties.USER_EDITOR)) { %>border-danger<% } else { %>border-dark<% }%>">
+                        <div class="card <% if (e.getApproved() == 0 && user.equals(Properties.USER_EDITOR)) { %>border-danger<% } else { %>border-dark<% }%> wow zoomIn" data-wow-delay="0.5s">
                             <img class="card-img-top rounded" src="<%= e.getImage()%>" alt="<%= e.getName()%>" data-toggle="modal" data-target="#eventModal<%= e.getId()%>" style="cursor: pointer;">
                             <div class="card-body">
                                 <h4 class="card-title"><%= e.getName()%></h4>
@@ -209,34 +224,87 @@
                                         <iframe width="100%" height="450" frameborder="0" style="border: 0;" src="<%= gmaps%>" allowfullscreen></iframe>
                                     </div>
                                 </div>
+                                <hr>
+                                <center>
+                                    <%
+                                        if (e.getApproved() == 0 && user.equals(Properties.USER_EDITOR)) {
+                                    %>
+                                    <span class="btn-group mr-4" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-warning">Aceptar</button>
+                                        <button type="button" class="btn btn-warning">Rechazar</button>
+                                    </span>
+                                    <%
+                                        }
+                                    %>
+                                    <a class="btn btn-warning" href="<%= e.getShopUrl()%>">Comprar entradas</a>
+                                    <!-- button type="button" class="btn btn-secondary" data-dismiss="modal">Editar evento</button -->
+                                </center>
                             </div>
                             <%
                                 if (user.equals(e.getAuthor().getEmail())) {
                             %>
                             <div class="tab-pane fade" id="nav-edit<%= e.getId()%>" role="tabpanel" aria-labelledby="nav-edit-tab<%= e.getId()%>">
-                                <!-- editor -->
-                                <span>
-                                    <a class="btn btn-warning" href="/EventCRUD?opcode=1&id=<%= e.getId()%>">Borrar evento</a>
-                                    <a class="btn btn-warning" href="/EventCRUD?opcode=2&id=<%= e.getId()%>">Guardar cambios</a>
-                                </span>
+                                <form>
+                                    <div class="form-group">
+                                        <label for="nameInput<%= e.getId()%>">Nombre</label>
+                                        <input type="text" class="form-control" id="nameInput<%= e.getId()%>" placeholder="Nombre">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="imgInput<%= e.getId()%>">Imagen</label>
+                                        <input type="url" class="form-control" id="imgInput<%= e.getId()%>" aria-describedby="imgHelp<%= e.getId()%>" placeholder="URL de la imagen">
+                                        <small id="imgHelp<%= e.getId()%>" class="form-text text-muted">Ha de ser una URL a una imagen PNG o JPG. Preferiblemente de 500x500px.</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="addressInput<%= e.getId()%>">Dirección</label>
+                                        <input type="text" class="form-control" id="addressInput<%= e.getId()%>" aria-describedby="addressHelp<%= e.getId()%>" placeholder="Dirección">
+                                        <small id="addressHelp<%= e.getId()%>" class="form-text text-muted">Ej: Bulevar Louis Pasteur, Malaga, Spain.</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="descInput<%= e.getId()%>">Descripción</label>
+                                        <textarea type="text" class="form-control" id="descInput<%= e.getId()%>" placeholder="Descripción" maxlength="1000"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dateInput<%= e.getId()%>">Fecha y hora</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control calcal" id="dateInput<%= e.getId()%>" placeholder="Fecha y hora">
+                                            <span class="input-group-addon" id="calendarTag<%= e.getId()%>"><i class="material-icons">date_range</i></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label for="categoryInput<%= e.getId()%>">Categoría</label>
+                                            <select class="form-control" id="categoryInput<%= e.getId()%>">
+                                                <%
+                                                    for (int cat = 0; categories != null && cat < categories.size(); cat++) {
+                                                %>
+                                                <option value="<%= categories.get(cat).getName()%>"><%= categories.get(cat).getName()%></option>
+                                                <%
+                                                    }
+                                                %>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label for="priceInput<%= e.getId()%>">Precio</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="priceInput<%= e.getId()%>" aria-describedby="euroTag<%= e.getId()%>" placeholder="Precio">
+                                                <span class="input-group-addon" id="euroTag<%= e.getId()%>">€</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <!-- button type="submit" class="btn btn-warning">Submit</button -->
+                                    <center>
+                                        <span>
+                                            <a class="btn btn-warning" href="/EventCRUD?opcode=1&id=<%= e.getId()%>">Borrar evento</a>
+                                            <a class="btn btn-warning" href="/EventCRUD?opcode=2&id=<%= e.getId()%>">Guardar cambios</a>
+                                        </span>
+                                    </center>
+                                </form>
                             </div>
                             <%
                                 }
                             %>
                         </div>
-                        <hr>
-                        <%
-                            if (e.getApproved() == 0 && user.equals(Properties.USER_EDITOR)) {
-                        %>
-                        <span class="btn-group mr-2" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-warning">Aceptar</button>
-                            <button type="button" class="btn btn-warning">Rechazar</button>
-                        </span>
-                        <%
-                            }
-                        %>
-                        <a class="btn btn-warning" href="<%= e.getShopUrl()%>">Comprar entradas</a>
-                        <!-- button type="button" class="btn btn-secondary" data-dismiss="modal">Editar evento</button -->
                     </div>
                     <!-- div class="modal-footer"></div -->
                 </div>
@@ -250,5 +318,55 @@
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/popper.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <script src="js/wow.min.js"></script>
+        <script>new WOW().init();</script>
+        <script src="js/moment.js"></script>
+        <script src="js/daterangepicker.js"></script>
+        <script>
+            $('.calcal').daterangepicker({
+                "timePicker": true,
+                "timePicker24Hour": true,
+                "locale": {
+                    "format": "YYYY-MM-DD HH:mm",
+                    "separator": " ~ ",
+                    "applyLabel": "Aceptar",
+                    "cancelLabel": "Cancelar",
+                    "fromLabel": "Desde",
+                    "toLabel": "Hasta",
+                    "customRangeLabel": "Custom",
+                    "weekLabel": "W",
+                    "daysOfWeek": [
+                        "Do",
+                        "Lu",
+                        "Ma",
+                        "Mi",
+                        "Ju",
+                        "Vi",
+                        "Sa"
+                    ],
+                    "monthNames": [
+                        "Enero",
+                        "Febrero",
+                        "Marzo",
+                        "Abril",
+                        "Mayo",
+                        "Junio",
+                        "Julio",
+                        "Agosto",
+                        "Septiembre",
+                        "Octubre",
+                        "Noviembre",
+                        "Diciembre"
+                    ],
+                    "firstDay": 1
+                },
+                "startDate": "2018-01-01 00:00",
+                "endDate": "2018-01-07 00:00",
+                "opens": "left",
+                "drops": "up",
+                "applyClass": "btn-warning",
+                "cancelClass": "btn-secondary"
+            }, function (start, end, label) {});
+        </script>
     </body>
 </html>

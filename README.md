@@ -15,4 +15,7 @@ Authors:
 - [Bootstrap](http://getbootstrap.com/)
 - [Popper.js](https://popper.js.org/)
 - [Material Design Icons](https://material.io/icons/)
+- [Animate.css](https://daneden.github.io/animate.css/)
+- [WOW.js](http://mynameismatthieu.com/WOW/)
 - [Bootswatch Darkly](https://bootswatch.com/darkly/)
+- [Date Range Picker](http://www.daterangepicker.com/)
