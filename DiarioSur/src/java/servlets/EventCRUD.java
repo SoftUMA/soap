@@ -89,9 +89,11 @@ public class EventCRUD extends HttpServlet {
                     st = new StringTokenizer(request.getParameter("date"), "~");
                     
                     startDate = st.nextToken();
+                    startDate = startDate.trim();
                     startDate += ":00.000";
                     
                     endDate = st.nextToken();
+                    endDate = endDate.trim();
                     endDate += ":00.000";
                     
                     address = request.getParameter("address");
@@ -116,8 +118,8 @@ public class EventCRUD extends HttpServlet {
                     refereeEvent.setDescription(description);
                     refereeEvent.setImage(image);
                     refereeEvent.setCategory(eventCategory);
-                    refereeEvent.setStartDate("1111-22-33 00:00:00.000");
-                    refereeEvent.setEndDate("2222-33-44 00:00:00.000");
+                    refereeEvent.setStartDate(startDate);
+                    refereeEvent.setEndDate(endDate);
                     refereeEvent.setAddress(address);
                     refereeEvent.setPrice(price);
                     refereeEvent.setShopUrl(shopUrl);
@@ -141,9 +143,11 @@ public class EventCRUD extends HttpServlet {
                 st = new StringTokenizer(request.getParameter("date"), "~");
                 
                 startDate = st.nextToken();
+                startDate = startDate.trim();
                 startDate += ":00.000";
                 
                 endDate = st.nextToken();
+                endDate = endDate.trim();
                 endDate += ":00.000";
                 address = request.getParameter("address");
                 price = Double.parseDouble(request.getParameter("price"));
