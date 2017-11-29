@@ -243,8 +243,8 @@
                                         if (e.getApproved() == 0 && user.equals(Properties.USER_EDITOR)) {
                                     %>
                                     <span class="btn-group mr-4" role="group" aria-label="Basic example">
-                                        <button type="button" class="btn btn-warning">Aceptar</button>
-                                        <button type="button" class="btn btn-warning">Rechazar</button>
+                                        <button class="btn btn-warning" href="/EventCRUD?opcode=3&id=<%= e.getId()%>">Aceptar</button>
+                                        <a class="btn btn-warning" href="/EventCRUD?opcode=2&id=<%= e.getId()%>">Rechazar</a>
                                     </span>
                                     <%
                                         }
@@ -259,26 +259,31 @@
                                 if (user.equals(e.getAuthor().getEmail())) {
                             %>
                             <div class="tab-pane fade" id="nav-edit<%= e.getId()%>" role="tabpanel" aria-labelledby="nav-edit-tab<%= e.getId()%>">
-                                <form>
+                                <form action="EventCRUD">
                                     <input type="hidden" name="opcode" value="1">
                                     <input type="hidden" name="id" value="<%= e.getId()%>">
                                     <div class="form-group">
                                         <label for="nameInput<%= e.getId()%>">Nombre</label>
-                                        <input type="text" class="form-control" id="nameInput<%= e.getId()%>" placeholder="Nombre" value="<%= e.getName()%>">
+                                        <input type="text" class="form-control" id="nameInput<%= e.getId()%>" placeholder="Nombre" value="<%= e.getName()%>" name="name">
                                     </div>
                                     <div class="form-group">
                                         <label for="imgInput<%= e.getId()%>">Imagen</label>
-                                        <input type="url" class="form-control" id="imgInput<%= e.getId()%>" aria-describedby="imgHelp<%= e.getId()%>" placeholder="URL de la imagen" value="<%= e.getImage()%>">
+                                        <input type="url" class="form-control" id="imgInput<%= e.getId()%>" aria-describedby="imgHelp<%= e.getId()%>" placeholder="URL de la imagen" value="<%= e.getImage()%>" name="image">
                                         <small id="imgHelp<%= e.getId()%>" class="form-text text-muted">Ha de ser una URL a una imagen PNG o JPG. Preferiblemente de 500x500px.</small>
                                     </div>
                                     <div class="form-group">
                                         <label for="addressInput<%= e.getId()%>">Dirección</label>
-                                        <input type="text" class="form-control" id="addressInput<%= e.getId()%>" aria-describedby="addressHelp<%= e.getId()%>" placeholder="Dirección" value="<%= e.getAddress()%>">
+                                        <input type="text" class="form-control" id="addressInput<%= e.getId()%>" aria-describedby="addressHelp<%= e.getId()%>" placeholder="Dirección" value="<%= e.getAddress()%>" name="address">
                                         <small id="addressHelp<%= e.getId()%>" class="form-text text-muted">Ej: Bulevar Louis Pasteur, Malaga, Spain.</small>
                                     </div>
                                     <div class="form-group">
                                         <label for="descInput<%= e.getId()%>">Descripción</label>
-                                        <textarea type="text" class="form-control" id="descInput<%= e.getId()%>" placeholder="Descripción" maxlength="1000"><%= e.getDescription()%></textarea>
+                                        <textarea type="text" class="form-control" id="descInput<%= e.getId()%>" placeholder="Descripción" maxlength="1000" name="description"><%= e.getDescription()%></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="shopInput<%= e.getId()%>">URL de compra</label>
+                                        <input type="url" class="form-control" id="shopInput<%= e.getId()%>" aria-describedby="shopHelp<%= e.getId()%>" placeholder="URL de compra" value="<%= e.getShopUrl()%>" name="shopurl">
+                                        <small id="shopHelp<%= e.getId()%>" class="form-text text-muted">URL de la página de compra de entradas al evento.</small>
                                     </div>
                                     <div class="form-group">
                                         <label for="dateInput<%= e.getId()%>">Fecha y hora</label>
@@ -291,7 +296,7 @@
                                                 String dates = startDate + " ~ " + endDate;
                                                 System.out.println(dates);
                                             %>
-                                            <input type="text" class="form-control cal<%= e.getId()%>" id="dateInput<%= e.getId()%>" placeholder="Fecha y hora" value="<%= dates%>">
+                                            <input type="text" class="form-control cal<%= e.getId()%>" id="dateInput<%= e.getId()%>" placeholder="Fecha y hora" value="<%= dates%>" names="date">
                                             <span class="input-group-addon" id="calendarTag<%= e.getId()%>"><i class="material-icons">date_range</i></span>
                                             <script>
                                                 $('.cal<%= e.getId()%>').daterangepicker({
@@ -346,7 +351,7 @@
                                     <div class="row">
                                         <div class="form-group col-6">
                                             <label for="categoryInput<%= e.getId()%>">Categoría</label>
-                                            <select class="form-control" id="categoryInput<%= e.getId()%>">
+                                            <select class="form-control" id="categoryInput<%= e.getId()%>" name="category">
                                                 <%
                                                     for (int cat = 0; categories != null && cat < categories.size(); cat++) {
                                                 %>
@@ -367,7 +372,7 @@
                                         <div class="form-group col-6">
                                             <label for="priceInput<%= e.getId()%>">Precio</label>
                                             <div class="input-group">
-                                                <input type="number" step="0.05" class="form-control" id="priceInput<%= e.getId()%>" aria-describedby="euroTag<%= e.getId()%>" placeholder="Precio" value="<%= e.getPrice()%>">
+                                                <input type="number" step="0.05" class="form-control" id="priceInput<%= e.getId()%>" aria-describedby="euroTag<%= e.getId()%>" placeholder="Precio" value="<%= e.getPrice()%>" name="price">
                                                 <span class="input-group-addon" id="euroTag<%= e.getId()%>">€</span>
                                             </div>
                                         </div>
@@ -377,7 +382,7 @@
                                     <center>
                                         <span>
                                             <a class="btn btn-warning" href="/EventCRUD?opcode=2&id=<%= e.getId()%>">Borrar evento</a>
-                                            <a class="btn btn-warning" href="/EventCRUD?opcode=1&id=<%= e.getId()%>">Guardar cambios</a>
+                                            <button type="submit" class="btn btn-warning" href="/EventCRUD?opcode=1&id=<%= e.getId()%>">Guardar cambios</button>
                                         </span>
                                     </center>
                                 </form>
@@ -404,5 +409,24 @@
         <script src="js/wow.min.js"></script>
         <script>new WOW().init();</script>
         <script src="js/moment.js"></script>
+        <script type="text/javascript">
+            function acceptEvent(id) {
+                if (confirm("¿Desea listar este evento en la agenda?")) {
+                    window.location.replace("");
+                }
+            }
+
+            function rejectEject(id) {
+                if (confirm("¿Desea rechazar este evento definitivamente?")) {
+                    window.location.replace("");
+                }
+            }
+
+            function deleteEvent(id) {
+                if (confirm("¿Desea eliminar este evento de la agenda definitivamente?")) {
+                    window.location.replace("");
+                }
+            }
+        </script>
     </body>
 </html>

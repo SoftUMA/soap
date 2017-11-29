@@ -43,28 +43,28 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Event.findByApproved", query = "SELECT e FROM Event e WHERE e.approved = :approved")})
 public class Event implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Column(name = "id")
-    private Integer id;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2000000000)
     @Column(name = "name")
     private String name;
-    @Size(max = 2000000000)
+    @Basic(optional = false)
+    @NotNull()
+    @Size(min = 1, max = 2000000000)
     @Column(name = "description")
     private String description;
-    @Size(max = 2000000000)
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2000000000)
     @Column(name = "image")
     private String image;
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 2000000000)
     @Column(name = "startDate")
     private String startDate;
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 2000000000)
     @Column(name = "endDate")
     private String endDate;
@@ -73,16 +73,24 @@ public class Event implements Serializable {
     @Size(min = 1, max = 2000000000)
     @Column(name = "address")
     private String address;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "price")
-    private Double price;
-    @Size(max = 2000000000)
+    private double price;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2000000000)
     @Column(name = "shopUrl")
     private String shopUrl;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Column(name = "approved")
     private int approved;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Column(name = "id")
+    private Integer id;
     @JoinColumn(name = "category", referencedColumnName = "name")
     @ManyToOne(optional = false)
     private Category category;
@@ -114,6 +122,57 @@ public class Event implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    @XmlTransient
+    public Collection<Review> getReviewCollection() {
+        return reviewCollection;
+    }
+
+    public void setReviewCollection(Collection<Review> reviewCollection) {
+        this.reviewCollection = reviewCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Event)) {
+            return false;
+        }
+        Event other = (Event) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "entities.Event[ id=" + id + " ]";
     }
 
     public String getName() {
@@ -164,11 +223,11 @@ public class Event implements Serializable {
         this.address = address;
     }
 
-    public Double getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -186,56 +245,6 @@ public class Event implements Serializable {
 
     public void setApproved(int approved) {
         this.approved = approved;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
-    }
-
-    @XmlTransient
-    public Collection<Review> getReviewCollection() {
-        return reviewCollection;
-    }
-
-    public void setReviewCollection(Collection<Review> reviewCollection) {
-        this.reviewCollection = reviewCollection;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Event)) {
-            return false;
-        }
-        Event other = (Event) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "entities.Event[ id=" + id + " ]";
     }
     
 }

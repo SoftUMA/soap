@@ -32,13 +32,14 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Preferences.findByVisits", query = "SELECT p FROM Preferences p WHERE p.visits = :visits")})
 public class Preferences implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected PreferencesPK preferencesPK;
     @Basic(optional = false)
     @NotNull
     @Column(name = "visits")
     private int visits;
+
+    private static final long serialVersionUID = 1L;
+    @EmbeddedId
+    protected PreferencesPK preferencesPK;
     @JoinColumn(name = "category", referencedColumnName = "name", insertable = false, updatable = false)
     @ManyToOne
     private Category category1;
@@ -70,13 +71,6 @@ public class Preferences implements Serializable {
         this.preferencesPK = preferencesPK;
     }
 
-    public int getVisits() {
-        return visits;
-    }
-
-    public void setVisits(int visits) {
-        this.visits = visits;
-    }
 
     public Category getCategory1() {
         return category1;
@@ -117,6 +111,14 @@ public class Preferences implements Serializable {
     @Override
     public String toString() {
         return "entities.Preferences[ preferencesPK=" + preferencesPK + " ]";
+    }
+
+    public int getVisits() {
+        return visits;
+    }
+
+    public void setVisits(int visits) {
+        this.visits = visits;
     }
     
 }

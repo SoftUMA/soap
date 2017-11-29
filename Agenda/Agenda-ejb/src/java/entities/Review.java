@@ -34,9 +34,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Review.findByScore", query = "SELECT r FROM Review r WHERE r.score = :score")})
 public class Review implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected ReviewPK reviewPK;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2000000000)
@@ -46,6 +43,10 @@ public class Review implements Serializable {
     @NotNull
     @Column(name = "score")
     private int score;
+
+    private static final long serialVersionUID = 1L;
+    @EmbeddedId
+    protected ReviewPK reviewPK;
     @JoinColumn(name = "author", referencedColumnName = "email", insertable = false, updatable = false)
     @ManyToOne
     private User user;
@@ -78,21 +79,6 @@ public class Review implements Serializable {
         this.reviewPK = reviewPK;
     }
 
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
 
     public User getUser() {
         return user;
@@ -133,6 +119,22 @@ public class Review implements Serializable {
     @Override
     public String toString() {
         return "entities.Review[ reviewPK=" + reviewPK + " ]";
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
     
 }
