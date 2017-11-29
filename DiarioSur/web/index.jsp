@@ -47,31 +47,33 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Agenda - Diario Sur</title>
 
-        <link rel="icon" href="//static1.diariosur.es/squido/latest/assets/icons/diario-sur/favicon.ico"/>
-        <link rel="shortcut icon" href="//static1.diariosur.es/squido/latest/assets/icons/diario-sur/favicon.ico" type="image/x-icon"/>
-        <link rel="apple-touch-icon" sizes="57x57" href="//static.diariosur.es/squido/latest/assets/icons/diario-sur/apple-touch-icon-57x57.png">
-        <link rel="apple-touch-icon" sizes="60x60" href="//static1.diariosur.es/squido/latest/assets/icons/diario-sur/apple-touch-icon-60x60.png">
-        <link rel="apple-touch-icon" sizes="72x72" href="//static1.diariosur.es/squido/latest/assets/icons/diario-sur/apple-touch-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="76x76" href="//static3.diariosur.es/squido/latest/assets/icons/diario-sur/apple-touch-icon-76x76.png">
-        <link rel="apple-touch-icon" sizes="114x114" href="//static.diariosur.es/squido/latest/assets/icons/diario-sur/apple-touch-icon-114x114.png">
-        <link rel="apple-touch-icon" sizes="120x120" href="//static3.diariosur.es/squido/latest/assets/icons/diario-sur/apple-touch-icon-120x120.png">
-        <link rel="apple-touch-icon" sizes="144x144" href="//static1.diariosur.es/squido/latest/assets/icons/diario-sur/apple-touch-icon-144x144.png">
-        <link rel="apple-touch-icon" sizes="152x152" href="//static2.diariosur.es/squido/latest/assets/icons/diario-sur/apple-touch-icon-152x152.png">
-        <link rel="apple-touch-icon" sizes="180x180" href="//static1.diariosur.es/squido/latest/assets/icons/diario-sur/apple-touch-icon-180x180.png">
-        <link rel="icon" type="image/png" href="//static3.diariosur.es/squido/latest/assets/icons/diario-sur/favicon-16x16.png" sizes="16x16">
-        <link rel="icon" type="image/png" href="//static.diariosur.es/squido/latest/assets/icons/diario-sur/favicon-32x32.png" sizes="32x32">
-        <link rel="icon" type="image/png" href="//static1.diariosur.es/squido/latest/assets/icons/diario-sur/favicon-96x96.png" sizes="96x96">
-        <link rel="icon" type="image/png" href="//static3.diariosur.es/squido/latest/assets/icons/diario-sur/android-chrome-192x192.png" sizes="192x192">
-        <meta name="msapplication-square70x70logo" content="//static2.diariosur.es/squido/latest/assets/icons/diario-sur/smalltile.png"/>
-        <meta name="msapplication-square150x150logo" content="//static2.diariosur.es/squido/latest/assets/icons/diario-sur/mediumtile.png"/>
-        <meta name="msapplication-wide310x150logo" content="//static.diariosur.es/squido/latest/assets/icons/diario-sur/widetile.png"/>
-        <meta name="msapplication-square310x310logo" content="//static2.diariosur.es/squido/latest/assets/icons/diario-sur/largetile.png"/>
+        <link rel="icon" href="img/brand/favicon.ico"/>
+        <link rel="shortcut icon" href="img/brand/favicon.ico" type="image/x-icon"/>
+        <link rel="apple-touch-icon" sizes="57x57" href="img/brand/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="img/brand/apple-touch-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="img/brand/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="img/brand/apple-touch-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="img/brand/apple-touch-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="img/brand/apple-touch-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="img/brand/apple-touch-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="img/brand/apple-touch-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="img/brand/apple-touch-icon-180x180.png">
+        <link rel="icon" type="image/png" href="img/brand/favicon-16x16.png" sizes="16x16">
+        <link rel="icon" type="image/png" href="img/brand/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="img/brand/favicon-96x96.png" sizes="96x96">
+        <link rel="icon" type="image/png" href="img/brand/android-chrome-192x192.png" sizes="192x192">
+        <meta name="msapplication-square70x70logo" content="img/brand/smalltile.png"/>
+        <meta name="msapplication-square150x150logo" content="img/brand/mediumtile.png"/>
+        <meta name="msapplication-wide310x150logo" content="img/brand/widetile.png"/>
+        <meta name="msapplication-square310x310logo" content="img/brand/largetile.png"/>
 
         <link rel="stylesheet" href="css/bootstrap-darkly.min.css">
         <link rel="stylesheet" href="css/material-icons.css">
         <link rel="stylesheet" href="css/animate.css">
         <link rel="stylesheet" href="css/daterangepicker.css">
         <link rel="stylesheet" href="css/app.css">
+
+        <script src="js/daterangepicker.js"></script>
     </head>
     <body>
         <!-------- #NAVBAR -------->
@@ -247,7 +249,7 @@
                                     <%
                                         }
                                     %>
-                                    <a class="btn btn-warning" href="<%= e.getShopUrl()%>">Comprar entradas</a>
+                                    <a class="btn btn-warning" href="<%= e.getShopUrl()%>" target="_blank">Comprar entradas</a>
                                     <!-- button type="button" class="btn btn-secondary" data-dismiss="modal">Editar evento</button -->
                                 </center>
                             </div>
@@ -258,29 +260,87 @@
                             %>
                             <div class="tab-pane fade" id="nav-edit<%= e.getId()%>" role="tabpanel" aria-labelledby="nav-edit-tab<%= e.getId()%>">
                                 <form>
+                                    <input type="hidden" name="opcode" value="1">
+                                    <input type="hidden" name="id" value="<%= e.getId()%>">
                                     <div class="form-group">
                                         <label for="nameInput<%= e.getId()%>">Nombre</label>
-                                        <input type="text" class="form-control" id="nameInput<%= e.getId()%>" placeholder="Nombre">
+                                        <input type="text" class="form-control" id="nameInput<%= e.getId()%>" placeholder="Nombre" value="<%= e.getName()%>">
                                     </div>
                                     <div class="form-group">
                                         <label for="imgInput<%= e.getId()%>">Imagen</label>
-                                        <input type="url" class="form-control" id="imgInput<%= e.getId()%>" aria-describedby="imgHelp<%= e.getId()%>" placeholder="URL de la imagen">
+                                        <input type="url" class="form-control" id="imgInput<%= e.getId()%>" aria-describedby="imgHelp<%= e.getId()%>" placeholder="URL de la imagen" value="<%= e.getImage()%>">
                                         <small id="imgHelp<%= e.getId()%>" class="form-text text-muted">Ha de ser una URL a una imagen PNG o JPG. Preferiblemente de 500x500px.</small>
                                     </div>
                                     <div class="form-group">
                                         <label for="addressInput<%= e.getId()%>">Dirección</label>
-                                        <input type="text" class="form-control" id="addressInput<%= e.getId()%>" aria-describedby="addressHelp<%= e.getId()%>" placeholder="Dirección">
+                                        <input type="text" class="form-control" id="addressInput<%= e.getId()%>" aria-describedby="addressHelp<%= e.getId()%>" placeholder="Dirección" value="<%= e.getAddress()%>">
                                         <small id="addressHelp<%= e.getId()%>" class="form-text text-muted">Ej: Bulevar Louis Pasteur, Malaga, Spain.</small>
                                     </div>
                                     <div class="form-group">
                                         <label for="descInput<%= e.getId()%>">Descripción</label>
-                                        <textarea type="text" class="form-control" id="descInput<%= e.getId()%>" placeholder="Descripción" maxlength="1000"></textarea>
+                                        <textarea type="text" class="form-control" id="descInput<%= e.getId()%>" placeholder="Descripción" maxlength="1000"><%= e.getDescription()%></textarea>
                                     </div>
                                     <div class="form-group">
                                         <label for="dateInput<%= e.getId()%>">Fecha y hora</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control calcal" id="dateInput<%= e.getId()%>" placeholder="Fecha y hora">
+                                            <%
+                                                String startDate = e.getStartDate();
+                                                startDate = startDate.substring(0, startDate.length() - 7);
+                                                String endDate = e.getEndDate();
+                                                endDate = endDate.substring(0, endDate.length() - 7);
+                                                String dates = startDate + " ~ " + endDate;
+                                                System.out.println(dates);
+                                            %>
+                                            <input type="text" class="form-control cal<%= e.getId()%>" id="dateInput<%= e.getId()%>" placeholder="Fecha y hora" value="<%= dates%>">
                                             <span class="input-group-addon" id="calendarTag<%= e.getId()%>"><i class="material-icons">date_range</i></span>
+                                            <script>
+                                                $('.cal<%= e.getId()%>').daterangepicker({
+                                                    "timePicker": true,
+                                                    "timePicker24Hour": true,
+                                                    "locale": {
+                                                        "format": "YYYY-MM-DD HH:mm",
+                                                        "separator": " ~ ",
+                                                        "applyLabel": "Aceptar",
+                                                        "cancelLabel": "Cancelar",
+                                                        "fromLabel": "Desde",
+                                                        "toLabel": "Hasta",
+                                                        "customRangeLabel": "Custom",
+                                                        "weekLabel": "W",
+                                                        "daysOfWeek": [
+                                                            "Do",
+                                                            "Lu",
+                                                            "Ma",
+                                                            "Mi",
+                                                            "Ju",
+                                                            "Vi",
+                                                            "Sa"
+                                                        ],
+                                                        "monthNames": [
+                                                            "Enero",
+                                                            "Febrero",
+                                                            "Marzo",
+                                                            "Abril",
+                                                            "Mayo",
+                                                            "Junio",
+                                                            "Julio",
+                                                            "Agosto",
+                                                            "Septiembre",
+                                                            "Octubre",
+                                                            "Noviembre",
+                                                            "Diciembre"
+                                                        ],
+                                                        "firstDay": 1
+                                                    },
+                                                    "startDate": "<%= startDate%>",
+                                                    "endDate": "<%= endDate%>",
+                                                    "opens": "left",
+                                                    "drops": "up",
+                                                    "applyClass": "btn-warning",
+                                                    "cancelClass": "btn-secondary"
+                                                }, function (start, end, label) {
+                                                    /* callback */
+                                                });
+                                            </script>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -290,7 +350,15 @@
                                                 <%
                                                     for (int cat = 0; categories != null && cat < categories.size(); cat++) {
                                                 %>
-                                                <option value="<%= categories.get(cat).getName()%>"><%= categories.get(cat).getName()%></option>
+                                                <option value="<%= categories.get(cat).getName()%>"
+                                                        <%
+                                                            if (e.getCategory().getName().equals(categories.get(cat).getName())) {
+                                                        %>
+                                                        selected
+                                                        <%
+                                                            }
+                                                        %>
+                                                        ><%= categories.get(cat).getName()%></option>
                                                 <%
                                                     }
                                                 %>
@@ -299,7 +367,7 @@
                                         <div class="form-group col-6">
                                             <label for="priceInput<%= e.getId()%>">Precio</label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="priceInput<%= e.getId()%>" aria-describedby="euroTag<%= e.getId()%>" placeholder="Precio">
+                                                <input type="number" step="0.05" class="form-control" id="priceInput<%= e.getId()%>" aria-describedby="euroTag<%= e.getId()%>" placeholder="Precio" value="<%= e.getPrice()%>">
                                                 <span class="input-group-addon" id="euroTag<%= e.getId()%>">€</span>
                                             </div>
                                         </div>
@@ -308,8 +376,8 @@
                                     <!-- button type="submit" class="btn btn-warning">Submit</button -->
                                     <center>
                                         <span>
-                                            <a class="btn btn-warning" href="/EventCRUD?opcode=1&id=<%= e.getId()%>">Borrar evento</a>
-                                            <a class="btn btn-warning" href="/EventCRUD?opcode=2&id=<%= e.getId()%>">Guardar cambios</a>
+                                            <a class="btn btn-warning" href="/EventCRUD?opcode=2&id=<%= e.getId()%>">Borrar evento</a>
+                                            <a class="btn btn-warning" href="/EventCRUD?opcode=1&id=<%= e.getId()%>">Guardar cambios</a>
                                         </span>
                                     </center>
                                 </form>
@@ -336,54 +404,5 @@
         <script src="js/wow.min.js"></script>
         <script>new WOW().init();</script>
         <script src="js/moment.js"></script>
-        <script src="js/daterangepicker.js"></script>
-        <script>
-            $('.calcal').daterangepicker({
-                "timePicker": true,
-                "timePicker24Hour": true,
-                "locale": {
-                    "format": "YYYY-MM-DD HH:mm",
-                    "separator": " ~ ",
-                    "applyLabel": "Aceptar",
-                    "cancelLabel": "Cancelar",
-                    "fromLabel": "Desde",
-                    "toLabel": "Hasta",
-                    "customRangeLabel": "Custom",
-                    "weekLabel": "W",
-                    "daysOfWeek": [
-                        "Do",
-                        "Lu",
-                        "Ma",
-                        "Mi",
-                        "Ju",
-                        "Vi",
-                        "Sa"
-                    ],
-                    "monthNames": [
-                        "Enero",
-                        "Febrero",
-                        "Marzo",
-                        "Abril",
-                        "Mayo",
-                        "Junio",
-                        "Julio",
-                        "Agosto",
-                        "Septiembre",
-                        "Octubre",
-                        "Noviembre",
-                        "Diciembre"
-                    ],
-                    "firstDay": 1
-                },
-                "startDate": "2018-01-01 00:00",
-                "endDate": "2018-01-07 00:00",
-                "opens": "left",
-                "drops": "up",
-                "applyClass": "btn-warning",
-                "cancelClass": "btn-secondary"
-            }, function (start, end, label) {
-                /* callback */
-            });
-        </script>
     </body>
 </html>

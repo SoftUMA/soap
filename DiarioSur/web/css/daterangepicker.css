@@ -138,7 +138,7 @@ th.prev.available {
 .daterangepicker select.yearselect {
     width: 40%; }
 .daterangepicker select.hourselect, .daterangepicker select.minuteselect, .daterangepicker select.secondselect, .daterangepicker select.ampmselect {
-    width: 50px;
+    width: 60px;
     margin-bottom: 0; }
 .daterangepicker select.minuteselect {
     width: 60px; }
