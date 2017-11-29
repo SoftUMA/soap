@@ -46,6 +46,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Agenda - Diario Sur</title>
+
         <link rel="icon" href="//static1.diariosur.es/squido/latest/assets/icons/diario-sur/favicon.ico"/>
         <link rel="shortcut icon" href="//static1.diariosur.es/squido/latest/assets/icons/diario-sur/favicon.ico" type="image/x-icon"/>
         <link rel="apple-touch-icon" sizes="57x57" href="//static.diariosur.es/squido/latest/assets/icons/diario-sur/apple-touch-icon-57x57.png">
@@ -66,13 +67,14 @@
         <meta name="msapplication-wide310x150logo" content="//static.diariosur.es/squido/latest/assets/icons/diario-sur/widetile.png"/>
         <meta name="msapplication-square310x310logo" content="//static2.diariosur.es/squido/latest/assets/icons/diario-sur/largetile.png"/>
 
-        <link rel="stylesheet" href="https://bootswatch.com/4/darkly/bootstrap.min.css">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="css/bootstrap-darkly.min.css">
+        <link rel="stylesheet" href="css/material-icons.css">
         <link rel="stylesheet" href="css/animate.css">
         <link rel="stylesheet" href="css/daterangepicker.css">
         <link rel="stylesheet" href="css/app.css">
     </head>
     <body>
+        <!-------- #NAVBAR -------->
         <nav class="navbar navbar-dark bg-warning navbar-expand-lg sticky-top">
             <div class="container">
                 <a class="navbar-brand" href="/DiarioSur/">
@@ -106,8 +108,10 @@
                 </div>
             </div>
         </nav>
+        <!-------- #NAVBAREND -------->
 
         <div class="container mt-4">
+            <!-------- #JUMBOTRON -------->
             <div class="jumbotron pt-4">
                 <h1 class="display-4">¡Bienvenido!</h1>
                 <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
@@ -117,15 +121,19 @@
                     <a class="btn btn-warning btn-lg" href="createEvent.jsp" role="button">Crear evento</a>
                 </p>
             </div>
+            <!-------- #JUMBOTRONEND -------->
 
             <div class="row">
+                <!-------- #FILTERS -------->
                 <div class="col-lg-3 mb-4">
                     <h1>Filtritoh</h1>
                     <form>
                         <button type="submit" class="btn btn-warning">Filtrar</button>
                     </form>
                 </div>
+                <!-------- #FILTERSEND -------->
 
+                <!-------- #CARDS -------->
                 <div class="col-lg-9">
                     <div class="card-columns">
                         <%
@@ -149,9 +157,11 @@
                         %>
                     </div>
                 </div>
+                <!-------- #CARDSEND -------->
             </div>
         </div>
 
+        <!-------- #MODALS -------->
         <%
             for (int i = 0; events != null && i < events.size(); i++) {
                 Event e = events.get(i);
@@ -178,6 +188,7 @@
                             %>
                         </nav>
                         <div class="tab-content mt-4" id="nav-tabContent<%= e.getId()%>">
+                            <!-------- #MODALINFO -------->
                             <div class="tab-pane fade show active" id="nav-info<%= e.getId()%>" role="tabpanel" aria-labelledby="nav-info-tab<%= e.getId()%>">
                                 <div class="row">
                                     <div class="col-4">
@@ -240,6 +251,8 @@
                                     <!-- button type="button" class="btn btn-secondary" data-dismiss="modal">Editar evento</button -->
                                 </center>
                             </div>
+                            <!-------- #MODALINFOEND -------->
+                            <!-------- #MODALEDIT -------->
                             <%
                                 if (user.equals(e.getAuthor().getEmail())) {
                             %>
@@ -304,6 +317,7 @@
                             <%
                                 }
                             %>
+                            <!-------- #MODALEDITEND -------->
                         </div>
                     </div>
                     <!-- div class="modal-footer"></div -->
@@ -314,6 +328,7 @@
                 }
             }
         %>
+        <!-------- #MODALSEND -------->
 
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/popper.js"></script>
@@ -366,7 +381,9 @@
                 "drops": "up",
                 "applyClass": "btn-warning",
                 "cancelClass": "btn-secondary"
-            }, function (start, end, label) {});
+            }, function (start, end, label) {
+                /* callback */
+            });
         </script>
     </body>
 </html>
