@@ -73,6 +73,11 @@
         <link rel="stylesheet" href="css/daterangepicker.css">
         <link rel="stylesheet" href="css/app.css">
 
+        <script src="js/jquery-3.2.1.min.js"></script>
+        <script src="js/popper.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/wow.min.js"></script>
+        <script src="js/moment.js"></script>
         <script src="js/daterangepicker.js"></script>
     </head>
     <body>
@@ -116,9 +121,11 @@
             <!-------- #JUMBOTRON -------->
             <div class="jumbotron pt-4">
                 <h1 class="display-4">¡Bienvenido!</h1>
-                <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+                <p class="lead">En esta página podrás encontrar todo tipo de eventos ocurriendo a tu alreadedor.</p>
+                <p class="lead">Desde conciertos, eventos de gastronomía, tecnología, exposiciones, eSports, deportes, intercambio de idiomas... ¡hasta convenciones de cualquier tipo!</p>
                 <hr class="my-4">
-                <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+                <p>También puedes listar un evento para que aparezca junto a los demás y la gente pueda encontrarlo con facilidad.</p>
+                <p>Pulsa el botón a continuación para enviarnos tu evento.</p>
                 <p class="lead float-right">
                     <a class="btn btn-warning btn-lg" href="create.jsp" role="button">Crear evento</a>
                 </p>
@@ -128,8 +135,39 @@
             <div class="row">
                 <!-------- #FILTERS -------->
                 <div class="col-lg-3 mb-4">
-                    <h1>Filtritoh</h1>
+                    <h1>Buscador</h1>
                     <form>
+                        <div class="form-group">
+                            <label for="filterKeywords"></label>
+                            <input type="text" class="form-control" id="filterKeywords" placeholder="Buscar..." name="keywords">
+                        </div>
+                        <div class="form-group">
+                            <label for="filterCategory">Categoría</label>
+                            <select class="form-control" id="filterCategory" name="category">
+                                <option value="nil" disabled selected>Categoría</option>
+                                <%
+                                    for (int cat = 0; categories != null && cat < categories.size(); cat++) {
+                                %>
+                                <option value="<%= categories.get(cat).getName()%>"><%= categories.get(cat).getName()%></option>
+                                <%
+                                    }
+                                %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" name="free">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Gratuitos</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" name="mine">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Mis eventos</span>
+                            </label>
+                        </div>
                         <button type="submit" class="btn btn-warning">Filtrar</button>
                     </form>
                 </div>
@@ -243,8 +281,8 @@
                                         if (e.getApproved() == 0 && user.equals(Properties.USER_EDITOR)) {
                                     %>
                                     <span class="btn-group mr-4" role="group" aria-label="Basic example">
-                                        <button class="btn btn-warning" href="/EventCRUD?opcode=3&id=<%= e.getId()%>">Aceptar</button>
-                                        <a class="btn btn-warning" href="/EventCRUD?opcode=2&id=<%= e.getId()%>">Rechazar</a>
+                                        <button class="btn btn-warning" href="/EventCRUD?opcode=<%= Properties.OP_APPROVE%>&id=<%= e.getId()%>">Aceptar</button>
+                                        <a class="btn btn-warning" href="/EventCRUD?opcode=<%= Properties.OP_DELETE%>&id=<%= e.getId()%>">Rechazar</a>
                                     </span>
                                     <%
                                         }
@@ -260,7 +298,7 @@
                             %>
                             <div class="tab-pane fade" id="nav-edit<%= e.getId()%>" role="tabpanel" aria-labelledby="nav-edit-tab<%= e.getId()%>">
                                 <form action="EventCRUD">
-                                    <input type="hidden" name="opcode" value="1">
+                                    <input type="hidden" name="opcode" value="<%= Properties.OP_EDIT%>">
                                     <input type="hidden" name="id" value="<%= e.getId()%>">
                                     <div class="form-group">
                                         <label for="nameInput<%= e.getId()%>">Nombre</label>
@@ -296,7 +334,7 @@
                                                 String dates = startDate + " ~ " + endDate;
                                                 System.out.println(dates);
                                             %>
-                                            <input type="text" class="form-control cal<%= e.getId()%>" id="dateInput<%= e.getId()%>" placeholder="Fecha y hora" value="<%= dates%>" names="date">
+                                            <input type="text" class="form-control cal<%= e.getId()%>" id="dateInput<%= e.getId()%>" placeholder="Fecha y hora" value="<%= dates%>" name="date">
                                             <span class="input-group-addon" id="calendarTag<%= e.getId()%>"><i class="material-icons">date_range</i></span>
                                             <script>
                                                 $('.cal<%= e.getId()%>').daterangepicker({
@@ -378,10 +416,9 @@
                                         </div>
                                     </div>
                                     <hr>
-                                    <!-- button type="submit" class="btn btn-warning">Submit</button -->
                                     <center>
                                         <span>
-                                            <a class="btn btn-warning" href="/EventCRUD?opcode=2&id=<%= e.getId()%>">Borrar evento</a>
+                                            <a class="btn btn-warning" href="/EventCRUD?opcode=<%= Properties.OP_DELETE%>&id=<%= e.getId()%>">Borrar evento</a>
                                             <button type="submit" class="btn btn-warning">Guardar cambios</button>
                                         </span>
                                     </center>
@@ -393,7 +430,6 @@
                             <!-------- #MODALEDITEND -------->
                         </div>
                     </div>
-                    <!-- div class="modal-footer"></div -->
                 </div>
             </div>
         </div>
@@ -403,12 +439,7 @@
         %>
         <!-------- #MODALSEND -------->
 
-        <script src="js/jquery-3.2.1.min.js"></script>
-        <script src="js/popper.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/wow.min.js"></script>
         <script>new WOW().init();</script>
-        <script src="js/moment.js"></script>
         <script type="text/javascript">
             function acceptEvent(id) {
                 if (confirm("¿Desea listar este evento en la agenda?")) {
@@ -427,6 +458,19 @@
                     window.location.replace("");
                 }
             }
+
+            /*
+             function filterEvents() {
+             $.ajax({
+             type: "post",
+             url: "testme",
+             data: "input=" + $('#ip').val() + "&output=" + $('#op').val(),
+             success: function(msg) {
+             $('#output').append(msg);
+             }
+             });
+             }
+             */
         </script>
     </body>
 </html>
