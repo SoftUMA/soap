@@ -6,7 +6,6 @@
 package servlets;
 
 import java.io.IOException;
-import java.util.Properties;
 import java.util.StringTokenizer;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.ws.WebServiceRef;
+import util.Properties;
 import ws.*;
 
 /**
