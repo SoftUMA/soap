@@ -120,7 +120,7 @@
                 <hr class="my-4">
                 <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
                 <p class="lead float-right">
-                    <a class="btn btn-warning btn-lg" href="createEvent.jsp" role="button">Crear evento</a>
+                    <a class="btn btn-warning btn-lg" href="create.jsp" role="button">Crear evento</a>
                 </p>
             </div>
             <!-------- #JUMBOTRONEND -------->
@@ -382,7 +382,7 @@
                                     <center>
                                         <span>
                                             <a class="btn btn-warning" href="/EventCRUD?opcode=2&id=<%= e.getId()%>">Borrar evento</a>
-                                            <button type="submit" class="btn btn-warning" href="/EventCRUD?opcode=1&id=<%= e.getId()%>">Guardar cambios</button>
+                                            <button type="submit" class="btn btn-warning">Guardar cambios</button>
                                         </span>
                                     </center>
                                 </form>
