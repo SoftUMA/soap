@@ -11,9 +11,9 @@
     String user = null;
     if (session.getAttribute(Properties.USER_SELECTED) != null)
         user = (String) session.getAttribute(Properties.USER_SELECTED);
-    else 
+    else
         response.sendRedirect("index.jsp");
-        
+
     List<Category> categories = null;
     try {
         CategoryWS_Service categoryService = new CategoryWS_Service();
@@ -103,7 +103,7 @@
             </div>
         </nav>
         <!-------- #NAVBAREND -------->
-
+        <!-------- #FORMSTART -------->
         <div class="container my-4">
             <!--TODO FORM HERE-->
             <form action="EventCRUD" id="createForm">
@@ -168,6 +168,7 @@
                 </center>
             </form>
         </div>
+        <!-------- #FORMEND -------->
         <script>new WOW().init();</script>
         <script>
             $('.cal').daterangepicker({
@@ -219,8 +220,8 @@
         </script>
         <script type="text/javascript">
             function acceptEvent() {
-                var msg = 
-                <% 
+                var msg =
+                <%
                     if (user != null && user.equals(Properties.USER_USER)) {
                 %>
                         "¿Desea enviar este evento a revisión?\nNo será listado hasta que sea aprobado.";
@@ -231,7 +232,7 @@
                 <%
                     }
                 %>
-                
+
                 if (confirm(msg)) {
                     $('#createForm').submit();
                 }

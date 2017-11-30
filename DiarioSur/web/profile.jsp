@@ -7,6 +7,24 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
+<%
+    String user = null;
+    if (session.getAttribute(Properties.USER_SELECTED) != null)
+        user = (String) session.getAttribute(Properties.USER_SELECTED);
+    else
+        response.sendRedirect("index.jsp");
+
+    User currentUser = null;
+    try {
+        UserWS_Service userService = new UserWS_Service();
+        UserWS userPort = userService.getUserWSPort();
+        currentUser = userPort.findUser(user);
+    } catch (Exception ex) {
+        System.err.println("Error getting categories from service");
+        ex.printStackTrace();
+    }
+%>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -41,7 +59,10 @@
         <link rel="stylesheet" href="css/daterangepicker.css">
         <link rel="stylesheet" href="css/app.css">
 
-        <script src="js/daterangepicker.js"></script>
+        <script src="js/jquery-3.2.1.min.js"></script>
+        <script src="js/popper.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/moment.js"></script>
     </head>
     <body>
         <!-------- #NAVBAR -------->
@@ -79,168 +100,31 @@
             </div>
         </nav>
         <!-------- #NAVBAREND -------->
-
+        <!-------- #INFOSTART -------->
         <div class="container mt-4">
-            <!--TODO FORM HERE-->
-            <div class="tab-pane fade" id="nav-create" role="tabpanel" aria-labelledby="nav-create-tab">
-                <form action="EventCRUD">
-                    <input type="hidden" name="opcode" value="0">
-                    <input type="hidden" name="id" value="">
-                    <div class="form-group">
-                        <label for="nameInput">Nombre</label>
-                        <input type="text" class="form-control" id="nameInput" placeholder="Nombre" name="name">
-                    </div>
-                    <div class="form-group">
-                        <label for="imgInput">Imagen</label>
-                        <input type="url" class="form-control" id="imgInput" aria-describedby="imgHelp" placeholder="URL de la imagen" name="image">
-                        <small id="imgHelp" class="form-text text-muted">Ha de ser una URL a una imagen PNG o JPG. Preferiblemente de 500x500px.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="addressInput">Dirección</label>
-                        <input type="text" class="form-control" id="addressInput" aria-describedby="addressHelp" placeholder="Dirección" name="address">
-                        <small id="addressHelp" class="form-text text-muted">Ej: Bulevar Louis Pasteur, Malaga, Spain.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="descInput<%= e.getId()%>">Descripción</label>
-                        <textarea type="text" class="form-control" id="descInput<%= e.getId()%>" placeholder="Descripción" maxlength="1000" name="description"><%= e.getDescription()%></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="shopInput<%= e.getId()%>">URL de compra</label>
-                        <input type="url" class="form-control" id="shopInput<%= e.getId()%>" aria-describedby="shopHelp<%= e.getId()%>" placeholder="URL de compra" value="<%= e.getShopUrl()%>" name="shopurl">
-                        <small id="shopHelp<%= e.getId()%>" class="form-text text-muted">URL de la página de compra de entradas al evento.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="dateInput<%= e.getId()%>">Fecha y hora</label>
-                        <div class="input-group">
-                            <%
-                                String startDate = e.getStartDate();
-                                startDate = startDate.substring(0, startDate.length() - 7);
-                                String endDate = e.getEndDate();
-                                endDate = endDate.substring(0, endDate.length() - 7);
-                                String dates = startDate + " ~ " + endDate;
-                                System.out.println(dates);
-                            %>
-                            <input type="text" class="form-control cal<%= e.getId()%>" id="dateInput<%= e.getId()%>" placeholder="Fecha y hora" value="<%= dates%>" names="date">
-                            <span class="input-group-addon" id="calendarTag<%= e.getId()%>"><i class="material-icons">date_range</i></span>
-                            <script>
-                                $('.cal<%= e.getId()%>').daterangepicker({
-                                    "timePicker": true,
-                                    "timePicker24Hour": true,
-                                    "locale": {
-                                        "format": "YYYY-MM-DD HH:mm",
-                                        "separator": " ~ ",
-                                        "applyLabel": "Aceptar",
-                                        "cancelLabel": "Cancelar",
-                                        "fromLabel": "Desde",
-                                        "toLabel": "Hasta",
-                                        "customRangeLabel": "Custom",
-                                        "weekLabel": "W",
-                                        "daysOfWeek": [
-                                            "Do",
-                                            "Lu",
-                                            "Ma",
-                                            "Mi",
-                                            "Ju",
-                                            "Vi",
-                                            "Sa"
-                                        ],
-                                        "monthNames": [
-                                            "Enero",
-                                            "Febrero",
-                                            "Marzo",
-                                            "Abril",
-                                            "Mayo",
-                                            "Junio",
-                                            "Julio",
-                                            "Agosto",
-                                            "Septiembre",
-                                            "Octubre",
-                                            "Noviembre",
-                                            "Diciembre"
-                                        ],
-                                        "firstDay": 1
-                                    },
-                                    "startDate": "<%= startDate%>",
-                                    "endDate": "<%= endDate%>",
-                                    "opens": "left",
-                                    "drops": "up",
-                                    "applyClass": "btn-warning",
-                                    "cancelClass": "btn-secondary"
-                                }, function (start, end, label) {
-                                    /* callback */
-                                });
-                            </script>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-6">
-                            <label for="categoryInput<%= e.getId()%>">Categoría</label>
-                            <select class="form-control" id="categoryInput<%= e.getId()%>" name="category">
-                                <%
-                                    for (int cat = 0; categories != null && cat < categories.size(); cat++) {
-                                %>
-                                <option value="<%= categories.get(cat).getName()%>"
-                                        <%
-                                            if (e.getCategory().getName().equals(categories.get(cat).getName())) {
-                                        %>
-                                        selected
-                                        <%
-                                            }
-                                        %>
-                                        ><%= categories.get(cat).getName()%></option>
-                                <%
-                                    }
-                                %>
-                            </select>
-                        </div>
-                        <div class="form-group col-6">
-                            <label for="priceInput<%= e.getId()%>">Precio</label>
-                            <div class="input-group">
-                                <input type="number" step="0.05" class="form-control" id="priceInput<%= e.getId()%>" aria-describedby="euroTag<%= e.getId()%>" placeholder="Precio" value="<%= e.getPrice()%>" name="price">
-                                <span class="input-group-addon" id="euroTag<%= e.getId()%>">€</span>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <!-- button type="submit" class="btn btn-warning">Submit</button -->
-                    <center>
-                        <span>
-                            <a class="btn btn-warning" href="/EventCRUD?opcode=2&id=<%= e.getId()%>">Borrar evento</a>
-                            <button type="submit" class="btn btn-warning" href="/EventCRUD?opcode=1&id=<%= e.getId()%>">Guardar cambios</button>
-                        </span>
-                    </center>
-                </form>
-            </div>
-            <%
-                }
-            %>
+            <table class="table table-hover mx-auto" style="width: 50%;">
+                <tbody>
+                    <tr>
+                        <th class="text-right" scope="row">Nombre</th>
+                        <td><%= currentUser.getName()%></td>
+                    </tr>
+                    <tr>
+                        <th class="text-right" scope="row">Apellidos</th>
+                        <td><%= currentUser.getSurname()%></td>
+                    </tr>
+                    <tr>
+                        <th class="text-right" scope="row">Email</th>
+                        <td><%= currentUser.getEmail()%></td>
+                    </tr>
+                </tbody>
+            </table>
+            <center>
+                <span>
+                    <a class="btn btn-warning mt-4" href="index.jsp">Volver a la agenda</a>
+                </span>
+            </center>
         </div>
-
-        <script src="js/jquery-3.2.1.min.js"></script>
-        <script src="js/popper.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/wow.min.js"></script>
-        <script>new WOW().init();</script>
-        <script src="js/moment.js"></script>
-        <script type="text/javascript">
-            function acceptEvent(id) {
-                if (confirm("¿Desea listar este evento en la agenda?")) {
-                    window.location.replace("");
-                }
-            }
-
-            function rejectEject(id) {
-                if (confirm("¿Desea rechazar este evento definitivamente?")) {
-                    window.location.replace("");
-                }
-            }
-
-            function deleteEvent(id) {
-                if (confirm("¿Desea eliminar este evento de la agenda definitivamente?")) {
-                    window.location.replace("");
-                }
-            }
-        </script>
+        <!-------- #INFOEND -------->
     </body>
 </html>
 
