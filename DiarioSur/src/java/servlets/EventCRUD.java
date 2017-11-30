@@ -24,10 +24,10 @@ import ws.*;
  */
 @WebServlet(name = "EventCRUD", urlPatterns = {"/EventCRUD"})
 public class EventCRUD extends HttpServlet {
-    
+
     @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/localhost_8080/CategoryWS/CategoryWS.wsdl")
     private CategoryWS_Service categoryService;
-    
+
     @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/localhost_8080/UserWS/UserWS.wsdl")
     private UserWS_Service userService;
 
@@ -51,13 +51,13 @@ public class EventCRUD extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         HttpSession session = request.getSession();
-        
+
         int opcode = request.getParameter("opcode") != null ? Integer.parseInt(request.getParameter("opcode")) : -1;
         int id = request.getParameter("id") != null ? Integer.parseInt(request.getParameter("id")) : -1;
         StringTokenizer st;
-        
+
         String name;
         String author;
         String description;
@@ -69,11 +69,11 @@ public class EventCRUD extends HttpServlet {
         double price;
         String shopurl;
         int approved;
-        
+
         Event refereeEvent;
         User sessionUser = findUser(session.getAttribute(Properties.USER_SELECTED));
         Category eventCategory;
-        
+
         switch (opcode) {
             case 0:
                 if (id == -1) {
@@ -87,33 +87,33 @@ public class EventCRUD extends HttpServlet {
 
                     // Date Parser
                     st = new StringTokenizer(request.getParameter("date"), "~");
-                    
+
                     startDate = st.nextToken();
                     startDate = startDate.trim();
                     startDate += ":00.000";
-                    
+
                     endDate = st.nextToken();
                     endDate = endDate.trim();
                     endDate += ":00.000";
-                    
+
                     address = request.getParameter("address");
                     price = Double.parseDouble(request.getParameter("price"));
                     shopurl = request.getParameter("shopurl");
-                    
+
                     // Obtaining hash for Event ID
                     id = (name + author + startDate + endDate).hashCode();
-                    
+
                     if (sessionUser.getRole() == Properties.ROLE_SUPER || sessionUser.getRole() == Properties.ROLE_EDITOR)
                         approved = 1;
-                    else 
+                    else
                         approved = 0;
-                    
+
                     // New Event to insert
                     refereeEvent = new Event();
 
                     // Retrieving session User and Category of the new Event
                     sessionUser = (User) session.getAttribute("role");
-                    
+
                     eventCategory = findCategory(request.getParameter("category"));
 
                     // Setting new Event
@@ -129,12 +129,12 @@ public class EventCRUD extends HttpServlet {
                     refereeEvent.setPrice(price);
                     refereeEvent.setShopUrl(shopurl);
                     refereeEvent.setApproved(approved);
-                    
+
                     // Creating into database
                     createEvent(refereeEvent);
-                } else 
+                } else
                     System.err.println("Error en el id del evento.");
-                
+
                 break;
             case 1:
                 // Edit Event Code
@@ -146,21 +146,21 @@ public class EventCRUD extends HttpServlet {
 
                 // Date Parser
                 st = new StringTokenizer(request.getParameter("date"), "~");
-                
+
                 startDate = st.nextToken();
                 startDate = startDate.trim();
                 startDate += ":00.000";
-                
+
                 endDate = st.nextToken();
                 endDate = endDate.trim();
                 endDate += ":00.000";
                 address = request.getParameter("address");
                 price = Double.parseDouble(request.getParameter("price"));
                 shopurl = request.getParameter("shopurl");
-                
+
                 // Event to modify
                 refereeEvent = findEvent(id);
-                
+
                 eventCategory = findCategory(request.getParameter("category"));
 
                 // Setting Event
@@ -173,8 +173,7 @@ public class EventCRUD extends HttpServlet {
                 refereeEvent.setAddress(address);
                 refereeEvent.setPrice(price);
                 refereeEvent.setShopUrl(shopurl);
-                refereeEvent.setApproved(approved);
-                
+
                 // Editing into database
                 editEvent(refereeEvent);
                 break;
@@ -185,6 +184,7 @@ public class EventCRUD extends HttpServlet {
                 removeEvent(findEvent(id));
                 break;
             case 3:
+                // Approve Event Code
                 if (sessionUser.getRole() == Properties.ROLE_SUPER || sessionUser.getRole() == Properties.ROLE_EDITOR) {
                     // Event to approve
                     refereeEvent = findEvent(id);
@@ -195,13 +195,17 @@ public class EventCRUD extends HttpServlet {
                     // Editing into database
                     editEvent(refereeEvent);
                 }
-                
+
+                break;
+                case 4:
+                // Filter Event Code
+                    // TODO
                 break;
             default:
                 System.err.println("Error en OPcode");
                 break;
         }
-        
+
         RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/index.jsp");
     }
 
@@ -250,35 +254,35 @@ public class EventCRUD extends HttpServlet {
         eventPort = eventService.getEventWSPort();
         eventPort.createEvent(event);
     }
-    
+
     private void editEvent(Event event) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         eventPort = eventService.getEventWSPort();
         eventPort.editEvent(event);
     }
-    
+
     private void removeEvent(Event event) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         eventPort = eventService.getEventWSPort();
         eventPort.removeEvent(event);
     }
-    
+
     private Event findEvent(Object id) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         eventPort = eventService.getEventWSPort();
         return eventPort.findEvent(id);
     }
-    
+
     private User findUser(Object id) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         userPort = userService.getUserWSPort();
         return userPort.findUser(id);
     }
-    
+
     private Category findCategory(Object id) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
