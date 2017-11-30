@@ -6,6 +6,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -70,7 +71,7 @@ public class EventCRUD extends HttpServlet {
         int approved;
         
         Event refereeEvent;
-        User sessionUser;
+        User sessionUser = findUser(session.getAttribute(Properties.USER_SELECTED));
         Category eventCategory;
         
         switch (opcode) {
@@ -78,7 +79,6 @@ public class EventCRUD extends HttpServlet {
                 if (id == -1) {
                     // Create Event Code
                     // Event information from formulary
-                    id = 0;
                     name = request.getParameter("name");
                     author = request.getParameter("author");
                     description = request.getParameter("description");
@@ -99,10 +99,15 @@ public class EventCRUD extends HttpServlet {
                     address = request.getParameter("address");
                     price = Double.parseDouble(request.getParameter("price"));
                     shopurl = request.getParameter("shopurl");
-
-                    // TODO checkUser
-                    approved = Integer.parseInt(request.getParameter("approved"));
-
+                    
+                    // Obtaining hash for Event ID
+                    id = (name + author + startDate + endDate).hashCode();
+                    
+                    if (sessionUser.getRole() == Properties.ROLE_SUPER || sessionUser.getRole() == Properties.ROLE_EDITOR)
+                        approved = 1;
+                    else 
+                        approved = 0;
+                    
                     // New Event to insert
                     refereeEvent = new Event();
 
@@ -152,9 +157,7 @@ public class EventCRUD extends HttpServlet {
                 address = request.getParameter("address");
                 price = Double.parseDouble(request.getParameter("price"));
                 shopurl = request.getParameter("shopurl");
-                // TODO checkUser
-                approved = Integer.parseInt(request.getParameter("approved"));
-
+                
                 // Event to modify
                 refereeEvent = findEvent(id);
                 
@@ -182,14 +185,17 @@ public class EventCRUD extends HttpServlet {
                 removeEvent(findEvent(id));
                 break;
             case 3:
-                // Event to approve
-                refereeEvent = findEvent(id);
+                if (sessionUser.getRole() == Properties.ROLE_SUPER || sessionUser.getRole() == Properties.ROLE_EDITOR) {
+                    // Event to approve
+                    refereeEvent = findEvent(id);
+
+                    // Setting Event
+                    refereeEvent.setApproved(1);
+
+                    // Editing into database
+                    editEvent(refereeEvent);
+                }
                 
-                // Setting Event
-                refereeEvent.setApproved(1);
-                
-                // Editing into database
-                editEvent(refereeEvent);
                 break;
             default:
                 System.err.println("Error en OPcode");
