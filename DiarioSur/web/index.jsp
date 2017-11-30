@@ -296,7 +296,7 @@
                                                 String dates = startDate + " ~ " + endDate;
                                                 System.out.println(dates);
                                             %>
-                                            <input type="text" class="form-control cal<%= e.getId()%>" id="dateInput<%= e.getId()%>" placeholder="Fecha y hora" value="<%= dates%>" names="date">
+                                            <input type="text" class="form-control cal<%= e.getId()%>" id="dateInput<%= e.getId()%>" placeholder="Fecha y hora" value="<%= dates%>" name="date">
                                             <span class="input-group-addon" id="calendarTag<%= e.getId()%>"><i class="material-icons">date_range</i></span>
                                             <script>
                                                 $('.cal<%= e.getId()%>').daterangepicker({
@@ -378,11 +378,10 @@
                                         </div>
                                     </div>
                                     <hr>
-                                    <!-- button type="submit" class="btn btn-warning">Submit</button -->
                                     <center>
                                         <span>
                                             <a class="btn btn-warning" href="/EventCRUD?opcode=2&id=<%= e.getId()%>">Borrar evento</a>
-                                            <button type="submit" class="btn btn-warning" href="/EventCRUD?opcode=1&id=<%= e.getId()%>">Guardar cambios</button>
+                                            <button type="submit" class="btn btn-warning">Guardar cambios</button>
                                         </span>
                                     </center>
                                 </form>
