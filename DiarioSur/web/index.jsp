@@ -100,15 +100,33 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <button class="btn btn-secondary nav-link dropdown-toggle px-2" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Cambiar Usuario
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= Properties.USER_GUEST%>">Invitado</a>
-                                <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, "UTF-8")%>">Usuario</a>
-                                <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, "UTF-8")%>">SuperUsuario</a>
-                                <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, "UTF-8")%>">Redactor</a>
+                        <li class="nav-item">
+                            <span class="badge badge-pill badge-secondary mt-3 mr-4">
+                                <%
+                                    if (user.equals(Properties.USER_GUEST)) {
+                                %>
+                                <%= user.substring(0, 1).toUpperCase() + user.substring(1)%>
+                                <%
+                                    } else {
+                                %>
+                                <%= user%>
+                                <%
+                                    }
+                                %>
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <div class="btn-group">
+                                <a class="btn btn-secondary btn-lg" href="profile.jsp">Ver perfil</a>
+                                <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="sr-only">Desplegar</span>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= Properties.USER_GUEST%>">Invitado</a>
+                                    <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, "UTF-8")%>">Usuario</a>
+                                    <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, "UTF-8")%>">SuperUsuario</a>
+                                    <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, "UTF-8")%>">Redactor</a>
+                                </div>
                             </div>
                         </li>
                     </ul>
@@ -121,11 +139,10 @@
             <!-------- #JUMBOTRON -------->
             <div class="jumbotron pt-4">
                 <h1 class="display-4">¡Bienvenido!</h1>
-                <p class="lead">En esta página podrás encontrar todo tipo de eventos ocurriendo a tu alreadedor.</p>
-                <p class="lead">Desde conciertos, eventos de gastronomía, tecnología, exposiciones, eSports, deportes, intercambio de idiomas... ¡hasta convenciones de cualquier tipo!</p>
+                <p class="lead">En esta página podrás descubrir todo tipo de eventos en tu zona.</p>
+                <p>Desde conciertos, eventos de gastronomía, tecnología, exposiciones, eSports, deportes, intercambio de idiomas... ¡hasta convenciones de cualquier tipo!</p>
                 <hr class="my-4">
                 <p>También puedes listar un evento para que aparezca junto a los demás y la gente pueda encontrarlo con facilidad.</p>
-                <p>Pulsa el botón a continuación para enviarnos tu evento.</p>
                 <p class="lead float-right">
                     <a class="btn btn-warning btn-lg" href="create.jsp" role="button">Crear evento</a>
                 </p>
@@ -281,14 +298,13 @@
                                         if (e.getApproved() == 0 && user.equals(Properties.USER_EDITOR)) {
                                     %>
                                     <span class="btn-group mr-4" role="group" aria-label="Basic example">
-                                        <button class="btn btn-warning" href="/EventCRUD?opcode=<%= Properties.OP_APPROVE%>&id=<%= e.getId()%>">Aceptar</button>
-                                        <a class="btn btn-warning" href="/EventCRUD?opcode=<%= Properties.OP_DELETE%>&id=<%= e.getId()%>">Rechazar</a>
+                                        <button class="btn btn-warning" onclick="acceptEvent(<%= e.getId()%>)">Aceptar</button>
+                                        <button class="btn btn-warning" onclick="rejectEvent(<%= e.getId()%>)">Rechazar</button>
                                     </span>
                                     <%
                                         }
                                     %>
                                     <a class="btn btn-warning" href="<%= e.getShopUrl()%>" target="_blank">Comprar entradas</a>
-                                    <!-- button type="button" class="btn btn-secondary" data-dismiss="modal">Editar evento</button -->
                                 </center>
                             </div>
                             <!-------- #MODALINFOEND -------->
@@ -418,7 +434,7 @@
                                     <hr>
                                     <center>
                                         <span>
-                                            <a class="btn btn-warning" href="/EventCRUD?opcode=<%= Properties.OP_DELETE%>&id=<%= e.getId()%>">Borrar evento</a>
+                                            <button class="btn btn-warning" type="button" onclick="deleteEvent(<%= e.getId()%>)">Borrar evento</button>
                                             <button type="submit" class="btn btn-warning">Guardar cambios</button>
                                         </span>
                                     </center>
@@ -441,21 +457,27 @@
 
         <script>new WOW().init();</script>
         <script type="text/javascript">
+            <%
+                if (user.equals(Properties.USER_EDITOR)) {
+            %>
             function acceptEvent(id) {
                 if (confirm("¿Desea listar este evento en la agenda?")) {
-                    window.location.replace("");
+                    window.location.replace("EventCRUD?opcode=<%= Properties.OP_APPROVE%>&id=" + id);
                 }
             }
 
             function rejectEject(id) {
                 if (confirm("¿Desea rechazar este evento definitivamente?")) {
-                    window.location.replace("");
+                    window.location.replace("EventCRUD?opcode=<%= Properties.OP_DELETE%>&id=" + id);
                 }
             }
+            <%
+                }
+            %>
 
             function deleteEvent(id) {
                 if (confirm("¿Desea eliminar este evento de la agenda definitivamente?")) {
-                    window.location.replace("");
+                    window.location.replace("EventCRUD?opcode=<%= Properties.OP_DELETE%>&id=" + id);
                 }
             }
 
@@ -471,6 +493,12 @@
              });
              }
              */
+
+            $(document).ready(function () {
+                window.history.pushState({
+                    location: "index"
+                }, "", "index.jsp");
+            });
         </script>
     </body>
 </html>

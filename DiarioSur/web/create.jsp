@@ -96,15 +96,33 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <button class="btn btn-secondary nav-link dropdown-toggle px-2" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Cambiar Usuario
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= Properties.USER_GUEST%>">Invitado</a>
-                                <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, "UTF-8")%>">Usuario</a>
-                                <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, "UTF-8")%>">SuperUsuario</a>
-                                <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, "UTF-8")%>">Redactor</a>
+                        <li class="nav-item">
+                            <span class="badge badge-pill badge-secondary mt-3 mr-4">
+                                <%
+                                    if (user.equals(Properties.USER_GUEST)) {
+                                %>
+                                <%= user.substring(0, 1).toUpperCase() + user.substring(1)%>
+                                <%
+                                } else {
+                                %>
+                                <%= user%>
+                                <%
+                                    }
+                                %>
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <div class="btn-group">
+                                <a class="btn btn-secondary btn-lg" href="profile.jsp">Ver perfil</a>
+                                <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="sr-only">Desplegar</span>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= Properties.USER_GUEST%>">Invitado</a>
+                                    <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, "UTF-8")%>">Usuario</a>
+                                    <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, "UTF-8")%>">SuperUsuario</a>
+                                    <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, "UTF-8")%>">Redactor</a>
+                                </div>
                             </div>
                         </li>
                     </ul>
@@ -151,7 +169,7 @@
                     <div class="form-group col-6">
                         <label for="categoryInput">Categoría</label>
                         <select class="form-control" id="categoryInput" name="category">
-                            <option value="nill" disabled selected>Categoría</option>
+                            <option value="nil" disabled selected>Categoría</option>
                             <%
                                 for (int cat = 0; categories != null && cat < categories.size(); cat++) {
                             %>
@@ -230,22 +248,28 @@
         <script type="text/javascript">
             function acceptEvent() {
                 var msg =
-            <%
+                <%
                     if (user != null && user.equals(Properties.USER_USER)) {
-            %>
+                %>
                 "¿Desea enviar este evento a revisión?\nNo será listado hasta que sea aprobado.";
-            <%
-                } else {
-            %>
+                <%
+                    } else {
+                %>
                 "¿Desea listar este evento en la agenda?";
-            <%
+                <%
                     }
-            %>
+                %>
 
                 if (confirm(msg)) {
                     $('#createForm').submit();
                 }
             }
+
+            $(document).ready(function () {
+                window.history.pushState({
+                    location: "create"
+                }, "", "create.jsp");
+            });
         </script>
     </body>
 </html>
