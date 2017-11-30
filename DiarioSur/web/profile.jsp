@@ -8,20 +8,22 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    String user = null;
-    if (session.getAttribute(Properties.USER_SELECTED) != null)
-        user = (String) session.getAttribute(Properties.USER_SELECTED);
-    else
+    String user = (String) session.getAttribute(Properties.USER_SELECTED);
+    if (user == null || user.equals(Properties.USER_GUEST)) {
         response.sendRedirect("index.jsp");
+        return;
+    }
 
     User currentUser = null;
-    try {
-        UserWS_Service userService = new UserWS_Service();
-        UserWS userPort = userService.getUserWSPort();
-        currentUser = userPort.findUser(user);
-    } catch (Exception ex) {
-        System.err.println("Error getting categories from service");
-        ex.printStackTrace();
+    if (!user.equals(Properties.USER_GUEST)) {
+        try {
+            UserWS_Service userService = new UserWS_Service();
+            UserWS userPort = userService.getUserWSPort();
+            currentUser = userPort.findUser(user);
+        } catch (Exception ex) {
+            System.err.println("Error getting categories from service");
+            ex.printStackTrace();
+        }
     }
 %>
 

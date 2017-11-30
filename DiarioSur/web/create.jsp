@@ -221,17 +221,17 @@
         <script type="text/javascript">
             function acceptEvent() {
                 var msg =
-                <%
+            <%
                     if (user != null && user.equals(Properties.USER_USER)) {
-                %>
-                        "¿Desea enviar este evento a revisión?\nNo será listado hasta que sea aprobado.";
-                <%
-                    } else {
-                %>
-                        "¿Desea listar este evento en la agenda?";
-                <%
+            %>
+                "¿Desea enviar este evento a revisión?\nNo será listado hasta que sea aprobado.";
+            <%
+                } else {
+            %>
+                "¿Desea listar este evento en la agenda?";
+            <%
                     }
-                %>
+            %>
 
                 if (confirm(msg)) {
                     $('#createForm').submit();
