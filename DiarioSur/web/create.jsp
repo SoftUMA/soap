@@ -142,7 +142,7 @@
                     <div class="form-group col-6">
                         <label for="categoryInput">Categoría</label>
                         <select class="form-control" id="categoryInput" name="category">
-                            <option value="dummy" disabled selected>----</option>
+                            <option value="nill" disabled selected>Categoría</option>
                             <%
                                 for (int cat = 0; categories != null && cat < categories.size(); cat++) {
                             %>
