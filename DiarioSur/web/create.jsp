@@ -107,7 +107,7 @@
         <div class="container my-4">
             <!--TODO FORM HERE-->
             <form action="EventCRUD" id="createForm">
-                <input type="hidden" name="opcode" value="0">
+                <input type="hidden" name="opcode" value="<%= Properties.OP_CREATE%>">
                 <div class="form-group">
                     <label for="nameInput">Nombre</label>
                     <input type="text" class="form-control" id="nameInput" placeholder="Nombre" name="name">
