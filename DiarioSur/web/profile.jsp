@@ -8,7 +8,16 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    String user = (String) session.getAttribute(Properties.USER_SELECTED);
+    String user = request.getParameter(Properties.USER_SELECTED);
+    if (user != null) {
+        user = URLDecoder.decode(user, "UTF-8");
+        session.setAttribute(Properties.USER_SELECTED, user);
+    } else if (session.getAttribute(Properties.USER_SELECTED) == null) {
+        session.setAttribute(Properties.USER_SELECTED, user = Properties.USER_GUEST);
+    } else {
+        user = (String) session.getAttribute(Properties.USER_SELECTED);
+    }
+
     if (user == null || user.equals(Properties.USER_GUEST)) {
         response.sendRedirect("index.jsp");
         return;
@@ -91,10 +100,10 @@
                                 Cambiar Usuario
                             </button>
                             <div class="dropdown-menu" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= Properties.USER_GUEST%>">Invitado</a>
-                                <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, "UTF-8")%>">Usuario</a>
-                                <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, "UTF-8")%>">SuperUsuario</a>
-                                <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, "UTF-8")%>">Redactor</a>
+                                <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= Properties.USER_GUEST%>">Invitado</a>
+                                <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, "UTF-8")%>">Usuario</a>
+                                <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, "UTF-8")%>">SuperUsuario</a>
+                                <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, "UTF-8")%>">Redactor</a>
                             </div>
                         </li>
                     </ul>
