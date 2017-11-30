@@ -66,7 +66,7 @@ public class EventCRUD extends HttpServlet {
         String endDate;
         String address;
         double price;
-        String shopUrl;
+        String shopurl;
         int approved;
         
         Event refereeEvent;
@@ -98,7 +98,7 @@ public class EventCRUD extends HttpServlet {
                     
                     address = request.getParameter("address");
                     price = Double.parseDouble(request.getParameter("price"));
-                    shopUrl = request.getParameter("shopurl");
+                    shopurl = request.getParameter("shopurl");
 
                     // TODO checkUser
                     approved = Integer.parseInt(request.getParameter("approved"));
@@ -122,7 +122,7 @@ public class EventCRUD extends HttpServlet {
                     refereeEvent.setEndDate(endDate);
                     refereeEvent.setAddress(address);
                     refereeEvent.setPrice(price);
-                    refereeEvent.setShopUrl(shopUrl);
+                    refereeEvent.setShopUrl(shopurl);
                     refereeEvent.setApproved(approved);
                     
                     // Creating into database
@@ -151,16 +151,16 @@ public class EventCRUD extends HttpServlet {
                 endDate += ":00.000";
                 address = request.getParameter("address");
                 price = Double.parseDouble(request.getParameter("price"));
-                shopUrl = request.getParameter("shopurl");
+                shopurl = request.getParameter("shopurl");
                 // TODO checkUser
                 approved = Integer.parseInt(request.getParameter("approved"));
 
-                // New Event to insert
+                // Event to modify
                 refereeEvent = findEvent(id);
                 
                 eventCategory = findCategory(request.getParameter("category"));
 
-                // Setting new Event
+                // Setting Event
                 refereeEvent.setName(name);
                 refereeEvent.setDescription(description);
                 refereeEvent.setImage(image);
@@ -169,7 +169,7 @@ public class EventCRUD extends HttpServlet {
                 refereeEvent.setEndDate(endDate);
                 refereeEvent.setAddress(address);
                 refereeEvent.setPrice(price);
-                refereeEvent.setShopUrl(shopUrl);
+                refereeEvent.setShopUrl(shopurl);
                 refereeEvent.setApproved(approved);
                 
                 // Editing into database
@@ -180,6 +180,16 @@ public class EventCRUD extends HttpServlet {
 
                 // Deleting from database
                 removeEvent(findEvent(id));
+                break;
+            case 3:
+                // Event to approve
+                refereeEvent = findEvent(id);
+                
+                // Setting Event
+                refereeEvent.setApproved(1);
+                
+                // Editing into database
+                editEvent(refereeEvent);
                 break;
             default:
                 System.err.println("Error en OPcode");
