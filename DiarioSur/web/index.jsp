@@ -127,7 +127,7 @@
                 <p>También puedes listar un evento para que aparezca junto a los demás y la gente pueda encontrarlo con facilidad.</p>
                 <p>Pulsa el botón a continuación para enviarnos tu evento.</p>
                 <p class="lead float-right">
-                    <a class="btn btn-warning btn-lg" href="createEvent.jsp" role="button">Crear evento</a>
+                    <a class="btn btn-warning btn-lg" href="create.jsp" role="button">Crear evento</a>
                 </p>
             </div>
             <!-------- #JUMBOTRONEND -------->
