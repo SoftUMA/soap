@@ -466,7 +466,7 @@
                 }
             }
 
-            function rejectEject(id) {
+            function rejectEvent(id) {
                 if (confirm("¿Desea rechazar este evento definitivamente?")) {
                     window.location.replace("EventCRUD?opcode=<%= Properties.OP_DELETE%>&id=" + id);
                 }
