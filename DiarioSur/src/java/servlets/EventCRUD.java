@@ -6,7 +6,11 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import javax.xml.ws.WebServiceRef;
 import util.Properties;
 import ws.*;
+import me.xdrop.fuzzywuzzy;
 
 /**
  *
@@ -37,7 +42,8 @@ public class EventCRUD extends HttpServlet {
     private CategoryWS categoryPort;
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -47,13 +53,15 @@ public class EventCRUD extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         String sessionUser;
-        if (session.getAttribute(Properties.USER_SELECTED) == null)
+        if (session.getAttribute(Properties.USER_SELECTED) == null) {
             session.setAttribute(Properties.USER_SELECTED, sessionUser = Properties.USER_GUEST);
-        else
+        } else {
             sessionUser = (String) session.getAttribute(Properties.USER_SELECTED);
+        }
         User user = null;
-        if (!sessionUser.equals(Properties.USER_GUEST))
+        if (!sessionUser.equals(Properties.USER_GUEST)) {
             user = findUser(sessionUser);
+        }
 
         int opcode = request.getParameter(Properties.PARAM_OPCODE) != null ? Integer.parseInt(request.getParameter(Properties.PARAM_OPCODE)) : -1;
         int id = request.getParameter(Properties.PARAM_ID) != null ? Integer.parseInt(request.getParameter(Properties.PARAM_ID)) : -1;
@@ -83,7 +91,7 @@ public class EventCRUD extends HttpServlet {
                 approveEvent(id, user);
                 break;
             case Properties.OP_FILTER:
-                filterEvent(keywords, category, free, own);
+                session.setAttribute("filteredEvents", filterEvent(keywords, category, free, own, user));
                 break;
             default:
                 System.err.println("Error @ opcode");
@@ -151,6 +159,11 @@ public class EventCRUD extends HttpServlet {
         return eventPort.findEvent(id);
     }
 
+    private List<Event> findAllEvents() {
+        eventPort = eventService.getEventWSPort();
+        return eventPort.findAllEvents();
+    }
+
     private User findUser(Object id) {
         userPort = userService.getUserWSPort();
         return userPort.findUser(id);
@@ -162,8 +175,9 @@ public class EventCRUD extends HttpServlet {
     }
 
     private void createEvent(String name, User author, String desc, String date, String price, String address, String shopUrl, String image, String category) {
-        if (!checkCreateParams(name, desc, date, price, address, shopUrl, image, category) || author.getEmail().equals(Properties.USER_GUEST))
+        if (!checkCreateParams(name, desc, date, price, address, shopUrl, image, category) || author.getEmail().equals(Properties.USER_GUEST)) {
             return;
+        }
 
         // Date Parser
         StringTokenizer st;
@@ -198,8 +212,9 @@ public class EventCRUD extends HttpServlet {
     }
 
     private void editEvent(int id, String name, User user, String desc, String date, String price, String address, String shopUrl, String image, String category) {
-        if (!checkEditParams(name, desc, date, price, address, shopUrl, image, category))
+        if (!checkEditParams(name, desc, date, price, address, shopUrl, image, category)) {
             return;
+        }
 
         Event refereeEvent = findEvent(id);
         if (refereeEvent != null && (refereeEvent.getAuthor().equals(user) || user.getRole() == Properties.ROLE_EDITOR)) {
@@ -232,8 +247,9 @@ public class EventCRUD extends HttpServlet {
 
     private void removeEvent(int id, User user) {
         Event refereeEvent = findEvent(id);
-        if (refereeEvent != null && (refereeEvent.getAuthor().equals(user) || user.getRole() == Properties.ROLE_EDITOR))
+        if (refereeEvent != null && (refereeEvent.getAuthor().equals(user) || user.getRole() == Properties.ROLE_EDITOR)) {
             removeEvent(refereeEvent);
+        }
     }
 
     private void approveEvent(int id, User user) {
@@ -245,11 +261,30 @@ public class EventCRUD extends HttpServlet {
         }
     }
 
-    private void filterEvent(String keywords, String category, String free, String own) {
-        if (!checkFilterParams(keywords, category, free, own))
-            return;
+    private Set<Event> filterEvent(String keywords, String category, String free, String own, User user) {
+        SortedSet<Event> filteredEvents = null;
 
+        if (checkFilterParams(keywords, category, free, own)) { // Check if this comparison is necessary
+            List<Event> allEvents = findAllEvents();
+            List<Event> userEvents = findUserEvents(user);
 
+            if (allEvents != null) {
+                filteredEvents = new TreeSet<>();
+
+                filteredEvents.addAll(userEvents);
+
+                for (Event e : userEvents) {
+                    if ((e.getPrice() == 0.0 || FuzzySearch.ratio("category", e.getCategory().getName()) >= 90) &&
+                            (FuzzySearch.tokenSetPartialRatio(keywords, e.getName()) >= 90
+                            || FuzzySearch.tokenSetPartialRatio(keywords, e.getDescription()) >= 90
+                            || FuzzySearch.tokenSetPartialRatio(keywords, e.getAddress()) >=90
+                            || FuzzySearch.tokenSetPartialRatio(keywords, e.getAuthor().getName() >= 90)) {
+                        filteredEvents.add(e);
+                    }
+                }
+            }
+        }
+        return filteredEvents;
     }
 
     private boolean checkCreateParams(String name, String desc, String date, String price, String address, String shopUrl, String image, String category) {
@@ -262,5 +297,19 @@ public class EventCRUD extends HttpServlet {
 
     private boolean checkFilterParams(String keywords, String category, String free, String own) {
         return keywords != null && category != null && free != null && own != null;
+    }
+
+    private List<Event> findUserEvents(User user) {
+        List<Event> allEvents = findAllEvents();
+        List<Event> userEvents = null;
+
+        if (allEvents != null) {
+            for (Event e : allEvents) {
+                if (e.getAuthor().equals(user)) {
+                    userEvents.add(e);
+                }
+            }
+        }
+        return userEvents;
     }
 }
