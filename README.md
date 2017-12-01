@@ -1,6 +1,6 @@
 # SOAP Service
 
-:smile:
+[Mirror del repositorio](https://github.com/EternalReturnStudio/soap) :smile:
 
 Authors:
 
@@ -11,6 +11,7 @@ Authors:
 
 ## Credits
 
+- [FuzzyWuzzy](https://xdrop.github.io/fuzzywuzzy/)
 - [jQuery](https://jquery.com/)
 - [Bootstrap](http://getbootstrap.com/)
 - [Popper.js](https://popper.js.org/)
