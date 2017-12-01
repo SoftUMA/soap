@@ -4,17 +4,14 @@
 <xsd:import namespace="http://ws/" schemaLocation="http://localhost:8080/CategoryWS/CategoryWS?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="editCategory">
-<part name="parameters" element="tns:editCategory"/>
-</message>
-<message name="removeCategory">
-<part name="parameters" element="tns:removeCategory"/>
-</message>
 <message name="findCategory">
 <part name="parameters" element="tns:findCategory"/>
 </message>
 <message name="findCategoryResponse">
 <part name="parameters" element="tns:findCategoryResponse"/>
+</message>
+<message name="createCategory">
+<part name="parameters" element="tns:createCategory"/>
 </message>
 <message name="countCategories">
 <part name="parameters" element="tns:countCategories"/>
@@ -22,14 +19,11 @@
 <message name="countCategoriesResponse">
 <part name="parameters" element="tns:countCategoriesResponse"/>
 </message>
-<message name="createCategory">
-<part name="parameters" element="tns:createCategory"/>
+<message name="removeCategory">
+<part name="parameters" element="tns:removeCategory"/>
 </message>
-<message name="findAllCategories">
-<part name="parameters" element="tns:findAllCategories"/>
-</message>
-<message name="findAllCategoriesResponse">
-<part name="parameters" element="tns:findAllCategoriesResponse"/>
+<message name="editCategory">
+<part name="parameters" element="tns:editCategory"/>
 </message>
 <message name="findRangeCategories">
 <part name="parameters" element="tns:findRangeCategories"/>
@@ -37,47 +31,41 @@
 <message name="findRangeCategoriesResponse">
 <part name="parameters" element="tns:findRangeCategoriesResponse"/>
 </message>
+<message name="findAllCategories">
+<part name="parameters" element="tns:findAllCategories"/>
+</message>
+<message name="findAllCategoriesResponse">
+<part name="parameters" element="tns:findAllCategoriesResponse"/>
+</message>
 <portType name="CategoryWS">
-<operation name="editCategory">
-<input wsam:Action="http://ws/CategoryWS/editCategory" message="tns:editCategory"/>
-</operation>
-<operation name="removeCategory">
-<input wsam:Action="http://ws/CategoryWS/removeCategory" message="tns:removeCategory"/>
-</operation>
 <operation name="findCategory">
 <input wsam:Action="http://ws/CategoryWS/findCategoryRequest" message="tns:findCategory"/>
 <output wsam:Action="http://ws/CategoryWS/findCategoryResponse" message="tns:findCategoryResponse"/>
+</operation>
+<operation name="createCategory">
+<input wsam:Action="http://ws/CategoryWS/createCategory" message="tns:createCategory"/>
 </operation>
 <operation name="countCategories">
 <input wsam:Action="http://ws/CategoryWS/countCategoriesRequest" message="tns:countCategories"/>
 <output wsam:Action="http://ws/CategoryWS/countCategoriesResponse" message="tns:countCategoriesResponse"/>
 </operation>
-<operation name="createCategory">
-<input wsam:Action="http://ws/CategoryWS/createCategory" message="tns:createCategory"/>
+<operation name="removeCategory">
+<input wsam:Action="http://ws/CategoryWS/removeCategory" message="tns:removeCategory"/>
 </operation>
-<operation name="findAllCategories">
-<input wsam:Action="http://ws/CategoryWS/findAllCategoriesRequest" message="tns:findAllCategories"/>
-<output wsam:Action="http://ws/CategoryWS/findAllCategoriesResponse" message="tns:findAllCategoriesResponse"/>
+<operation name="editCategory">
+<input wsam:Action="http://ws/CategoryWS/editCategory" message="tns:editCategory"/>
 </operation>
 <operation name="findRangeCategories">
 <input wsam:Action="http://ws/CategoryWS/findRangeCategoriesRequest" message="tns:findRangeCategories"/>
 <output wsam:Action="http://ws/CategoryWS/findRangeCategoriesResponse" message="tns:findRangeCategoriesResponse"/>
 </operation>
+<operation name="findAllCategories">
+<input wsam:Action="http://ws/CategoryWS/findAllCategoriesRequest" message="tns:findAllCategories"/>
+<output wsam:Action="http://ws/CategoryWS/findAllCategoriesResponse" message="tns:findAllCategoriesResponse"/>
+</operation>
 </portType>
 <binding name="CategoryWSPortBinding" type="tns:CategoryWS">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="editCategory">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-</operation>
-<operation name="removeCategory">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-</operation>
 <operation name="findCategory">
 <soap:operation soapAction=""/>
 <input>
@@ -86,6 +74,12 @@
 <output>
 <soap:body use="literal"/>
 </output>
+</operation>
+<operation name="createCategory">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
 </operation>
 <operation name="countCategories">
 <soap:operation soapAction=""/>
@@ -96,13 +90,19 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="createCategory">
+<operation name="removeCategory">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
 </input>
 </operation>
-<operation name="findAllCategories">
+<operation name="editCategory">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+</operation>
+<operation name="findRangeCategories">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -111,7 +111,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="findRangeCategories">
+<operation name="findAllCategories">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>

@@ -33,8 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Preferences implements Serializable {
 
     @Basic(optional = false)
-    @NotNull
-    @Column(name = "visits")
+    @NotNull()
     private int visits;
 
     private static final long serialVersionUID = 1L;
@@ -120,5 +119,5 @@ public class Preferences implements Serializable {
     public void setVisits(int visits) {
         this.visits = visits;
     }
-    
+
 }

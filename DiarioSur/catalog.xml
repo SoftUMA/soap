@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
-    <system systemId="http://localhost:8080/CategoryWS/CategoryWS?wsdl" uri="src/conf/xml-resources/web-service-references/CategoryWS/wsdl/localhost_8080/CategoryWS/CategoryWS.wsdl"/>
-    <system systemId="http://localhost:8080/CategoryWS/CategoryWS?xsd=1" uri="src/conf/xml-resources/web-service-references/CategoryWS/wsdl/localhost_8080/CategoryWS/CategoryWS.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/UserWS/UserWS?wsdl" uri="src/conf/xml-resources/web-service-references/UserWS/wsdl/localhost_8080/UserWS/UserWS.wsdl"/>
     <system systemId="http://localhost:8080/UserWS/UserWS?xsd=1" uri="src/conf/xml-resources/web-service-references/UserWS/wsdl/localhost_8080/UserWS/UserWS.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/EventWS/EventWS?wsdl" uri="src/conf/xml-resources/web-service-references/EventWS/wsdl/localhost_8080/EventWS/EventWS.wsdl"/>
@@ -10,4 +8,6 @@
     <system systemId="http://localhost:8080/PreferencesWS/PreferencesWS?xsd=1" uri="src/conf/xml-resources/web-service-references/PreferencesWS/wsdl/localhost_8080/PreferencesWS/PreferencesWS.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/ReviewWS/ReviewWS?wsdl" uri="src/conf/xml-resources/web-service-references/ReviewWS/wsdl/localhost_8080/ReviewWS/ReviewWS.wsdl"/>
     <system systemId="http://localhost:8080/ReviewWS/ReviewWS?xsd=1" uri="src/conf/xml-resources/web-service-references/ReviewWS/wsdl/localhost_8080/ReviewWS/ReviewWS.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/CategoryWS/CategoryWS?wsdl" uri="src/conf/xml-resources/web-service-references/CategoryWS/wsdl/localhost_8080/CategoryWS/CategoryWS.wsdl"/>
+    <system systemId="http://localhost:8080/CategoryWS/CategoryWS?xsd=1" uri="src/conf/xml-resources/web-service-references/CategoryWS/wsdl/localhost_8080/CategoryWS/CategoryWS.xsd_1.xsd"/>
 </catalog>

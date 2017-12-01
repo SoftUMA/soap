@@ -37,16 +37,13 @@ import javax.xml.bind.annotation.XmlTransient;
 public class User implements Serializable {
 
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 2000000000)
-    @Column(name = "name")
     private String name;
     @Size(max = 2000000000)
-    @Column(name = "surname")
     private String surname;
     @Basic(optional = false)
-    @NotNull
-    @Column(name = "role")
+    @NotNull()
     private int role;
 
     private static final long serialVersionUID = 1L;
@@ -159,5 +156,5 @@ public class User implements Serializable {
     public void setRole(int role) {
         this.role = role;
     }
-    
+
 }

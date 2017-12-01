@@ -155,7 +155,7 @@
                     <h1>Buscador</h1>
                     <form>
                         <div class="form-group">
-                            <label for="filterKeywords"></label>
+                            <!-- label for="filterKeywords"></label -->
                             <input type="text" class="form-control" id="filterKeywords" placeholder="Buscar..." name="keywords">
                         </div>
                         <div class="form-group">
@@ -202,7 +202,19 @@
                             <img class="card-img-top rounded" src="<%= e.getImage()%>" alt="<%= e.getName()%>" data-toggle="modal" data-target="#eventModal<%= e.getId()%>" style="cursor: pointer;">
                             <div class="card-body">
                                 <h4 class="card-title"><%= e.getName()%></h4>
-                                <p class="card-text"><%= e.getDescription()%></p>
+                                <p class="card-text">
+                                    <%
+                                        if (e.getDescription().length() < 80) {
+                                    %>
+                                    <%= e.getDescription()%>
+                                    <%
+                                        } else {
+                                    %>
+                                    <%= e.getDescription().substring(0, 80) + "..."%>
+                                    <%
+                                        }
+                                    %>
+                                </p>
                                 <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#eventModal<%= e.getId()%>">
                                     Ver evento
                                 </button>
@@ -273,6 +285,10 @@
                                             <tr>
                                                 <th class="text-right" scope="row">Precio</th>
                                                 <td><%= e.getPrice()%>&euro;</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-right" scope="row">Categoría</th>
+                                                <td><%= e.getCategory().getName()%></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -475,7 +491,7 @@
                 }
             %>
 
-            function deleteEvent(id) {
+            function deleteEvent(id, email) {
                 if (confirm("¿Desea eliminar este evento de la agenda definitivamente?")) {
                     window.location.replace("EventCRUD?opcode=<%= Properties.OP_DELETE%>&id=" + id);
                 }

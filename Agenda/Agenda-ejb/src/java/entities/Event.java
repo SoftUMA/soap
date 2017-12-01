@@ -44,48 +44,39 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Event implements Serializable {
 
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 2000000000)
-    @Column(name = "name")
     private String name;
     @Basic(optional = false)
     @NotNull()
     @Size(min = 1, max = 2000000000)
-    @Column(name = "description")
     private String description;
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 2000000000)
-    @Column(name = "image")
     private String image;
     @Basic(optional = false)
     @NotNull()
     @Size(min = 1, max = 2000000000)
-    @Column(name = "startDate")
     private String startDate;
     @Basic(optional = false)
     @NotNull()
     @Size(min = 1, max = 2000000000)
-    @Column(name = "endDate")
     private String endDate;
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 2000000000)
-    @Column(name = "address")
     private String address;
     @Basic(optional = false)
-    @NotNull
-    @Column(name = "price")
+    @NotNull()
     private double price;
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 2000000000)
-    @Column(name = "shopUrl")
     private String shopUrl;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
-    @NotNull
-    @Column(name = "approved")
+    @NotNull()
     private int approved;
     private static final long serialVersionUID = 1L;
     @Id
@@ -246,5 +237,5 @@ public class Event implements Serializable {
     public void setApproved(int approved) {
         this.approved = approved;
     }
-    
+
 }

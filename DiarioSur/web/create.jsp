@@ -196,6 +196,7 @@
             </form>
         </div>
         <!-------- #FORMEND -------->
+        
         <script>new WOW().init();</script>
         <script>
             $('.cal').daterangepicker({

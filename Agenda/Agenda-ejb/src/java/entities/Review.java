@@ -35,13 +35,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Review implements Serializable {
 
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 2000000000)
-    @Column(name = "comment")
     private String comment;
     @Basic(optional = false)
-    @NotNull
-    @Column(name = "score")
+    @NotNull()
     private int score;
 
     private static final long serialVersionUID = 1L;
@@ -136,5 +134,5 @@ public class Review implements Serializable {
     public void setScore(int score) {
         this.score = score;
     }
-    
+
 }
