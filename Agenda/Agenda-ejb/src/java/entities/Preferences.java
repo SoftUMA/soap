@@ -6,7 +6,6 @@
 package entities;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -15,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -28,20 +26,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Preferences.findAll", query = "SELECT p FROM Preferences p")
     , @NamedQuery(name = "Preferences.findByUser", query = "SELECT p FROM Preferences p WHERE p.preferencesPK.user = :user")
-    , @NamedQuery(name = "Preferences.findByCategory", query = "SELECT p FROM Preferences p WHERE p.preferencesPK.category = :category")
+    , @NamedQuery(name = "Preferences.findByEvent", query = "SELECT p FROM Preferences p WHERE p.preferencesPK.event = :event")
     , @NamedQuery(name = "Preferences.findByVisits", query = "SELECT p FROM Preferences p WHERE p.visits = :visits")})
 public class Preferences implements Serializable {
-
-    @Basic(optional = false)
-    @NotNull()
-    private int visits;
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected PreferencesPK preferencesPK;
-    @JoinColumn(name = "category", referencedColumnName = "name", insertable = false, updatable = false)
+    @Column(name = "visits", nullable = false)
+    private String visits;
+    @JoinColumn(name = "event", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne
-    private Category category1;
+    private Event event1;
     @JoinColumn(name = "user", referencedColumnName = "email", insertable = false, updatable = false)
     @ManyToOne
     private User user1;
@@ -53,13 +49,13 @@ public class Preferences implements Serializable {
         this.preferencesPK = preferencesPK;
     }
 
-    public Preferences(PreferencesPK preferencesPK, int visits) {
+    public Preferences(PreferencesPK preferencesPK, String visits) {
         this.preferencesPK = preferencesPK;
         this.visits = visits;
     }
 
-    public Preferences(String user, Integer category) {
-        this.preferencesPK = new PreferencesPK(user, category);
+    public Preferences(String user, Integer event) {
+        this.preferencesPK = new PreferencesPK(user, event);
     }
 
     public PreferencesPK getPreferencesPK() {
@@ -70,13 +66,20 @@ public class Preferences implements Serializable {
         this.preferencesPK = preferencesPK;
     }
 
-
-    public Category getCategory1() {
-        return category1;
+    public String getVisits() {
+        return visits;
     }
 
-    public void setCategory1(Category category1) {
-        this.category1 = category1;
+    public void setVisits(String visits) {
+        this.visits = visits;
+    }
+
+    public Event getEvent1() {
+        return event1;
+    }
+
+    public void setEvent1(Event event1) {
+        this.event1 = event1;
     }
 
     public User getUser1() {
@@ -101,23 +104,14 @@ public class Preferences implements Serializable {
             return false;
         }
         Preferences other = (Preferences) object;
-        if ((this.preferencesPK == null && other.preferencesPK != null) || (this.preferencesPK != null && !this.preferencesPK.equals(other.preferencesPK))) {
+        if ((this.preferencesPK == null && other.preferencesPK != null) || (this.preferencesPK != null && !this.preferencesPK.equals(other.preferencesPK)))
             return false;
-        }
         return true;
     }
 
     @Override
     public String toString() {
         return "entities.Preferences[ preferencesPK=" + preferencesPK + " ]";
-    }
-
-    public int getVisits() {
-        return visits;
-    }
-
-    public void setVisits(int visits) {
-        this.visits = visits;
     }
 
 }

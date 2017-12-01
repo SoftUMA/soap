@@ -10,20 +10,11 @@
 <message name="createUser">
 <part name="parameters" element="tns:createUser"/>
 </message>
-<message name="editUser">
-<part name="parameters" element="tns:editUser"/>
+<message name="findUser">
+<part name="parameters" element="tns:findUser"/>
 </message>
-<message name="findRangeUsers">
-<part name="parameters" element="tns:findRangeUsers"/>
-</message>
-<message name="findRangeUsersResponse">
-<part name="parameters" element="tns:findRangeUsersResponse"/>
-</message>
-<message name="countUsers">
-<part name="parameters" element="tns:countUsers"/>
-</message>
-<message name="countUsersResponse">
-<part name="parameters" element="tns:countUsersResponse"/>
+<message name="findUserResponse">
+<part name="parameters" element="tns:findUserResponse"/>
 </message>
 <message name="findAllUsers">
 <part name="parameters" element="tns:findAllUsers"/>
@@ -31,11 +22,20 @@
 <message name="findAllUsersResponse">
 <part name="parameters" element="tns:findAllUsersResponse"/>
 </message>
-<message name="findUser">
-<part name="parameters" element="tns:findUser"/>
+<message name="countUsers">
+<part name="parameters" element="tns:countUsers"/>
 </message>
-<message name="findUserResponse">
-<part name="parameters" element="tns:findUserResponse"/>
+<message name="countUsersResponse">
+<part name="parameters" element="tns:countUsersResponse"/>
+</message>
+<message name="findRangeUsers">
+<part name="parameters" element="tns:findRangeUsers"/>
+</message>
+<message name="findRangeUsersResponse">
+<part name="parameters" element="tns:findRangeUsersResponse"/>
+</message>
+<message name="editUser">
+<part name="parameters" element="tns:editUser"/>
 </message>
 <portType name="UserWS">
 <operation name="removeUser">
@@ -44,24 +44,24 @@
 <operation name="createUser">
 <input wsam:Action="http://ws/UserWS/createUser" message="tns:createUser"/>
 </operation>
-<operation name="editUser">
-<input wsam:Action="http://ws/UserWS/editUser" message="tns:editUser"/>
-</operation>
-<operation name="findRangeUsers">
-<input wsam:Action="http://ws/UserWS/findRangeUsersRequest" message="tns:findRangeUsers"/>
-<output wsam:Action="http://ws/UserWS/findRangeUsersResponse" message="tns:findRangeUsersResponse"/>
-</operation>
-<operation name="countUsers">
-<input wsam:Action="http://ws/UserWS/countUsersRequest" message="tns:countUsers"/>
-<output wsam:Action="http://ws/UserWS/countUsersResponse" message="tns:countUsersResponse"/>
+<operation name="findUser">
+<input wsam:Action="http://ws/UserWS/findUserRequest" message="tns:findUser"/>
+<output wsam:Action="http://ws/UserWS/findUserResponse" message="tns:findUserResponse"/>
 </operation>
 <operation name="findAllUsers">
 <input wsam:Action="http://ws/UserWS/findAllUsersRequest" message="tns:findAllUsers"/>
 <output wsam:Action="http://ws/UserWS/findAllUsersResponse" message="tns:findAllUsersResponse"/>
 </operation>
-<operation name="findUser">
-<input wsam:Action="http://ws/UserWS/findUserRequest" message="tns:findUser"/>
-<output wsam:Action="http://ws/UserWS/findUserResponse" message="tns:findUserResponse"/>
+<operation name="countUsers">
+<input wsam:Action="http://ws/UserWS/countUsersRequest" message="tns:countUsers"/>
+<output wsam:Action="http://ws/UserWS/countUsersResponse" message="tns:countUsersResponse"/>
+</operation>
+<operation name="findRangeUsers">
+<input wsam:Action="http://ws/UserWS/findRangeUsersRequest" message="tns:findRangeUsers"/>
+<output wsam:Action="http://ws/UserWS/findRangeUsersResponse" message="tns:findRangeUsersResponse"/>
+</operation>
+<operation name="editUser">
+<input wsam:Action="http://ws/UserWS/editUser" message="tns:editUser"/>
 </operation>
 </portType>
 <binding name="UserWSPortBinding" type="tns:UserWS">
@@ -78,22 +78,7 @@
 <soap:body use="literal"/>
 </input>
 </operation>
-<operation name="editUser">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-</operation>
-<operation name="findRangeUsers">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="countUsers">
+<operation name="findUser">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -111,7 +96,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="findUser">
+<operation name="countUsers">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -119,6 +104,21 @@
 <output>
 <soap:body use="literal"/>
 </output>
+</operation>
+<operation name="findRangeUsers">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="editUser">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
 </operation>
 </binding>
 <service name="UserWS">

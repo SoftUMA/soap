@@ -25,9 +25,9 @@
 
     List<Category> categories = null;
     try {
-        CategoryWS_Service categoryService = new CategoryWS_Service();
-        CategoryWS categoryPort = categoryService.getCategoryWSPort();
-        categories = categoryPort.findAllCategories();
+        AgendaWS_Service agendaService = new AgendaWS_Service();
+        AgendaWS agendaPort = agendaService.getAgendaWSPort();
+        categories = agendaPort.findAllCategories();
     } catch (Exception ex) {
         System.err.println("Error getting categories from service");
         ex.printStackTrace();
@@ -169,7 +169,7 @@
                     <div class="form-group col-6">
                         <label for="categoryInput">Categoría</label>
                         <select class="form-control" id="categoryInput" name="category">
-                            <option value="nil" disabled selected>Categoría</option>
+                            <option value="<%= Properties.NIL_CATEGORY%>" disabled selected>Categoría</option>
                             <%
                                 for (int cat = 0; categories != null && cat < categories.size(); cat++) {
                             %>
@@ -196,7 +196,7 @@
             </form>
         </div>
         <!-------- #FORMEND -------->
-        
+
         <script>new WOW().init();</script>
         <script>
             $('.cal').daterangepicker({

@@ -19,22 +19,14 @@
     }
 
     List<Event> events = null;
-    try {
-        EventWS_Service eventService = new EventWS_Service();
-        EventWS eventPort = eventService.getEventWSPort();
-        events = eventPort.findAllEvents();
-    } catch (Exception ex) {
-        System.err.println("Error getting events from service");
-        ex.printStackTrace();
-    }
-
     List<Category> categories = null;
     try {
-        CategoryWS_Service categoryService = new CategoryWS_Service();
-        CategoryWS categoryPort = categoryService.getCategoryWSPort();
-        categories = categoryPort.findAllCategories();
+        AgendaWS_Service agendaService = new AgendaWS_Service();
+        AgendaWS agendaPort = agendaService.getAgendaWSPort();
+        events = agendaPort.findAllEvents();
+        categories = agendaPort.findAllCategories();
     } catch (Exception ex) {
-        System.err.println("Error getting categories from service");
+        System.err.println("Error getting events from service");
         ex.printStackTrace();
     }
 %>
@@ -196,12 +188,31 @@
                         <%
                             for (int i = 0; events != null && i < events.size(); i++) {
                                 Event e = events.get(i);
-                                if (user.equals(e.getAuthor().getEmail()) || e.getApproved() == 1 || user.equals(Properties.USER_EDITOR)) {
+                                if (user.equals(e.getAuthor().getEmail()) || e.getApproved().equals("1") || user.equals(Properties.USER_EDITOR)) {
                         %>
-                        <div class="card <% if (e.getApproved() == 0 && user.equals(Properties.USER_EDITOR)) { %>border-danger<% } else { %>border-dark<% }%> wow zoomIn" data-wow-delay="0.5s">
+                        <div class="card
+                            <%
+                               if (e.getApproved().equals("0") && (user.equals(e.getAuthor().getEmail()) || user.equals(Properties.USER_EDITOR))) {
+                            %>
+                            border-danger
+                            <%
+                               } else {
+                            %>
+                            border-dark
+                            <%
+                               }
+                            %>
+                            wow zoomIn" data-wow-delay="0.5s">
                             <img class="card-img-top rounded" src="<%= e.getImage()%>" alt="<%= e.getName()%>" data-toggle="modal" data-target="#eventModal<%= e.getId()%>" style="cursor: pointer;">
                             <div class="card-body">
                                 <h4 class="card-title"><%= e.getName()%></h4>
+                                <%
+                                    if (e.getApproved().equals("0") && (user.equals(e.getAuthor().getEmail()) || user.equals(Properties.USER_EDITOR))) {
+                                %>
+                                <p class="card-text text-danger">Revisión pendiente</p>
+                                <%
+                                    }
+                                %>
                                 <p class="card-text">
                                     <%
                                         if (e.getDescription().length() < 80) {
@@ -234,7 +245,7 @@
         <%
             for (int i = 0; events != null && i < events.size(); i++) {
                 Event e = events.get(i);
-                if (user.equals(e.getAuthor().getEmail()) || e.getApproved() == 1 || user.equals(Properties.USER_EDITOR)) {
+                if (user.equals(e.getAuthor().getEmail()) || e.getApproved().equals("1") || user.equals(Properties.USER_EDITOR)) {
         %>
         <div class="modal fade" id="eventModal<%= e.getId()%>" tabindex="-1" role="dialog" aria-labelledby="eventModal<%= e.getId()%>Label" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
@@ -276,11 +287,11 @@
                                             </tr>
                                             <tr>
                                                 <th class="text-right" scope="row">Fecha de inicio</th>
-                                                <td><%= e.getStartDate()%></td>
+                                                <td><%= e.getStartDate().substring(0, e.getStartDate().length() - 7)%></td>
                                             </tr>
                                             <tr>
                                                 <th class="text-right" scope="row">Fecha de clausura</th>
-                                                <td><%= e.getEndDate()%></td>
+                                                <td><%= e.getEndDate().substring(0, e.getStartDate().length() - 7)%></td>
                                             </tr>
                                             <tr>
                                                 <th class="text-right" scope="row">Precio</th>
@@ -311,7 +322,7 @@
                                 <hr>
                                 <center>
                                     <%
-                                        if (e.getApproved() == 0 && user.equals(Properties.USER_EDITOR)) {
+                                        if (e.getApproved().equals("0") && user.equals(Properties.USER_EDITOR)) {
                                     %>
                                     <span class="btn-group mr-4" role="group" aria-label="Basic example">
                                         <button class="btn btn-warning" onclick="acceptEvent(<%= e.getId()%>)">Aceptar</button>

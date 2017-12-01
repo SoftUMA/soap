@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ws;
 
 import beans.CategoryFacade;
@@ -15,10 +10,6 @@ import javax.jws.Oneway;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 
-/**
- *
- * @author neko250
- */
 @WebService(serviceName = "CategoryWS")
 @Stateless()
 public class CategoryWS {
@@ -63,5 +54,5 @@ public class CategoryWS {
     public int countCategories() {
         return categoryEJB.count();
     }
-    
+
 }

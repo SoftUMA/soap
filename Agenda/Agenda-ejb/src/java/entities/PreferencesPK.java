@@ -8,7 +8,6 @@ package entities;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.Size;
 
 /**
  *
@@ -17,18 +16,17 @@ import javax.validation.constraints.Size;
 @Embeddable
 public class PreferencesPK implements Serializable {
 
-    @Size(max = 2000000000)
     @Column(name = "user")
     private String user;
-    @Column(name = "category")
-    private Integer category;
+    @Column(name = "event")
+    private Integer event;
 
     public PreferencesPK() {
     }
 
-    public PreferencesPK(String user, Integer category) {
+    public PreferencesPK(String user, Integer event) {
         this.user = user;
-        this.category = category;
+        this.event = event;
     }
 
     public String getUser() {
@@ -39,19 +37,19 @@ public class PreferencesPK implements Serializable {
         this.user = user;
     }
 
-    public Integer getCategory() {
-        return category;
+    public Integer getEvent() {
+        return event;
     }
 
-    public void setCategory(Integer category) {
-        this.category = category;
+    public void setEvent(Integer event) {
+        this.event = event;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (user != null ? user.hashCode() : 0);
-        hash += (category != null ? category.hashCode() : 0);
+        hash += (event != null ? event.hashCode() : 0);
         return hash;
     }
 
@@ -62,18 +60,16 @@ public class PreferencesPK implements Serializable {
             return false;
         }
         PreferencesPK other = (PreferencesPK) object;
-        if ((this.user == null && other.user != null) || (this.user != null && !this.user.equals(other.user))) {
+        if ((this.user == null && other.user != null) || (this.user != null && !this.user.equals(other.user)))
             return false;
-        }
-        if ((this.category == null && other.category != null) || (this.category != null && !this.category.equals(other.category))) {
+        if ((this.event == null && other.event != null) || (this.event != null && !this.event.equals(other.event)))
             return false;
-        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "entities.PreferencesPK[ user=" + user + ", category=" + category + " ]";
+        return "entities.PreferencesPK[ user=" + user + ", event=" + event + " ]";
     }
-    
+
 }

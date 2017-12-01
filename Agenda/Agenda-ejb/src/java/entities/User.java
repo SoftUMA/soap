@@ -7,7 +7,6 @@ package entities;
 
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,8 +15,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -36,22 +33,17 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "User.findByRole", query = "SELECT u FROM User u WHERE u.role = :role")})
 public class User implements Serializable {
 
-    @Basic(optional = false)
-    @NotNull()
-    @Size(min = 1, max = 2000000000)
-    private String name;
-    @Size(max = 2000000000)
-    private String surname;
-    @Basic(optional = false)
-    @NotNull()
-    private int role;
-
     private static final long serialVersionUID = 1L;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Id
-    @Size(max = 2000000000)
     @Column(name = "email")
     private String email;
+    @Column(name = "name", nullable = false)
+    private String name;
+    @Column(name = "surname", nullable = false)
+    private String surname;
+    @Column(name = "role", nullable = false)
+    private String role;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
     private Collection<Event> eventCollection;
     @OneToMany(mappedBy = "user")
@@ -66,9 +58,10 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public User(String email, String name, int role) {
+    public User(String email, String name, String surname, String role) {
         this.email = email;
         this.name = name;
+        this.surname = surname;
         this.role = role;
     }
 
@@ -80,6 +73,29 @@ public class User implements Serializable {
         this.email = email;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     @XmlTransient
     public Collection<Event> getEventCollection() {
@@ -122,39 +138,14 @@ public class User implements Serializable {
             return false;
         }
         User other = (User) object;
-        if ((this.email == null && other.email != null) || (this.email != null && !this.email.equals(other.email))) {
+        if ((this.email == null && other.email != null) || (this.email != null && !this.email.equals(other.email)))
             return false;
-        }
         return true;
     }
 
     @Override
     public String toString() {
         return "entities.User[ email=" + email + " ]";
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public int getRole() {
-        return role;
-    }
-
-    public void setRole(int role) {
-        this.role = role;
     }
 
 }

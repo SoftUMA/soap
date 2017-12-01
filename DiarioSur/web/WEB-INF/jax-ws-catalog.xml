@@ -10,4 +10,6 @@
     <system systemId="http://localhost:8080/PreferencesWS/PreferencesWS?xsd=1" uri="wsdl/localhost_8080/PreferencesWS/PreferencesWS.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/ReviewWS/ReviewWS?wsdl" uri="wsdl/localhost_8080/ReviewWS/ReviewWS.wsdl"/>
     <system systemId="http://localhost:8080/ReviewWS/ReviewWS?xsd=1" uri="wsdl/localhost_8080/ReviewWS/ReviewWS.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/AgendaWS/AgendaWS?wsdl" uri="wsdl/localhost_8080/AgendaWS/AgendaWS.wsdl"/>
+    <system systemId="http://localhost:8080/AgendaWS/AgendaWS?xsd=1" uri="wsdl/localhost_8080/AgendaWS/AgendaWS.xsd_1.xsd"/>
 </catalog>

@@ -26,9 +26,9 @@
     User currentUser = null;
     if (!user.equals(Properties.USER_GUEST)) {
         try {
-            UserWS_Service userService = new UserWS_Service();
-            UserWS userPort = userService.getUserWSPort();
-            currentUser = userPort.findUser(user);
+            AgendaWS_Service agendaService = new AgendaWS_Service();
+            AgendaWS agendaPort = agendaService.getAgendaWSPort();
+            currentUser = agendaPort.findUser(user);
         } catch (Exception ex) {
             System.err.println("Error getting categories from service");
             ex.printStackTrace();
