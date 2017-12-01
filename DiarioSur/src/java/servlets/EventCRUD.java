@@ -71,7 +71,7 @@ public class EventCRUD extends HttpServlet {
 
         switch (opcode) {
             case Properties.OP_CREATE:
-                createEvent(name, user, date, date, price, address, shopUrl, image, category);
+                createEvent(name, user, description, date, price, address, shopUrl, image, category);
                 break;
             case Properties.OP_EDIT:
                 editEvent(id, name, user, description, date, price, address, shopUrl, image, category);
@@ -83,7 +83,7 @@ public class EventCRUD extends HttpServlet {
                 approveEvent(id, user);
                 break;
             case Properties.OP_FILTER:
-                filterEvent(keywords, category, free, own);
+                filterEvent(user, keywords, category, free, own);
                 break;
             default:
                 System.err.println("Error @ opcode");
@@ -91,6 +91,7 @@ public class EventCRUD extends HttpServlet {
         }
 
         RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/index.jsp");
+        rd.forward(request, response);
     }
 
     /**
@@ -239,17 +240,14 @@ public class EventCRUD extends HttpServlet {
     private void approveEvent(int id, User user) {
         Event refereeEvent = findEvent(id);
         if (refereeEvent != null && user.getRole() == Properties.ROLE_EDITOR) {
-            refereeEvent = findEvent(id);
             refereeEvent.setApproved(1);
             editEvent(refereeEvent);
         }
     }
 
-    private void filterEvent(String keywords, String category, String free, String own) {
+    private void filterEvent(User user, String keywords, String category, String free, String own) {
         if (!checkFilterParams(keywords, category, free, own))
             return;
-
-
     }
 
     private boolean checkCreateParams(String name, String desc, String date, String price, String address, String shopUrl, String image, String category) {
