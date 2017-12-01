@@ -6,7 +6,6 @@
 package entities;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -15,8 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -34,17 +31,13 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Review.findByScore", query = "SELECT r FROM Review r WHERE r.score = :score")})
 public class Review implements Serializable {
 
-    @Basic(optional = false)
-    @NotNull()
-    @Size(min = 1, max = 2000000000)
-    private String comment;
-    @Basic(optional = false)
-    @NotNull()
-    private int score;
-
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected ReviewPK reviewPK;
+    @Column(name = "comment", nullable = false)
+    private String comment;
+    @Column(name = "score", nullable = false)
+    private String score;
     @JoinColumn(name = "author", referencedColumnName = "email", insertable = false, updatable = false)
     @ManyToOne
     private User user;
@@ -59,7 +52,7 @@ public class Review implements Serializable {
         this.reviewPK = reviewPK;
     }
 
-    public Review(ReviewPK reviewPK, String comment, int score) {
+    public Review(ReviewPK reviewPK, String comment, String score) {
         this.reviewPK = reviewPK;
         this.comment = comment;
         this.score = score;
@@ -77,6 +70,21 @@ public class Review implements Serializable {
         this.reviewPK = reviewPK;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
+    }
 
     public User getUser() {
         return user;
@@ -108,31 +116,14 @@ public class Review implements Serializable {
             return false;
         }
         Review other = (Review) object;
-        if ((this.reviewPK == null && other.reviewPK != null) || (this.reviewPK != null && !this.reviewPK.equals(other.reviewPK))) {
+        if ((this.reviewPK == null && other.reviewPK != null) || (this.reviewPK != null && !this.reviewPK.equals(other.reviewPK)))
             return false;
-        }
         return true;
     }
 
     @Override
     public String toString() {
         return "entities.Review[ reviewPK=" + reviewPK + " ]";
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
     }
 
 }

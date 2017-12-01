@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package servlets;
 
 import java.io.IOException;
@@ -18,23 +13,12 @@ import javax.xml.ws.WebServiceRef;
 import util.Properties;
 import ws.*;
 
-/**
- *
- * @author Asde
- */
 @WebServlet(name = "EventCRUD", urlPatterns = {"/EventCRUD"})
 public class EventCRUD extends HttpServlet {
 
-    @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/localhost_8080/CategoryWS/CategoryWS.wsdl")
-    private CategoryWS_Service categoryService;
-    @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/localhost_8080/UserWS/UserWS.wsdl")
-    private UserWS_Service userService;
-    @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/localhost_8080/EventWS/EventWS.wsdl")
-    private EventWS_Service eventService;
-
-    private EventWS eventPort;
-    private UserWS userPort;
-    private CategoryWS categoryPort;
+    @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/localhost_8080/AgendaWS/AgendaWS.wsdl")
+    private AgendaWS_Service agendaService;
+    private AgendaWS agendaPort;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -51,6 +35,7 @@ public class EventCRUD extends HttpServlet {
             session.setAttribute(Properties.USER_SELECTED, sessionUser = Properties.USER_GUEST);
         else
             sessionUser = (String) session.getAttribute(Properties.USER_SELECTED);
+
         User user = null;
         if (!sessionUser.equals(Properties.USER_GUEST))
             user = findUser(sessionUser);
@@ -94,6 +79,134 @@ public class EventCRUD extends HttpServlet {
         rd.forward(request, response);
     }
 
+    private void createEvent(Event event) {
+        agendaPort = agendaService.getAgendaWSPort();
+        agendaPort.createEvent(event);
+    }
+
+    private void editEvent(Event event) {
+        agendaPort = agendaService.getAgendaWSPort();
+        agendaPort.editEvent(event);
+    }
+
+    private void removeEvent(Event event) {
+        agendaPort = agendaService.getAgendaWSPort();
+        agendaPort.removeEvent(event);
+    }
+
+    private Event findEvent(Object id) {
+        agendaPort = agendaService.getAgendaWSPort();
+        return agendaPort.findEvent(id);
+    }
+
+    private User findUser(Object id) {
+        agendaPort = agendaService.getAgendaWSPort();
+        return agendaPort.findUser(id);
+    }
+
+    private Category findCategory(Object id) {
+        agendaPort = agendaService.getAgendaWSPort();
+        return agendaPort.findCategory(id);
+    }
+
+    private void createEvent(String name, User author, String desc, String date, String price, String address, String shopUrl, String image, String category) {
+        if (!checkCreateParams(name, desc, date, price, address, shopUrl, image, category) || author.getEmail().equals(Properties.USER_GUEST))
+            return;
+
+        // Date Parser
+        StringTokenizer st;
+        st = new StringTokenizer(date, "~");
+        String startDate = st.nextToken();
+        startDate = startDate.trim();
+        startDate += ":00.000";
+        String endDate = st.nextToken();
+        endDate = endDate.trim();
+        endDate += ":00.000";
+
+        int id = (name + author.getEmail() + startDate + endDate).hashCode();
+        String approved = author.getRole().equals(Properties.ROLE_SUPER) || author.getRole().equals(Properties.ROLE_EDITOR) ? "1" : "0";
+        Event refereeEvent = new Event();
+        Category category_ = findCategory(category);
+
+        // Setting new Event
+        refereeEvent.setId(id);
+        refereeEvent.setName(name);
+        refereeEvent.setAuthor(author);
+        refereeEvent.setDescription(desc);
+        refereeEvent.setImage(image);
+        refereeEvent.setCategory(category_);
+        refereeEvent.setStartDate(startDate);
+        refereeEvent.setEndDate(endDate);
+        refereeEvent.setAddress(address);
+        refereeEvent.setPrice(price);
+        refereeEvent.setShopUrl(shopUrl);
+        refereeEvent.setApproved(approved);
+        createEvent(refereeEvent);
+    }
+
+    private void editEvent(int id, String name, User user, String desc, String date, String price, String address, String shopUrl, String image, String category) {
+        if (!checkEditParams(name, desc, date, price, address, shopUrl, image, category))
+            return;
+
+        Event refereeEvent = findEvent(id);
+        if (refereeEvent != null && (refereeEvent.getAuthor().getEmail().equals(user.getEmail()) || user.getRole().equals(Properties.ROLE_EDITOR))) {
+            Category category_ = findCategory(category);
+
+            // Date Parser
+            StringTokenizer st;
+            st = new StringTokenizer(date, "~");
+            String startDate = st.nextToken();
+            startDate = startDate.trim();
+            startDate += ":00.000";
+            String endDate = st.nextToken();
+            endDate = endDate.trim();
+            endDate += ":00.000";
+
+            // Setting Event
+            refereeEvent.setName(name);
+            refereeEvent.setDescription(desc);
+            refereeEvent.setImage(image);
+            refereeEvent.setCategory(category_);
+            refereeEvent.setStartDate(startDate);
+            refereeEvent.setEndDate(endDate);
+            refereeEvent.setAddress(address);
+            refereeEvent.setPrice(price);
+            refereeEvent.setShopUrl(shopUrl);
+            editEvent(refereeEvent);
+        }
+    }
+
+    private void removeEvent(int id, User user) {
+        Event refereeEvent = findEvent(id);
+        if (refereeEvent != null && (refereeEvent.getAuthor().getEmail().equals(user.getEmail()) || user.getRole().equals(Properties.ROLE_EDITOR)))
+            removeEvent(refereeEvent);
+    }
+
+    private void approveEvent(int id, User user) {
+        Event refereeEvent = findEvent(id);
+        if (refereeEvent != null && user.getRole().equals(Properties.ROLE_EDITOR)) {
+            refereeEvent.setApproved("1");
+            editEvent(refereeEvent);
+        }
+    }
+
+    private void filterEvent(User user, String keywords, String category, String free, String own) {
+        if (!checkFilterParams(keywords, category, free, own))
+            return;
+    }
+
+    private boolean checkCreateParams(String name, String desc, String date, String price, String address, String shopUrl, String image, String category) {
+        return name != null && desc != null && date != null && price != null && address != null && shopUrl != null && image != null && category != null && !category.equals(Properties.NIL_CATEGORY);
+    }
+
+    private boolean checkEditParams(String name, String desc, String date, String price, String address, String shopUrl, String image, String category) {
+        return name != null && desc != null && date != null && price != null && address != null && shopUrl != null && image != null && category != null && !category.equals(Properties.NIL_CATEGORY);
+    }
+
+    private boolean checkFilterParams(String keywords, String category, String free, String own) {
+        return keywords != null && category != null && free != null && own != null;
+    }
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -129,136 +242,6 @@ public class EventCRUD extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }
-
-    private void createEvent(Event event) {
-        eventPort = eventService.getEventWSPort();
-        eventPort.createEvent(event);
-    }
-
-    private void editEvent(Event event) {
-        eventPort = eventService.getEventWSPort();
-        eventPort.editEvent(event);
-    }
-
-    private void removeEvent(Event event) {
-        eventPort = eventService.getEventWSPort();
-        eventPort.removeEvent(event);
-    }
-
-    private Event findEvent(Object id) {
-        eventPort = eventService.getEventWSPort();
-        return eventPort.findEvent(id);
-    }
-
-    private User findUser(Object id) {
-        userPort = userService.getUserWSPort();
-        return userPort.findUser(id);
-    }
-
-    private Category findCategory(Object id) {
-        categoryPort = categoryService.getCategoryWSPort();
-        return categoryPort.findCategory(id);
-    }
-
-    private void createEvent(String name, User author, String desc, String date, String price, String address, String shopUrl, String image, String category) {
-        if (!checkCreateParams(name, desc, date, price, address, shopUrl, image, category) || author.getEmail().equals(Properties.USER_GUEST))
-            return;
-
-        // Date Parser
-        StringTokenizer st;
-        st = new StringTokenizer(date, "~");
-        String startDate = st.nextToken();
-        startDate = startDate.trim();
-        startDate += ":00.000";
-        String endDate = st.nextToken();
-        endDate = endDate.trim();
-        endDate += ":00.000";
-
-        double price_ = Double.parseDouble(price);
-        int id = (name + author.getEmail() + startDate + endDate).hashCode();
-        int approved = author.getRole() == Properties.ROLE_SUPER || author.getRole() == Properties.ROLE_EDITOR ? 1 : 0;
-        Event refereeEvent = new Event();
-        Category category_ = findCategory(category);
-
-        // Setting new Event
-        refereeEvent.setId(id);
-        refereeEvent.setName(name);
-        refereeEvent.setAuthor(author);
-        refereeEvent.setDescription(desc);
-        refereeEvent.setImage(image);
-        refereeEvent.setCategory(category_);
-        refereeEvent.setStartDate(startDate);
-        refereeEvent.setEndDate(endDate);
-        refereeEvent.setAddress(address);
-        refereeEvent.setPrice(price_);
-        refereeEvent.setShopUrl(shopUrl);
-        refereeEvent.setApproved(approved);
-        createEvent(refereeEvent);
-    }
-
-    private void editEvent(int id, String name, User user, String desc, String date, String price, String address, String shopUrl, String image, String category) {
-        if (!checkEditParams(name, desc, date, price, address, shopUrl, image, category))
-            return;
-
-        Event refereeEvent = findEvent(id);
-        if (refereeEvent != null && (refereeEvent.getAuthor().equals(user) || user.getRole() == Properties.ROLE_EDITOR)) {
-            double price_ = Double.parseDouble(price);
-            Category category_ = findCategory(category);
-
-            // Date Parser
-            StringTokenizer st;
-            st = new StringTokenizer(date, "~");
-            String startDate = st.nextToken();
-            startDate = startDate.trim();
-            startDate += ":00.000";
-            String endDate = st.nextToken();
-            endDate = endDate.trim();
-            endDate += ":00.000";
-
-            // Setting Event
-            refereeEvent.setName(name);
-            refereeEvent.setDescription(desc);
-            refereeEvent.setImage(image);
-            refereeEvent.setCategory(category_);
-            refereeEvent.setStartDate(startDate);
-            refereeEvent.setEndDate(endDate);
-            refereeEvent.setAddress(address);
-            refereeEvent.setPrice(price_);
-            refereeEvent.setShopUrl(shopUrl);
-            editEvent(refereeEvent);
-        }
-    }
-
-    private void removeEvent(int id, User user) {
-        Event refereeEvent = findEvent(id);
-        if (refereeEvent != null && (refereeEvent.getAuthor().equals(user) || user.getRole() == Properties.ROLE_EDITOR))
-            removeEvent(refereeEvent);
-    }
-
-    private void approveEvent(int id, User user) {
-        Event refereeEvent = findEvent(id);
-        if (refereeEvent != null && user.getRole() == Properties.ROLE_EDITOR) {
-            refereeEvent.setApproved(1);
-            editEvent(refereeEvent);
-        }
-    }
-
-    private void filterEvent(User user, String keywords, String category, String free, String own) {
-        if (!checkFilterParams(keywords, category, free, own))
-            return;
-    }
-
-    private boolean checkCreateParams(String name, String desc, String date, String price, String address, String shopUrl, String image, String category) {
-        return name != null && desc != null && date != null && price != null && address != null && shopUrl != null && image != null && category != null;
-    }
-
-    private boolean checkEditParams(String name, String desc, String date, String price, String address, String shopUrl, String image, String category) {
-        return name != null && desc != null && date != null && price != null && address != null && shopUrl != null && image != null && category != null;
-    }
-
-    private boolean checkFilterParams(String keywords, String category, String free, String own) {
-        return keywords != null && category != null && free != null && own != null;
+        return "Event CRUD Servlet";
     }
 }

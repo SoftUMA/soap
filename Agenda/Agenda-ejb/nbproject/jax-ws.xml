@@ -16,6 +16,9 @@
     <service name="ReviewWS">
       <implementation-class>ws.ReviewWS</implementation-class>
     </service>
+    <service name="AgendaWS">
+      <implementation-class>ws.AgendaWS</implementation-class>
+    </service>
   </services>
   <clients/>
 </jax-ws>

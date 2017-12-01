@@ -1,6 +1,8 @@
 package util;
 
 public class Properties {
+    // Category not selected
+    public static final String NIL_CATEGORY = "nil";
 
     // provisional users (pre-userCRUD)
     public static final String USER_SELECTED = "role";
@@ -10,9 +12,9 @@ public class Properties {
     public static final String USER_EDITOR = "juanlopez@yahoo.es";
 
     // database roles notation
-    public static final int ROLE_USER = 0;
-    public static final int ROLE_SUPER = 1;
-    public static final int ROLE_EDITOR = 2;
+    public static final String ROLE_USER = "0";
+    public static final String ROLE_SUPER = "1";
+    public static final String ROLE_EDITOR = "2";
 
     // opcodes for servlet requests
     public static final int OP_CREATE = 0;

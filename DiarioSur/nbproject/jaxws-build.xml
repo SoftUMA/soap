@@ -26,85 +26,21 @@
             <isset property="conf.dir"/>
         </condition>
     </target>
-    <target name="wsimport-client-CategoryWS" depends="wsimport-init">
-        <mkdir dir="${build.generated.dir}/jax-wsCache/CategoryWS"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/CategoryWS" destdir="${build.generated.dir}/jax-wsCache/CategoryWS" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/CategoryWS/wsdl/localhost_8080/CategoryWS/CategoryWS.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/CategoryWS/CategoryWS?wsdl" xnocompile="true" xendorsed="true" package="ws">
-            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/CategoryWS/wsdl/localhost_8080/CategoryWS/CategoryWS.wsdl"/>
-            <produces dir="${build.generated.dir}/jax-wsCache/CategoryWS"/>
+    <target name="wsimport-client-AgendaWS" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/AgendaWS"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/AgendaWS" destdir="${build.generated.dir}/jax-wsCache/AgendaWS" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/AgendaWS/wsdl/localhost_8080/AgendaWS/AgendaWS.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/AgendaWS/AgendaWS?wsdl" xnocompile="true" xendorsed="true" package="ws">
+            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/AgendaWS/wsdl/localhost_8080/AgendaWS/AgendaWS.wsdl"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/AgendaWS"/>
         </wsimport>
         <copy todir="${build.generated.sources.dir}/jax-ws">
-            <fileset dir="${build.generated.dir}/jax-wsCache/CategoryWS">
+            <fileset dir="${build.generated.dir}/jax-wsCache/AgendaWS">
                 <include name="**/*.java"/>
             </fileset>
         </copy>
     </target>
-    <target name="wsimport-client-clean-CategoryWS" depends="-init-project">
+    <target name="wsimport-client-clean-AgendaWS" depends="-init-project">
         <delete dir="${build.generated.sources.dir}/jax-ws/ws"/>
-        <delete dir="${build.generated.dir}/jax-wsCache/CategoryWS"/>
+        <delete dir="${build.generated.dir}/jax-wsCache/AgendaWS"/>
     </target>
-    <target name="wsimport-client-UserWS" depends="wsimport-init">
-        <mkdir dir="${build.generated.dir}/jax-wsCache/UserWS"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/UserWS" destdir="${build.generated.dir}/jax-wsCache/UserWS" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/UserWS/wsdl/localhost_8080/UserWS/UserWS.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/UserWS/UserWS?wsdl" xnocompile="true" xendorsed="true" package="ws">
-            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/UserWS/wsdl/localhost_8080/UserWS/UserWS.wsdl"/>
-            <produces dir="${build.generated.dir}/jax-wsCache/UserWS"/>
-        </wsimport>
-        <copy todir="${build.generated.sources.dir}/jax-ws">
-            <fileset dir="${build.generated.dir}/jax-wsCache/UserWS">
-                <include name="**/*.java"/>
-            </fileset>
-        </copy>
-    </target>
-    <target name="wsimport-client-clean-UserWS" depends="-init-project">
-        <delete dir="${build.generated.sources.dir}/jax-ws/ws"/>
-        <delete dir="${build.generated.dir}/jax-wsCache/UserWS"/>
-    </target>
-    <target name="wsimport-client-EventWS" depends="wsimport-init">
-        <mkdir dir="${build.generated.dir}/jax-wsCache/EventWS"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/EventWS" destdir="${build.generated.dir}/jax-wsCache/EventWS" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/EventWS/wsdl/localhost_8080/EventWS/EventWS.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/EventWS/EventWS?wsdl" xnocompile="true" xendorsed="true" package="ws">
-            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/EventWS/wsdl/localhost_8080/EventWS/EventWS.wsdl"/>
-            <produces dir="${build.generated.dir}/jax-wsCache/EventWS"/>
-        </wsimport>
-        <copy todir="${build.generated.sources.dir}/jax-ws">
-            <fileset dir="${build.generated.dir}/jax-wsCache/EventWS">
-                <include name="**/*.java"/>
-            </fileset>
-        </copy>
-    </target>
-    <target name="wsimport-client-clean-EventWS" depends="-init-project">
-        <delete dir="${build.generated.sources.dir}/jax-ws/ws"/>
-        <delete dir="${build.generated.dir}/jax-wsCache/EventWS"/>
-    </target>
-    <target name="wsimport-client-PreferencesWS" depends="wsimport-init">
-        <mkdir dir="${build.generated.dir}/jax-wsCache/PreferencesWS"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/PreferencesWS" destdir="${build.generated.dir}/jax-wsCache/PreferencesWS" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/PreferencesWS/wsdl/localhost_8080/PreferencesWS/PreferencesWS.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/PreferencesWS/PreferencesWS?wsdl" xnocompile="true" xendorsed="true" package="ws">
-            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/PreferencesWS/wsdl/localhost_8080/PreferencesWS/PreferencesWS.wsdl"/>
-            <produces dir="${build.generated.dir}/jax-wsCache/PreferencesWS"/>
-        </wsimport>
-        <copy todir="${build.generated.sources.dir}/jax-ws">
-            <fileset dir="${build.generated.dir}/jax-wsCache/PreferencesWS">
-                <include name="**/*.java"/>
-            </fileset>
-        </copy>
-    </target>
-    <target name="wsimport-client-clean-PreferencesWS" depends="-init-project">
-        <delete dir="${build.generated.sources.dir}/jax-ws/ws"/>
-        <delete dir="${build.generated.dir}/jax-wsCache/PreferencesWS"/>
-    </target>
-    <target name="wsimport-client-ReviewWS" depends="wsimport-init">
-        <mkdir dir="${build.generated.dir}/jax-wsCache/ReviewWS"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/ReviewWS" destdir="${build.generated.dir}/jax-wsCache/ReviewWS" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/ReviewWS/wsdl/localhost_8080/ReviewWS/ReviewWS.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/ReviewWS/ReviewWS?wsdl" xnocompile="true" xendorsed="true" package="ws">
-            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/ReviewWS/wsdl/localhost_8080/ReviewWS/ReviewWS.wsdl"/>
-            <produces dir="${build.generated.dir}/jax-wsCache/ReviewWS"/>
-        </wsimport>
-        <copy todir="${build.generated.sources.dir}/jax-ws">
-            <fileset dir="${build.generated.dir}/jax-wsCache/ReviewWS">
-                <include name="**/*.java"/>
-            </fileset>
-        </copy>
-    </target>
-    <target name="wsimport-client-clean-ReviewWS" depends="-init-project">
-        <delete dir="${build.generated.sources.dir}/jax-ws/ws"/>
-        <delete dir="${build.generated.dir}/jax-wsCache/ReviewWS"/>
-    </target>
-    <target name="wsimport-client-generate" depends="wsimport-client-CategoryWS, wsimport-client-UserWS, wsimport-client-EventWS, wsimport-client-PreferencesWS, wsimport-client-ReviewWS"/>
+    <target name="wsimport-client-generate" depends="wsimport-client-AgendaWS"/>
 </project>

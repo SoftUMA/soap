@@ -8,7 +8,6 @@ package entities;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.Size;
 
 /**
  *
@@ -19,7 +18,6 @@ public class ReviewPK implements Serializable {
 
     @Column(name = "event")
     private Integer event;
-    @Size(max = 2000000000)
     @Column(name = "author")
     private String author;
 
@@ -62,12 +60,10 @@ public class ReviewPK implements Serializable {
             return false;
         }
         ReviewPK other = (ReviewPK) object;
-        if ((this.event == null && other.event != null) || (this.event != null && !this.event.equals(other.event))) {
+        if ((this.event == null && other.event != null) || (this.event != null && !this.event.equals(other.event)))
             return false;
-        }
-        if ((this.author == null && other.author != null) || (this.author != null && !this.author.equals(other.author))) {
+        if ((this.author == null && other.author != null) || (this.author != null && !this.author.equals(other.author)))
             return false;
-        }
         return true;
     }
 
@@ -75,5 +71,5 @@ public class ReviewPK implements Serializable {
     public String toString() {
         return "entities.ReviewPK[ event=" + event + ", author=" + author + " ]";
     }
-    
+
 }

@@ -15,8 +15,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -34,14 +32,10 @@ public class Category implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @NotNull
-    @Size(min = 1, max = 2000000000)
     @Column(name = "name")
     private String name;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
     private Collection<Event> eventCollection;
-    @OneToMany(mappedBy = "category1")
-    private Collection<Preferences> preferencesCollection;
 
     public Category() {
     }
@@ -67,15 +61,6 @@ public class Category implements Serializable {
         this.eventCollection = eventCollection;
     }
 
-    @XmlTransient
-    public Collection<Preferences> getPreferencesCollection() {
-        return preferencesCollection;
-    }
-
-    public void setPreferencesCollection(Collection<Preferences> preferencesCollection) {
-        this.preferencesCollection = preferencesCollection;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -90,9 +75,8 @@ public class Category implements Serializable {
             return false;
         }
         Category other = (Category) object;
-        if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name))) {
+        if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name)))
             return false;
-        }
         return true;
     }
 
