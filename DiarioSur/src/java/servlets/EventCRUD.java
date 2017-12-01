@@ -1,6 +1,12 @@
 package servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -10,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.ws.WebServiceRef;
+import me.xdrop.fuzzywuzzy.*;
 import util.Properties;
 import ws.*;
 
@@ -29,6 +36,8 @@ public class EventCRUD extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        agendaPort = agendaService.getAgendaWSPort();
+
         HttpSession session = request.getSession();
         String sessionUser;
         if (session.getAttribute(Properties.USER_SELECTED) == null)
@@ -68,8 +77,13 @@ public class EventCRUD extends HttpServlet {
                 approveEvent(id, user);
                 break;
             case Properties.OP_FILTER:
-                filterEvent(user, keywords, category, free, own);
-                break;
+                response.setContentType("text/html;charset=UTF-8");
+
+                try (PrintWriter out = response.getWriter()) {
+                    out.print(filterEvent(user, keywords, category, free, own));
+                }
+
+                return;
             default:
                 System.err.println("Error @ opcode");
                 break;
@@ -80,32 +94,30 @@ public class EventCRUD extends HttpServlet {
     }
 
     private void createEvent(Event event) {
-        agendaPort = agendaService.getAgendaWSPort();
         agendaPort.createEvent(event);
     }
 
     private void editEvent(Event event) {
-        agendaPort = agendaService.getAgendaWSPort();
         agendaPort.editEvent(event);
     }
 
     private void removeEvent(Event event) {
-        agendaPort = agendaService.getAgendaWSPort();
         agendaPort.removeEvent(event);
     }
 
+    private List<Event> findAllEvents() {
+        return agendaPort.findAllEvents();
+    }
+
     private Event findEvent(Object id) {
-        agendaPort = agendaService.getAgendaWSPort();
         return agendaPort.findEvent(id);
     }
 
     private User findUser(Object id) {
-        agendaPort = agendaService.getAgendaWSPort();
         return agendaPort.findUser(id);
     }
 
     private Category findCategory(Object id) {
-        agendaPort = agendaService.getAgendaWSPort();
         return agendaPort.findCategory(id);
     }
 
@@ -190,9 +202,91 @@ public class EventCRUD extends HttpServlet {
         }
     }
 
-    private void filterEvent(User user, String keywords, String category, String free, String own) {
+    private String filterEvent(User user, String keywords, String category, String free, String own) {
         if (!checkFilterParams(keywords, category, free, own))
-            return;
+            return "";
+        String answer = "";
+        Map<Integer, Event> filteredEvents;
+        List<Event> events = findAllEvents();
+
+        if (events != null && !events.isEmpty()) {
+            filteredEvents = new HashMap<>();
+            if (own.equals("1")) {
+                findUserEvents(user, events);
+                for (Event e : events)
+                    filteredEvents.put(e.getId(), e);
+            } else {
+                for (Event e : events) {
+                    if (!filteredEvents.containsKey(e.getId())
+                        && (free.equals("1") && e.getPrice().equals("0")
+                            || e.getCategory().getName().equals(category)
+                            || (keywords.length() > 0
+                                && (FuzzySearch.tokenSetPartialRatio(keywords, e.getName()) >= 90
+                                    || FuzzySearch.tokenSetPartialRatio(keywords, e.getDescription()) >= 75
+                                    || FuzzySearch.tokenSetPartialRatio(keywords, e.getAddress()) >= 90
+                                    || FuzzySearch.tokenSetPartialRatio(keywords, e.getAuthor().getName()) >= 80
+                                    || FuzzySearch.tokenSetPartialRatio(keywords, e.getStartDate().substring(0, e.getStartDate().length() - 13)) >= 80
+                                    || FuzzySearch.tokenSetPartialRatio(keywords, e.getEndDate().substring(0, e.getEndDate().length() - 13)) >= 80)))) {
+                        filteredEvents.put(e.getId(), e);
+                    }
+                }
+            }
+
+            answer = buildCards(filteredEvents.values(), user);
+        }
+
+        return answer;
+    }
+
+    private void findUserEvents(User user, List<Event> events) {
+        if (events != null) {
+            for (Event e : events) {
+                if (!e.getAuthor().getEmail().equals(user.getEmail())) {
+                    events.remove(e);
+                }
+            }
+        }
+    }
+
+    private String buildCards(Collection<Event> events, User user) {
+        StringBuilder sb = new StringBuilder("");
+
+        for (Event e : events) {
+            sb.append("<div class=\"card");
+
+            if (e.getApproved().equals("0") && (user.getEmail().equals(e.getAuthor().getEmail()) || user.getEmail().equals(Properties.USER_EDITOR)))
+                sb.append(" border-danger");
+            else
+                sb.append(" border-dark");
+
+            sb.append(" wow zoomIn\" data-wow-delay=\"0.5s\"><img class=\"card-img-top rounded\" src=\"");
+            sb.append(e.getImage());
+            sb.append("\" alt=\"");
+            sb.append(e.getName());
+            sb.append("\" data-toggle=\"modal\" data-target=\"#eventModal");
+            sb.append(e.getId());
+            sb.append("\" style=\"cursor: pointer;\"><div class=\"card-body\"><h4 class=\"card-title\">");
+            sb.append(e.getName());
+            sb.append("</h4>");
+
+            if (e.getApproved().equals("0") && (user.getEmail().equals(e.getAuthor().getEmail()) || user.getEmail().equals(Properties.USER_EDITOR))) {
+                sb.append("<p class=\"card-text text-danger\">Revisión pendiente</p>");
+            }
+
+            sb.append("<p class=\"card-text\">");
+
+            if (e.getDescription().length() < 80) {
+                sb.append(e.getDescription());
+            } else {
+                sb.append(e.getDescription().substring(0, 80) + "...");
+            }
+
+            sb.append("</p><button type=\"button\" class=\"btn btn-warning\" data-toggle=\"modal\" data-target=\"#eventModal");
+            sb.append(e.getId());
+            sb.append("\">Ver evento</button></div></div>");
+        }
+
+        return sb.toString();
     }
 
     private boolean checkCreateParams(String name, String desc, String date, String price, String address, String shopUrl, String image, String category) {
@@ -217,7 +311,7 @@ public class EventCRUD extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -231,7 +325,7 @@ public class EventCRUD extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
         processRequest(request, response);
     }
 

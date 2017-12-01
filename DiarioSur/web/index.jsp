@@ -99,7 +99,7 @@
                                 %>
                                 <%= user.substring(0, 1).toUpperCase() + user.substring(1)%>
                                 <%
-                                    } else {
+                                } else {
                                 %>
                                 <%= user%>
                                 <%
@@ -145,40 +145,38 @@
                 <!-------- #FILTERS -------->
                 <div class="col-lg-3 mb-4">
                     <h1>Buscador</h1>
-                    <form>
-                        <div class="form-group">
-                            <!-- label for="filterKeywords"></label -->
-                            <input type="text" class="form-control" id="filterKeywords" placeholder="Buscar..." name="keywords">
-                        </div>
-                        <div class="form-group">
-                            <label for="filterCategory">Categoría</label>
-                            <select class="form-control" id="filterCategory" name="category">
-                                <option value="nil" disabled selected>Categoría</option>
-                                <%
-                                    for (int cat = 0; categories != null && cat < categories.size(); cat++) {
-                                %>
-                                <option value="<%= categories.get(cat).getName()%>"><%= categories.get(cat).getName()%></option>
-                                <%
-                                    }
-                                %>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" name="free">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">Gratuitos</span>
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" name="mine">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">Mis eventos</span>
-                            </label>
-                        </div>
-                        <button type="submit" class="btn btn-warning">Filtrar</button>
-                    </form>
+                    <div class="form-group">
+                        <!-- label for="filterKeywords"></label -->
+                        <input type="text" class="form-control" id="filterKeywords" placeholder="Buscar..." name="<%= Properties.PARAM_KEYWORDS%>">
+                    </div>
+                    <div class="form-group">
+                        <label for="filterCategory">Categoría</label>
+                        <select class="form-control" id="filterCategory" name="<%= Properties.PARAM_CATEGORY%>">
+                            <option value="nil" disabled selected>Categoría</option>
+                            <%
+                                for (int cat = 0; categories != null && cat < categories.size(); cat++) {
+                            %>
+                            <option value="<%= categories.get(cat).getName()%>"><%= categories.get(cat).getName()%></option>
+                            <%
+                                }
+                            %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="filterFree" name="<%= Properties.PARAM_FREE%>">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Gratuitos</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="filterOwn" name="<%= Properties.PARAM_OWN%>">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Mis eventos</span>
+                        </label>
+                    </div>
+                    <button class="btn btn-warning" onclick="filterEvents()">Filtrar</button>
                 </div>
                 <!-------- #FILTERSEND -------->
 
@@ -191,18 +189,18 @@
                                 if (user.equals(e.getAuthor().getEmail()) || e.getApproved().equals("1") || user.equals(Properties.USER_EDITOR)) {
                         %>
                         <div class="card
-                            <%
-                               if (e.getApproved().equals("0") && (user.equals(e.getAuthor().getEmail()) || user.equals(Properties.USER_EDITOR))) {
-                            %>
-                            border-danger
-                            <%
-                               } else {
-                            %>
-                            border-dark
-                            <%
-                               }
-                            %>
-                            wow zoomIn" data-wow-delay="0.5s">
+                             <%
+                                 if (e.getApproved().equals("0") && (user.equals(e.getAuthor().getEmail()) || user.equals(Properties.USER_EDITOR))) {
+                             %>
+                             border-danger
+                             <%
+                             } else {
+                             %>
+                             border-dark
+                             <%
+                                 }
+                             %>
+                             wow zoomIn" data-wow-delay="0.5s">
                             <img class="card-img-top rounded" src="<%= e.getImage()%>" alt="<%= e.getName()%>" data-toggle="modal" data-target="#eventModal<%= e.getId()%>" style="cursor: pointer;">
                             <div class="card-body">
                                 <h4 class="card-title"><%= e.getName()%></h4>
@@ -219,7 +217,7 @@
                                     %>
                                     <%= e.getDescription()%>
                                     <%
-                                        } else {
+                                    } else {
                                     %>
                                     <%= e.getDescription().substring(0, 80) + "..."%>
                                     <%
@@ -508,18 +506,20 @@
                 }
             }
 
-            /*
-             function filterEvents() {
-             $.ajax({
-             type: "post",
-             url: "testme",
-             data: "input=" + $('#ip').val() + "&output=" + $('#op').val(),
-             success: function(msg) {
-             $('#output').append(msg);
-             }
-             });
-             }
-             */
+            function filterEvents() {
+                var free = $('#filterFree').checked ? '1' : '0';
+                var own = $('#filterOwn').checked ? '1' : '0';
+
+                $.ajax({
+                    type: "post",
+                    url: "EventCRUD",
+                    data: "<%= Properties.PARAM_OPCODE%>=<%= Properties.OP_FILTER%>" + "&<%= Properties.PARAM_KEYWORDS%>=" + $('#filterKeywords').val() + "&<%= Properties.PARAM_CATEGORY%>=" + $('#filterCategory').val() + "&<%= Properties.PARAM_FREE%>=" + free + "&<%= Properties.PARAM_OWN%>=" + own,
+                    success: function (msg) {
+                        $('.card-columns').empty();
+                        $('.card-columns').append(msg);
+                    }
+                });
+            }
 
             $(document).ready(function () {
                 window.history.pushState({
