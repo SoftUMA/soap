@@ -507,25 +507,25 @@
             }
 
             function filterEvents() {
-                var free = $('#filterFree').checked ? '1' : '0';
-                var own = $('#filterOwn').checked ? '1' : '0';
+                var free = $('#filterFree').is(':checked') ? '1' : '0';
+                var own = $('#filterOwn').is(':checked') ? '1' : '0';
 
                 $.ajax({
                     type: "post",
                     url: "EventCRUD",
                     data: "<%= Properties.PARAM_OPCODE%>=<%= Properties.OP_FILTER%>" + "&<%= Properties.PARAM_KEYWORDS%>=" + $('#filterKeywords').val() + "&<%= Properties.PARAM_CATEGORY%>=" + $('#filterCategory').val() + "&<%= Properties.PARAM_FREE%>=" + free + "&<%= Properties.PARAM_OWN%>=" + own,
-                    success: function (msg) {
-                        $('.card-columns').empty();
-                        $('.card-columns').append(msg);
-                    }
-                });
-            }
+                                success: function (msg) {
+                                    $('.card-columns').empty();
+                                    $('.card-columns').append(msg);
+                                }
+                            });
+                        }
 
-            $(document).ready(function () {
-                window.history.pushState({
-                    location: "index"
-                }, "", "index.jsp");
-            });
+                        $(document).ready(function () {
+                            window.history.pushState({
+                                location: "index"
+                            }, "", "index.jsp");
+                        });
         </script>
     </body>
 </html>
