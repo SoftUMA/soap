@@ -1,16 +1,20 @@
+<%@page import="service.CategoryREST"%>
+<%@page import="service.EventREST"%>
+<%@page import="entity.Category"%>
+<%@page import="entity.Event"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.net.URLDecoder"%>
 <%@page import="java.net.URLEncoder"%>
 <%@page import="java.util.StringTokenizer"%>
 <%@page import="java.util.List"%>
 <%@page import="util.Properties"%>
-<%@page import="ws.*"%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
     String user = request.getParameter(Properties.USER_SELECTED);
     if (user != null) {
-        user = URLDecoder.decode(user, "UTF-8");
+        user = URLDecoder.decode(user, Properties.URL_CODIFICATION);
         session.setAttribute(Properties.USER_SELECTED, user);
     } else if (session.getAttribute(Properties.USER_SELECTED) == null) {
         session.setAttribute(Properties.USER_SELECTED, user = Properties.USER_GUEST);
@@ -18,17 +22,8 @@
         user = (String) session.getAttribute(Properties.USER_SELECTED);
     }
 
-    List<Event> events = null;
-    List<Category> categories = null;
-    try {
-        AgendaWS_Service agendaService = new AgendaWS_Service();
-        AgendaWS agendaPort = agendaService.getAgendaWSPort();
-        events = agendaPort.findAllEvents();
-        categories = agendaPort.findAllCategories();
-    } catch (Exception ex) {
-        System.err.println("Error getting events from service");
-        ex.printStackTrace();
-    }
+    List<Event> events = EventREST.getInstance().findAll();
+    List<Category> categories = CategoryREST.getInstance().findAll();
 %>
 
 <!DOCTYPE html>
@@ -115,9 +110,9 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= Properties.USER_GUEST%>">Invitado</a>
-                                    <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, "UTF-8")%>">Usuario</a>
-                                    <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, "UTF-8")%>">SuperUsuario</a>
-                                    <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, "UTF-8")%>">Redactor</a>
+                                    <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, Properties.URL_CODIFICATION)%>">Usuario</a>
+                                    <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, Properties.URL_CODIFICATION)%>">SuperUsuario</a>
+                                    <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, Properties.URL_CODIFICATION)%>">Redactor</a>
                                 </div>
                             </div>
                         </li>
@@ -169,6 +164,9 @@
                             <span class="custom-control-description">Gratuitos</span>
                         </label>
                     </div>
+                    <%
+                        if (!user.equals(Properties.USER_GUEST)) {
+                    %>
                     <div class="form-group">
                         <label class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="filterOwn" name="<%= Properties.PARAM_OWN%>">
@@ -176,6 +174,9 @@
                             <span class="custom-control-description">Mis eventos</span>
                         </label>
                     </div>
+                    <%
+                        }
+                    %>
                     <button class="btn btn-warning" onclick="filterEvents()">Filtrar</button>
                 </div>
                 <!-------- #FILTERSEND -------->
@@ -258,7 +259,7 @@
                         <nav class="nav nav-tabs nav-fill" id="eventModalTab<%= e.getId()%>" role="tablist">
                             <a class="nav-item nav-link active" id="nav-info-tab<%= e.getId()%>" data-toggle="tab" href="#nav-info<%= e.getId()%>" role="tab" aria-controls="nav-info<%= e.getId()%>" aria-selected="true">Info</a>
                             <%
-                                if (user.equals(e.getAuthor().getEmail())) {
+                                if (user.equals(e.getAuthor().getEmail()) || user.equals(Properties.USER_EDITOR)) {
                             %>
                             <a class="nav-item nav-link" id="nav-edit-tab<%= e.getId()%>" data-toggle="tab" href="#nav-edit<%= e.getId()%>" role="tab" aria-controls="nav-edit<%= e.getId()%>" aria-selected="false">Editar</a>
                             <%
@@ -335,7 +336,7 @@
                             <!-------- #MODALINFOEND -------->
                             <!-------- #MODALEDIT -------->
                             <%
-                                if (user.equals(e.getAuthor().getEmail())) {
+                                if (user.equals(e.getAuthor().getEmail()) || user.equals(Properties.USER_EDITOR)) {
                             %>
                             <div class="tab-pane fade" id="nav-edit<%= e.getId()%>" role="tabpanel" aria-labelledby="nav-edit-tab<%= e.getId()%>">
                                 <form action="EventCRUD">
@@ -500,7 +501,7 @@
                 }
             %>
 
-            function deleteEvent(id, email) {
+            function deleteEvent(id) {
                 if (confirm("¿Desea eliminar este evento de la agenda definitivamente?")) {
                     window.location.replace("EventCRUD?opcode=<%= Properties.OP_DELETE%>&id=" + id);
                 }
@@ -514,18 +515,18 @@
                     type: "post",
                     url: "EventCRUD",
                     data: "<%= Properties.PARAM_OPCODE%>=<%= Properties.OP_FILTER%>" + "&<%= Properties.PARAM_KEYWORDS%>=" + $('#filterKeywords').val() + "&<%= Properties.PARAM_CATEGORY%>=" + $('#filterCategory').val() + "&<%= Properties.PARAM_FREE%>=" + free + "&<%= Properties.PARAM_OWN%>=" + own,
-                                success: function (msg) {
-                                    $('.card-columns').empty();
-                                    $('.card-columns').append(msg);
-                                }
-                            });
-                        }
+                    success: function (msg) {
+                        $('.card-columns').empty();
+                        $('.card-columns').append(msg);
+                    }
+                });
+            }
 
-                        $(document).ready(function () {
-                            window.history.pushState({
-                                location: "index"
-                            }, "", "index.jsp");
-                        });
+            $(document).ready(function () {
+                window.history.pushState({
+                    location: "index"
+                }, "", "index.jsp");
+            });
         </script>
     </body>
 </html>

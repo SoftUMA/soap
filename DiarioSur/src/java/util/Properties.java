@@ -1,6 +1,8 @@
 package util;
 
 public class Properties {
+    public static final String URL_CODIFICATION = "UTF-8";
+
     // Category not selected
     public static final String NIL_CATEGORY = "nil";
 

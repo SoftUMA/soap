@@ -1,1 +1,5 @@
-AIzaSyBvwu9R5x0YwukwkoaynDNNKVR2z2RH6p4
+google:
+	key: AIzaSyBvwu9R5x0YwukwkoaynDNNKVR2z2RH6p4
+	clientid: 1012655994660-3mkachcu6j07nukrletrfkh3hnlqhi4j.apps.googleusercontent.com
+giphy:
+	key: 8oASGfTQFqfT4wHyh4PAgUphj9wYeimr

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -15,29 +14,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.ws.WebServiceRef;
 import me.xdrop.fuzzywuzzy.*;
 import util.Properties;
-import ws.*;
+import entity.*;
+import service.CategoryREST;
+import service.EventREST;
+import service.UserREST;
 
 @WebServlet(name = "EventCRUD", urlPatterns = {"/EventCRUD"})
 public class EventCRUD extends HttpServlet {
-
-    @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/localhost_8080/AgendaWS/AgendaWS.wsdl")
-    private AgendaWS_Service agendaService;
-    private AgendaWS agendaPort;
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        agendaPort = agendaService.getAgendaWSPort();
-
         HttpSession session = request.getSession();
         String sessionUser;
         if (session.getAttribute(Properties.USER_SELECTED) == null)
@@ -94,31 +80,31 @@ public class EventCRUD extends HttpServlet {
     }
 
     private void createEvent(Event event) {
-        agendaPort.createEvent(event);
+        EventREST.getInstance().create(event);
     }
 
     private void editEvent(Event event) {
-        agendaPort.editEvent(event);
+        EventREST.getInstance().edit(event, event.getId());
     }
 
     private void removeEvent(Event event) {
-        agendaPort.removeEvent(event);
+        EventREST.getInstance().remove(event.getId());
     }
 
     private List<Event> findAllEvents() {
-        return agendaPort.findAllEvents();
+        return EventREST.getInstance().findAll();
     }
 
-    private Event findEvent(Object id) {
-        return agendaPort.findEvent(id);
+    private Event findEvent(Integer id) {
+        return EventREST.getInstance().find(id);
     }
 
-    private User findUser(Object id) {
-        return agendaPort.findUser(id);
+    private User findUser(String email) {
+        return UserREST.getInstance().find(email);
     }
 
-    private Category findCategory(Object id) {
-        return agendaPort.findCategory(id);
+    private Category findCategory(String name) {
+        return CategoryREST.getInstance().find(name);
     }
 
     private void createEvent(String name, User author, String desc, String date, String price, String address, String shopUrl, String image, String category) {

@@ -1,16 +1,18 @@
+<%@page import="entity.Category"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="service.CategoryREST"%>
 <%@page import="java.net.URLDecoder"%>
 <%@page import="java.net.URLEncoder"%>
 <%@page import="java.util.StringTokenizer"%>
 <%@page import="java.util.List"%>
 <%@page import="util.Properties"%>
-<%@page import="ws.*"%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
     String user = request.getParameter(Properties.USER_SELECTED);
     if (user != null) {
-        user = URLDecoder.decode(user, "UTF-8");
+        user = URLDecoder.decode(user, Properties.URL_CODIFICATION);
         session.setAttribute(Properties.USER_SELECTED, user);
     } else if (session.getAttribute(Properties.USER_SELECTED) == null) {
         session.setAttribute(Properties.USER_SELECTED, user = Properties.USER_GUEST);
@@ -23,15 +25,7 @@
         return;
     }
 
-    List<Category> categories = null;
-    try {
-        AgendaWS_Service agendaService = new AgendaWS_Service();
-        AgendaWS agendaPort = agendaService.getAgendaWSPort();
-        categories = agendaPort.findAllCategories();
-    } catch (Exception ex) {
-        System.err.println("Error getting categories from service");
-        ex.printStackTrace();
-    }
+    List<Category> categories = CategoryREST.getInstance().findAll();
 %>
 
 
@@ -119,9 +113,9 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= Properties.USER_GUEST%>">Invitado</a>
-                                    <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, "UTF-8")%>">Usuario</a>
-                                    <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, "UTF-8")%>">SuperUsuario</a>
-                                    <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, "UTF-8")%>">Redactor</a>
+                                    <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, Properties.URL_CODIFICATION)%>">Usuario</a>
+                                    <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, Properties.URL_CODIFICATION)%>">SuperUsuario</a>
+                                    <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, Properties.URL_CODIFICATION)%>">Redactor</a>
                                 </div>
                             </div>
                         </li>
@@ -135,14 +129,15 @@
             <!--TODO FORM HERE-->
             <form action="EventCRUD" id="createForm">
                 <input type="hidden" name="opcode" value="<%= Properties.OP_CREATE%>">
+                <input type="hidden" id="imgInput" name="image">
                 <div class="form-group">
                     <label for="nameInput">Nombre</label>
                     <input type="text" class="form-control" id="nameInput" placeholder="Nombre" name="name">
                 </div>
                 <div class="form-group">
-                    <label for="imgInput">Imagen</label>
-                    <input type="url" class="form-control" id="imgInput" aria-describedby="imgHelp" placeholder="URL de la imagen" name="image">
-                    <small id="imgHelp" class="form-text text-muted">Ha de ser una URL a una imagen PNG o JPG. Preferiblemente de 500x500px.</small>
+                    <label for="imgTag">Imagen</label>
+                    <input type="text" class="form-control" id="imgTag" aria-describedby="imgHelp" placeholder="Tag de la imagen" name="tag">
+                    <small id="imgHelp" class="form-text text-muted">Ha de ser una única palabra descriptiva del evento. Evitar caracteres especiales.</small>
                 </div>
                 <div class="form-group">
                     <label for="addressInput">Dirección</label>
@@ -248,22 +243,32 @@
         </script>
         <script type="text/javascript">
             function acceptEvent() {
-                var msg =
-                <%
-                    if (user != null && user.equals(Properties.USER_USER)) {
-                %>
-                "¿Desea enviar este evento a revisión?\nNo será listado hasta que sea aprobado.";
-                <%
-                    } else {
-                %>
-                "¿Desea listar este evento en la agenda?";
-                <%
-                    }
-                %>
+                $.ajax({
+                    type: 'GET',
+                    url: 'http://api.giphy.com/v1/gifs/random',
+                    data: 'api_key=8oASGfTQFqfT4wHyh4PAgUphj9wYeimr&tag=' + $('#imgTag').val() + '&rating=R',
+                    dataType: 'json',
+                    success: function (msg) {
+                        console.log(msg.data.image_url);
+                        $('#imgInput').val(msg.data.image_url);
+                        var msg =
+                        <%
+                            if (user != null && user.equals(Properties.USER_USER)) {
+                        %>
+                        "¿Desea enviar este evento a revisión?\nNo será listado hasta que sea aprobado.";
+                        <%
+                            } else {
+                        %>
+                        "¿Desea listar este evento en la agenda?";
+                        <%
+                            }
+                        %>
 
-                if (confirm(msg)) {
-                    $('#createForm').submit();
-                }
+                        if (confirm(msg)) {
+                            $('#createForm').submit();
+                        }
+                    }
+                });
             }
 
             $(document).ready(function () {

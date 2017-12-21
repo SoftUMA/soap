@@ -1,16 +1,17 @@
+<%@page import="entity.User"%>
+<%@page import="service.UserREST"%>
 <%@page import="java.net.URLDecoder"%>
 <%@page import="java.net.URLEncoder"%>
 <%@page import="java.util.StringTokenizer"%>
 <%@page import="java.util.List"%>
 <%@page import="util.Properties"%>
-<%@page import="ws.*"%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
     String user = request.getParameter(Properties.USER_SELECTED);
     if (user != null) {
-        user = URLDecoder.decode(user, "UTF-8");
+        user = URLDecoder.decode(user, Properties.URL_CODIFICATION);
         session.setAttribute(Properties.USER_SELECTED, user);
     } else if (session.getAttribute(Properties.USER_SELECTED) == null) {
         session.setAttribute(Properties.USER_SELECTED, user = Properties.USER_GUEST);
@@ -25,14 +26,7 @@
 
     User currentUser = null;
     if (!user.equals(Properties.USER_GUEST)) {
-        try {
-            AgendaWS_Service agendaService = new AgendaWS_Service();
-            AgendaWS agendaPort = agendaService.getAgendaWSPort();
-            currentUser = agendaPort.findUser(user);
-        } catch (Exception ex) {
-            System.err.println("Error getting categories from service");
-            ex.printStackTrace();
-        }
+        currentUser = UserREST.getInstance().find(user);
     }
 %>
 
@@ -118,9 +112,9 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= Properties.USER_GUEST%>">Invitado</a>
-                                    <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, "UTF-8")%>">Usuario</a>
-                                    <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, "UTF-8")%>">SuperUsuario</a>
-                                    <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, "UTF-8")%>">Redactor</a>
+                                    <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, Properties.URL_CODIFICATION)%>">Usuario</a>
+                                    <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, Properties.URL_CODIFICATION)%>">SuperUsuario</a>
+                                    <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, Properties.URL_CODIFICATION)%>">Redactor</a>
                                 </div>
                             </div>
                         </li>

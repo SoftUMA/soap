@@ -31,10 +31,14 @@ nbdist/
 # Project
 /Agenda/nbproject/private/
 /Agenda/build/
-/Agenda/Agenda-war/nbproject/private/
-/Agenda/Agenda-ejb/nbproject/private/
-/Agenda/Agenda-war/build/
-/Agenda/Agenda-ejb/build/
-/Agenda/Agenda-ejb/src/conf/META-INF/
 /DiarioSur/nbproject/private/
 /DiarioSur/build/
+
+# Deprecated
+# /Agenda/Agenda-war/nbproject/private/
+# /Agenda/Agenda-ejb/nbproject/private/
+# /Agenda/Agenda-war/build/
+# /Agenda/Agenda-ejb/build/
+# /Agenda/Agenda-ejb/src/conf/META-INF/
+/AgendaREST/nbproject/private/
+/AgendaREST/build/
