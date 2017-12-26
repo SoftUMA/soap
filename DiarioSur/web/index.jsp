@@ -1,3 +1,4 @@
+<%@page import="entity.User"%>
 <%@page import="service.CategoryREST"%>
 <%@page import="service.EventREST"%>
 <%@page import="entity.Category"%>
@@ -12,14 +13,12 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    String user = request.getParameter(Properties.USER_SELECTED);
-    if (user != null) {
-        user = URLDecoder.decode(user, Properties.URL_CODIFICATION);
-        session.setAttribute(Properties.USER_SELECTED, user);
-    } else if (session.getAttribute(Properties.USER_SELECTED) == null) {
-        session.setAttribute(Properties.USER_SELECTED, user = Properties.USER_GUEST);
+    User user;
+    Object tmp;
+    if ((tmp = request.getSession().getAttribute(Properties.USER_SELECTED)) != null) {
+        user = (User) tmp;
     } else {
-        user = (String) session.getAttribute(Properties.USER_SELECTED);
+        session.setAttribute(Properties.USER_SELECTED, user = null);
     }
 
     List<Event> events = EventREST.getInstance().findAll();
@@ -88,33 +87,28 @@
                     </ul>
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <span class="badge badge-pill badge-secondary mt-3 mr-4">
+                            <span class="badge badge-pill badge-secondary mt-3 mr-4" id="user-pill">
                                 <%
-                                    if (user.equals(Properties.USER_GUEST)) {
+                                    if (user == null) {
                                 %>
-                                <%= user.substring(0, 1).toUpperCase() + user.substring(1)%>
+                                <%= Properties.USER_GUEST%>
                                 <%
-                                } else {
+                                    } else {
                                 %>
-                                <%= user%>
+                                <%= user.getEmail()%>
                                 <%
                                     }
                                 %>
                             </span>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" style="display: <% if (user != null) { %>block<% } else { %>none<% } %>;" id="session-group">
                             <div class="btn-group">
                                 <a class="btn btn-secondary btn-lg" href="profile.jsp">Ver perfil</a>
-                                <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="sr-only">Desplegar</span>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= Properties.USER_GUEST%>">Invitado</a>
-                                    <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, Properties.URL_CODIFICATION)%>">Usuario</a>
-                                    <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, Properties.URL_CODIFICATION)%>">SuperUsuario</a>
-                                    <a class="dropdown-item" href="index.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, Properties.URL_CODIFICATION)%>">Redactor</a>
-                                </div>
+                                <a class="btn btn-secondary btn-lg" id="signout-button">Logout</a>
                             </div>
+                        </li>
+                        <li class="nav-item" style="display: <% if (user == null) { %>block<% } else { %>none<% } %>;" id="nosession-group">
+                            <a class="btn btn-secondary btn-lg" id="authorize-button">Login</a>
                         </li>
                     </ul>
                 </div>
@@ -165,7 +159,7 @@
                         </label>
                     </div>
                     <%
-                        if (!user.equals(Properties.USER_GUEST)) {
+                        if (user != null) {
                     %>
                     <div class="form-group">
                         <label class="custom-control custom-checkbox">
@@ -187,11 +181,12 @@
                         <%
                             for (int i = 0; events != null && i < events.size(); i++) {
                                 Event e = events.get(i);
-                                if (user.equals(e.getAuthor().getEmail()) || e.getApproved().equals("1") || user.equals(Properties.USER_EDITOR)) {
+                                if (user != null) System.out.println("ROLROLROLROL... ROCKAN...ROL: " + user.getRole());
+                                if (e.getAuthor().equals(user) || e.getApproved().equals("1") || (user != null && user.getRole().equals(Properties.ROLE_EDITOR))) {
                         %>
                         <div class="card
                              <%
-                                 if (e.getApproved().equals("0") && (user.equals(e.getAuthor().getEmail()) || user.equals(Properties.USER_EDITOR))) {
+                                 if (e.getApproved().equals("0") && (e.getAuthor().equals(user) || (user != null && user.getRole().equals(Properties.ROLE_EDITOR)))) {
                              %>
                              border-danger
                              <%
@@ -206,7 +201,7 @@
                             <div class="card-body">
                                 <h4 class="card-title"><%= e.getName()%></h4>
                                 <%
-                                    if (e.getApproved().equals("0") && (user.equals(e.getAuthor().getEmail()) || user.equals(Properties.USER_EDITOR))) {
+                                    if (e.getApproved().equals("0") && (e.getAuthor().equals(user) || (user != null && user.getRole().equals(Properties.ROLE_EDITOR)))) {
                                 %>
                                 <p class="card-text text-danger">Revisión pendiente</p>
                                 <%
@@ -244,7 +239,7 @@
         <%
             for (int i = 0; events != null && i < events.size(); i++) {
                 Event e = events.get(i);
-                if (user.equals(e.getAuthor().getEmail()) || e.getApproved().equals("1") || user.equals(Properties.USER_EDITOR)) {
+                if (e.getAuthor().equals(user) || e.getApproved().equals("1") || (user != null && user.getRole().equals(Properties.ROLE_EDITOR))) {
         %>
         <div class="modal fade" id="eventModal<%= e.getId()%>" tabindex="-1" role="dialog" aria-labelledby="eventModal<%= e.getId()%>Label" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
@@ -259,7 +254,7 @@
                         <nav class="nav nav-tabs nav-fill" id="eventModalTab<%= e.getId()%>" role="tablist">
                             <a class="nav-item nav-link active" id="nav-info-tab<%= e.getId()%>" data-toggle="tab" href="#nav-info<%= e.getId()%>" role="tab" aria-controls="nav-info<%= e.getId()%>" aria-selected="true">Info</a>
                             <%
-                                if (user.equals(e.getAuthor().getEmail()) || user.equals(Properties.USER_EDITOR)) {
+                                if (e.getAuthor().equals(user) || (user != null && user.getRole().equals(Properties.ROLE_EDITOR))) {
                             %>
                             <a class="nav-item nav-link" id="nav-edit-tab<%= e.getId()%>" data-toggle="tab" href="#nav-edit<%= e.getId()%>" role="tab" aria-controls="nav-edit<%= e.getId()%>" aria-selected="false">Editar</a>
                             <%
@@ -321,7 +316,7 @@
                                 <hr>
                                 <center>
                                     <%
-                                        if (e.getApproved().equals("0") && user.equals(Properties.USER_EDITOR)) {
+                                        if (e.getApproved().equals("0") && (user != null && user.getRole().equals(Properties.ROLE_EDITOR))) {
                                     %>
                                     <span class="btn-group mr-4" role="group" aria-label="Basic example">
                                         <button class="btn btn-warning" onclick="acceptEvent(<%= e.getId()%>)">Aceptar</button>
@@ -336,33 +331,34 @@
                             <!-------- #MODALINFOEND -------->
                             <!-------- #MODALEDIT -------->
                             <%
-                                if (user.equals(e.getAuthor().getEmail()) || user.equals(Properties.USER_EDITOR)) {
+                                if (e.getAuthor().equals(user) || (user != null && user.getRole().equals(Properties.ROLE_EDITOR))) {
                             %>
                             <div class="tab-pane fade" id="nav-edit<%= e.getId()%>" role="tabpanel" aria-labelledby="nav-edit-tab<%= e.getId()%>">
-                                <form action="EventCRUD">
-                                    <input type="hidden" name="opcode" value="<%= Properties.OP_EDIT%>">
-                                    <input type="hidden" name="id" value="<%= e.getId()%>">
+                                <form action="EventCRUD" id="editForm<%= e.getId()%>">
+                                    <input type="hidden" name="<%= Properties.PARAM_OPCODE%>" value="<%= Properties.OP_EDIT%>">
+                                    <input type="hidden" name="<%= Properties.PARAM_ID%>" value="<%= e.getId()%>">
+                                    <input type="hidden" id="imgInput<%= e.getId()%>" name="<%= Properties.PARAM_IMAGE%>">
                                     <div class="form-group">
                                         <label for="nameInput<%= e.getId()%>">Nombre</label>
-                                        <input type="text" class="form-control" id="nameInput<%= e.getId()%>" placeholder="Nombre" value="<%= e.getName()%>" name="name">
+                                        <input type="text" class="form-control" id="nameInput<%= e.getId()%>" placeholder="Nombre" value="<%= e.getName()%>" name="<%= Properties.PARAM_NAME%>">
                                     </div>
                                     <div class="form-group">
-                                        <label for="imgInput<%= e.getId()%>">Imagen</label>
-                                        <input type="url" class="form-control" id="imgInput<%= e.getId()%>" aria-describedby="imgHelp<%= e.getId()%>" placeholder="URL de la imagen" value="<%= e.getImage()%>" name="image">
-                                        <small id="imgHelp<%= e.getId()%>" class="form-text text-muted">Ha de ser una URL a una imagen PNG o JPG. Preferiblemente de 500x500px.</small>
+                                        <label for="imgTag<%= e.getId()%>">Cambiar imagen</label>
+                                        <input type="text" class="form-control" id="imgTag<%= e.getId()%>" aria-describedby="imgHelp<%= e.getId()%>" placeholder="Tag de la imagen" name="<%= Properties.PARAM_TAG%>">
+                                        <small id="imgHelp<%= e.getId()%>" class="form-text text-muted">Ha de ser una única palabra descriptiva del evento. Evitar caracteres especiales. Dejar vacío para mantener la imagen actual.</small>
                                     </div>
                                     <div class="form-group">
                                         <label for="addressInput<%= e.getId()%>">Dirección</label>
-                                        <input type="text" class="form-control" id="addressInput<%= e.getId()%>" aria-describedby="addressHelp<%= e.getId()%>" placeholder="Dirección" value="<%= e.getAddress()%>" name="address">
+                                        <input type="text" class="form-control" id="addressInput<%= e.getId()%>" aria-describedby="addressHelp<%= e.getId()%>" placeholder="Dirección" value="<%= e.getAddress()%>" name="<%= Properties.PARAM_ADDRESS%>">
                                         <small id="addressHelp<%= e.getId()%>" class="form-text text-muted">Ej: Bulevar Louis Pasteur, Malaga, Spain.</small>
                                     </div>
                                     <div class="form-group">
                                         <label for="descInput<%= e.getId()%>">Descripción</label>
-                                        <textarea type="text" class="form-control" id="descInput<%= e.getId()%>" placeholder="Descripción" maxlength="1000" name="description"><%= e.getDescription()%></textarea>
+                                        <textarea type="text" class="form-control" id="descInput<%= e.getId()%>" placeholder="Descripción" maxlength="1000" name="<%= Properties.PARAM_DESCRIPTION%>"><%= e.getDescription()%></textarea>
                                     </div>
                                     <div class="form-group">
                                         <label for="shopInput<%= e.getId()%>">URL de compra</label>
-                                        <input type="url" class="form-control" id="shopInput<%= e.getId()%>" aria-describedby="shopHelp<%= e.getId()%>" placeholder="URL de compra" value="<%= e.getShopUrl()%>" name="shopurl">
+                                        <input type="url" class="form-control" id="shopInput<%= e.getId()%>" aria-describedby="shopHelp<%= e.getId()%>" placeholder="URL de compra" value="<%= e.getShopUrl()%>" name="<%= Properties.PARAM_SHOPURL%>">
                                         <small id="shopHelp<%= e.getId()%>" class="form-text text-muted">URL de la página de compra de entradas al evento.</small>
                                     </div>
                                     <div class="form-group">
@@ -376,7 +372,7 @@
                                                 String dates = startDate + " ~ " + endDate;
                                                 System.out.println(dates);
                                             %>
-                                            <input type="text" class="form-control cal<%= e.getId()%>" id="dateInput<%= e.getId()%>" placeholder="Fecha y hora" value="<%= dates%>" name="date">
+                                            <input type="text" class="form-control cal<%= e.getId()%>" id="dateInput<%= e.getId()%>" placeholder="Fecha y hora" value="<%= dates%>" name="<%= Properties.PARAM_DATE%>">
                                             <span class="input-group-addon" id="calendarTag<%= e.getId()%>"><i class="material-icons">date_range</i></span>
                                             <script>
                                                 $('.cal<%= e.getId()%>').daterangepicker({
@@ -431,7 +427,7 @@
                                     <div class="row">
                                         <div class="form-group col-6">
                                             <label for="categoryInput<%= e.getId()%>">Categoría</label>
-                                            <select class="form-control" id="categoryInput<%= e.getId()%>" name="category">
+                                            <select class="form-control" id="categoryInput<%= e.getId()%>" name="<%= Properties.PARAM_CATEGORY%>">
                                                 <%
                                                     for (int cat = 0; categories != null && cat < categories.size(); cat++) {
                                                 %>
@@ -452,7 +448,7 @@
                                         <div class="form-group col-6">
                                             <label for="priceInput<%= e.getId()%>">Precio</label>
                                             <div class="input-group">
-                                                <input type="number" step="0.05" class="form-control" id="priceInput<%= e.getId()%>" aria-describedby="euroTag<%= e.getId()%>" placeholder="Precio" value="<%= e.getPrice()%>" name="price">
+                                                <input type="number" step="0.05" class="form-control" id="priceInput<%= e.getId()%>" aria-describedby="euroTag<%= e.getId()%>" placeholder="Precio" value="<%= e.getPrice()%>" name="<%= Properties.PARAM_PRICE%>">
                                                 <span class="input-group-addon" id="euroTag<%= e.getId()%>">€</span>
                                             </div>
                                         </div>
@@ -460,8 +456,8 @@
                                     <hr>
                                     <center>
                                         <span>
-                                            <button class="btn btn-warning" type="button" onclick="deleteEvent(<%= e.getId()%>)">Borrar evento</button>
-                                            <button type="submit" class="btn btn-warning">Guardar cambios</button>
+                                            <a class="btn btn-warning" onclick="deleteEvent(<%= e.getId()%>)">Borrar evento</a>
+                                            <a class="btn btn-warning" onclick="editEvent(<%= e.getId()%>)">Guardar cambios</a>
                                         </span>
                                     </center>
                                 </form>
@@ -484,37 +480,59 @@
         <script>new WOW().init();</script>
         <script type="text/javascript">
             <%
-                if (user.equals(Properties.USER_EDITOR)) {
+                if (user != null && user.getRole().equals(Properties.ROLE_EDITOR)) {
             %>
             function acceptEvent(id) {
-                if (confirm("¿Desea listar este evento en la agenda?")) {
-                    window.location.replace("EventCRUD?opcode=<%= Properties.OP_APPROVE%>&id=" + id);
+                if (confirm('¿Desea listar este evento en la agenda?')) {
+                    window.location.replace('EventCRUD?opcode=<%= Properties.OP_APPROVE%>&id=' + id);
                 }
             }
 
             function rejectEvent(id) {
-                if (confirm("¿Desea rechazar este evento definitivamente?")) {
-                    window.location.replace("EventCRUD?opcode=<%= Properties.OP_DELETE%>&id=" + id);
+                if (confirm('¿Desea rechazar este evento definitivamente?')) {
+                    window.location.replace('EventCRUD?opcode=<%= Properties.OP_DELETE%>&id=' + id);
                 }
             }
             <%
                 }
             %>
 
+            <%
+                if (user != null) {
+            %>
             function deleteEvent(id) {
-                if (confirm("¿Desea eliminar este evento de la agenda definitivamente?")) {
-                    window.location.replace("EventCRUD?opcode=<%= Properties.OP_DELETE%>&id=" + id);
+                if (confirm('¿Desea eliminar este evento de la agenda definitivamente?')) {
+                    window.location.replace('EventCRUD?opcode=<%= Properties.OP_DELETE%>&id=' + id);
                 }
             }
+
+            function editEvent(id) {
+                $.ajax({
+                    type: 'GET',
+                    async: false,
+                    dataType: 'json',
+                    url: 'http://api.giphy.com/v1/gifs/random',
+                    data: 'api_key=8oASGfTQFqfT4wHyh4PAgUphj9wYeimr&tag=' + $('#imgTag' + id).val() + '&rating=R',
+                    success: function (msg) {
+                        $('#imgInput' + id).val(msg.data.image_url);
+                        if (confirm('¿Desea guardar los cambios efectuados?')) {
+                            $('#editForm' + id).submit();
+                        }
+                    }
+                });
+            }
+            <%
+                }
+            %>
 
             function filterEvents() {
                 var free = $('#filterFree').is(':checked') ? '1' : '0';
                 var own = $('#filterOwn').is(':checked') ? '1' : '0';
 
                 $.ajax({
-                    type: "post",
-                    url: "EventCRUD",
-                    data: "<%= Properties.PARAM_OPCODE%>=<%= Properties.OP_FILTER%>" + "&<%= Properties.PARAM_KEYWORDS%>=" + $('#filterKeywords').val() + "&<%= Properties.PARAM_CATEGORY%>=" + $('#filterCategory').val() + "&<%= Properties.PARAM_FREE%>=" + free + "&<%= Properties.PARAM_OWN%>=" + own,
+                    type: 'post',
+                    url: 'EventCRUD',
+                    data: '<%= Properties.PARAM_OPCODE%>=<%= Properties.OP_FILTER%>' + '&<%= Properties.PARAM_KEYWORDS%>=' + $('#filterKeywords').val() + '&<%= Properties.PARAM_CATEGORY%>=' + $('#filterCategory').val() + '&<%= Properties.PARAM_FREE%>=' + free + '&<%= Properties.PARAM_OWN%>=' + own,
                     success: function (msg) {
                         $('.card-columns').empty();
                         $('.card-columns').append(msg);
@@ -524,9 +542,11 @@
 
             $(document).ready(function () {
                 window.history.pushState({
-                    location: "index"
-                }, "", "index.jsp");
+                    location: 'index'
+                }, '', 'index.jsp');
             });
         </script>
+        <script src="js/oauth.js"></script>
+        <script async defer src="js/google-api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
     </body>
 </html>

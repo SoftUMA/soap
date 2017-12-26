@@ -54,7 +54,9 @@ public class ReviewREST {
     }
 
     public void edit(Object requestEntity, String user, Integer event) throws ClientErrorException {
-        webTarget.path("edit/" + user + "/" + event).request(MediaType.APPLICATION_XML).put(Entity.entity(requestEntity, MediaType.APPLICATION_XML));
+        // webTarget.path("edit/" + user + "/" + event).request(MediaType.APPLICATION_XML).put(Entity.entity(requestEntity, MediaType.APPLICATION_XML));
+        remove(user, event);
+        create(requestEntity);
     }
 
     public Review find(String user, Integer event) throws ClientErrorException {

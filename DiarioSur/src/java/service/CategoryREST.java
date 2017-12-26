@@ -54,7 +54,9 @@ public class CategoryREST {
     }
 
     public void edit(Object requestEntity, String name) throws ClientErrorException {
-        webTarget.path("edit/" + name).request(MediaType.APPLICATION_XML).put(Entity.entity(requestEntity, MediaType.APPLICATION_XML));
+        // webTarget.path("edit/" + name).request(MediaType.APPLICATION_XML).put(Entity.entity(requestEntity, MediaType.APPLICATION_XML));
+        remove(name);
+        create(requestEntity);
     }
 
     public Category find(String name) throws ClientErrorException {

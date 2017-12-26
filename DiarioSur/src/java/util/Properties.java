@@ -7,8 +7,8 @@ public class Properties {
     public static final String NIL_CATEGORY = "nil";
 
     // provisional users (pre-userCRUD)
-    public static final String USER_SELECTED = "role";
-    public static final String USER_GUEST = "guest";
+    public static final String USER_SELECTED = "session-user";
+    public static final String USER_GUEST = "Guest";
     public static final String USER_USER = "afernandez@gmail.com";
     public static final String USER_SUPER = "mariag@uma.es";
     public static final String USER_EDITOR = "juanlopez@yahoo.es";
@@ -31,6 +31,7 @@ public class Properties {
     public static final String PARAM_NAME = "name";
     public static final String PARAM_DESCRIPTION = "description";
     public static final String PARAM_IMAGE = "image";
+    public static final String PARAM_TAG = "tag";
     public static final String PARAM_DATE = "date";
     public static final String PARAM_ADDRESS = "address";
     public static final String PARAM_PRICE = "price";

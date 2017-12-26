@@ -54,7 +54,9 @@ public class UserREST {
     }
 
     public void edit(Object requestEntity, String email) throws ClientErrorException {
-        webTarget.path("edit/" + email).request(MediaType.APPLICATION_XML).put(Entity.entity(requestEntity, MediaType.APPLICATION_XML));
+        // webTarget.path("edit/" + email).request(MediaType.APPLICATION_XML).put(Entity.entity(requestEntity, MediaType.APPLICATION_XML));
+        remove(email);
+        create(requestEntity);
     }
 
     public User find(String email) throws ClientErrorException {

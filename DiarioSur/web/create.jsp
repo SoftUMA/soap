@@ -1,3 +1,4 @@
+<%@page import="entity.User"%>
 <%@page import="entity.Category"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="service.CategoryREST"%>
@@ -10,17 +11,15 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    String user = request.getParameter(Properties.USER_SELECTED);
-    if (user != null) {
-        user = URLDecoder.decode(user, Properties.URL_CODIFICATION);
-        session.setAttribute(Properties.USER_SELECTED, user);
-    } else if (session.getAttribute(Properties.USER_SELECTED) == null) {
-        session.setAttribute(Properties.USER_SELECTED, user = Properties.USER_GUEST);
+    User user;
+    Object tmp;
+    if ((tmp = request.getSession().getAttribute(Properties.USER_SELECTED)) != null) {
+        user = (User) tmp;
     } else {
-        user = (String) session.getAttribute(Properties.USER_SELECTED);
+        session.setAttribute(Properties.USER_SELECTED, user = null);
     }
 
-    if (user == null || user.equals(Properties.USER_GUEST)) {
+    if (user == null) {
         response.sendRedirect("index.jsp");
         return;
     }
@@ -93,31 +92,26 @@
                         <li class="nav-item">
                             <span class="badge badge-pill badge-secondary mt-3 mr-4">
                                 <%
-                                    if (user.equals(Properties.USER_GUEST)) {
+                                    if (user == null) {
                                 %>
-                                <%= user.substring(0, 1).toUpperCase() + user.substring(1)%>
+                                <%= Properties.USER_GUEST%>
                                 <%
                                 } else {
                                 %>
-                                <%= user%>
+                                <%= user.getEmail()%>
                                 <%
                                     }
                                 %>
                             </span>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" style="display: <% if (user != null) { %>block<% } else { %>none<% } %>;" id="session-group">
                             <div class="btn-group">
                                 <a class="btn btn-secondary btn-lg" href="profile.jsp">Ver perfil</a>
-                                <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="sr-only">Desplegar</span>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= Properties.USER_GUEST%>">Invitado</a>
-                                    <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, Properties.URL_CODIFICATION)%>">Usuario</a>
-                                    <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, Properties.URL_CODIFICATION)%>">SuperUsuario</a>
-                                    <a class="dropdown-item" href="create.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, Properties.URL_CODIFICATION)%>">Redactor</a>
-                                </div>
+                                <a class="btn btn-secondary btn-lg" id="signout-button">Logout</a>
                             </div>
+                        </li>
+                        <li class="nav-item" style="display: <% if (user == null) { %>block<% } else { %>none<% } %>;" id="nosession-group">
+                            <a class="btn btn-secondary btn-lg" id="authorize-button">Login</a>
                         </li>
                     </ul>
                 </div>
@@ -128,42 +122,42 @@
         <div class="container my-4">
             <!--TODO FORM HERE-->
             <form action="EventCRUD" id="createForm">
-                <input type="hidden" name="opcode" value="<%= Properties.OP_CREATE%>">
-                <input type="hidden" id="imgInput" name="image">
+                <input type="hidden" name="<%= Properties.PARAM_OPCODE%>" value="<%= Properties.OP_CREATE%>">
+                <input type="hidden" id="imgInput" name="<%= Properties.PARAM_IMAGE%>">
                 <div class="form-group">
                     <label for="nameInput">Nombre</label>
-                    <input type="text" class="form-control" id="nameInput" placeholder="Nombre" name="name">
+                    <input type="text" class="form-control" id="nameInput" placeholder="Nombre" name="<%= Properties.PARAM_NAME%>">
                 </div>
                 <div class="form-group">
                     <label for="imgTag">Imagen</label>
-                    <input type="text" class="form-control" id="imgTag" aria-describedby="imgHelp" placeholder="Tag de la imagen" name="tag">
+                    <input type="text" class="form-control" id="imgTag" aria-describedby="imgHelp" placeholder="Tag de la imagen" name="<%= Properties.PARAM_TAG%>">
                     <small id="imgHelp" class="form-text text-muted">Ha de ser una única palabra descriptiva del evento. Evitar caracteres especiales.</small>
                 </div>
                 <div class="form-group">
                     <label for="addressInput">Dirección</label>
-                    <input type="text" class="form-control" id="addressInput" aria-describedby="addressHelp" placeholder="Dirección" name="address">
+                    <input type="text" class="form-control" id="addressInput" aria-describedby="addressHelp" placeholder="Dirección" name="<%= Properties.PARAM_ADDRESS%>">
                     <small id="addressHelp" class="form-text text-muted">Ej: Bulevar Louis Pasteur, Malaga, Spain.</small>
                 </div>
                 <div class="form-group">
                     <label for="descInput">Descripción</label>
-                    <textarea type="text" class="form-control" id="descInput" placeholder="Descripción" maxlength="1000" name="description"></textarea>
+                    <textarea type="text" class="form-control" id="descInput" placeholder="Descripción" maxlength="1000" name="<%= Properties.PARAM_DESCRIPTION%>"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="shopInput">URL de compra</label>
-                    <input type="url" class="form-control" id="shopInput" aria-describedby="shopHelp" placeholder="URL de compra" name="shopurl">
+                    <input type="url" class="form-control" id="shopInput" aria-describedby="shopHelp" placeholder="URL de compra" name="<%= Properties.PARAM_SHOPURL%>">
                     <small id="shopHelp" class="form-text text-muted">URL de la página de compra de entradas al evento.</small>
                 </div>
                 <div class="form-group">
                     <label for="dateInput">Fecha y hora</label>
                     <div class="input-group">
-                        <input type="text" class="form-control cal" id="dateInput" placeholder="Fecha y hora" name="date">
+                        <input type="text" class="form-control cal" id="dateInput" placeholder="Fecha y hora" name="<%= Properties.PARAM_DATE%>">
                         <span class="input-group-addon" id="calendarTag"><i class="material-icons">date_range</i></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-6">
                         <label for="categoryInput">Categoría</label>
-                        <select class="form-control" id="categoryInput" name="category">
+                        <select class="form-control" id="categoryInput" name="<%= Properties.PARAM_CATEGORY%>">
                             <option value="<%= Properties.NIL_CATEGORY%>" disabled selected>Categoría</option>
                             <%
                                 for (int cat = 0; categories != null && cat < categories.size(); cat++) {
@@ -177,7 +171,7 @@
                     <div class="form-group col-6">
                         <label for="priceInput">Precio</label>
                         <div class="input-group">
-                            <input type="number" step="0.05" class="form-control" id="priceInput" aria-describedby="euroTag" placeholder="Precio" name="price">
+                            <input type="number" step="0.05" class="form-control" id="priceInput" aria-describedby="euroTag" placeholder="Precio" name="<%= Properties.PARAM_PRICE%>">
                             <span class="input-group-addon" id="euroTag">€</span>
                         </div>
                     </div>
@@ -185,7 +179,7 @@
                 <hr>
                 <center>
                     <span>
-                        <button onclick="acceptEvent()" class="btn btn-warning">Enviar evento</button>
+                        <a onclick="acceptEvent()" class="btn btn-warning">Enviar evento</a>
                     </span>
                 </center>
             </form>
@@ -245,21 +239,23 @@
             function acceptEvent() {
                 $.ajax({
                     type: 'GET',
+                    async: false,
+                    dataType: 'json',
                     url: 'http://api.giphy.com/v1/gifs/random',
                     data: 'api_key=8oASGfTQFqfT4wHyh4PAgUphj9wYeimr&tag=' + $('#imgTag').val() + '&rating=R',
-                    dataType: 'json',
                     success: function (msg) {
-                        console.log(msg.data.image_url);
+                        console.log(msg);
                         $('#imgInput').val(msg.data.image_url);
+
                         var msg =
                         <%
                             if (user != null && user.equals(Properties.USER_USER)) {
                         %>
-                        "¿Desea enviar este evento a revisión?\nNo será listado hasta que sea aprobado.";
+                        '¿Desea enviar este evento a revisión?\nNo será listado hasta que sea aprobado.';
                         <%
                             } else {
                         %>
-                        "¿Desea listar este evento en la agenda?";
+                        '¿Desea listar este evento en la agenda?';
                         <%
                             }
                         %>
@@ -273,8 +269,8 @@
 
             $(document).ready(function () {
                 window.history.pushState({
-                    location: "create"
-                }, "", "create.jsp");
+                    location: 'create'
+                }, '', 'create.jsp');
             });
         </script>
     </body>

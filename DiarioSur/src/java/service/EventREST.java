@@ -54,7 +54,9 @@ public class EventREST {
     }
 
     public void edit(Object requestEntity, Integer id) throws ClientErrorException {
-        webTarget.path("edit/" + id).request(MediaType.APPLICATION_XML).put(Entity.entity(requestEntity, MediaType.APPLICATION_XML));
+        // webTarget.path("edit/" + id).request(MediaType.APPLICATION_XML).put(Entity.entity(requestEntity, MediaType.APPLICATION_XML));
+        remove(id);
+        create(requestEntity);
     }
 
     public Event find(Integer id) throws ClientErrorException {

@@ -133,14 +133,11 @@ public class User implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof User)) {
+        if (object == null || email == null || !(object instanceof User))
             return false;
-        }
+
         User other = (User) object;
-        if ((this.email == null && other.email != null) || (this.email != null && !this.email.equals(other.email)))
-            return false;
-        return true;
+        return email.equals(other.getEmail());
     }
 
     @Override

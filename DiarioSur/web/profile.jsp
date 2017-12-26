@@ -9,24 +9,17 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    String user = request.getParameter(Properties.USER_SELECTED);
-    if (user != null) {
-        user = URLDecoder.decode(user, Properties.URL_CODIFICATION);
-        session.setAttribute(Properties.USER_SELECTED, user);
-    } else if (session.getAttribute(Properties.USER_SELECTED) == null) {
-        session.setAttribute(Properties.USER_SELECTED, user = Properties.USER_GUEST);
+    User user;
+    Object tmp;
+    if ((tmp = request.getSession().getAttribute(Properties.USER_SELECTED)) != null) {
+        user = (User) tmp;
     } else {
-        user = (String) session.getAttribute(Properties.USER_SELECTED);
+        session.setAttribute(Properties.USER_SELECTED, user = null);
     }
 
-    if (user == null || user.equals(Properties.USER_GUEST)) {
+    if (user == null) {
         response.sendRedirect("index.jsp");
         return;
-    }
-
-    User currentUser = null;
-    if (!user.equals(Properties.USER_GUEST)) {
-        currentUser = UserREST.getInstance().find(user);
     }
 %>
 
@@ -92,31 +85,26 @@
                         <li class="nav-item">
                             <span class="badge badge-pill badge-secondary mt-3 mr-4">
                                 <%
-                                    if (user.equals(Properties.USER_GUEST)) {
+                                    if (user == null) {
                                 %>
-                                <%= user.substring(0, 1).toUpperCase() + user.substring(1)%>
+                                <%= Properties.USER_GUEST%>
                                 <%
                                     } else {
                                 %>
-                                <%= user%>
+                                <%= user.getEmail()%>
                                 <%
                                     }
                                 %>
                             </span>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" style="display: <% if (user != null) { %>block<% } else { %>none<% } %>;" id="session-group">
                             <div class="btn-group">
                                 <a class="btn btn-secondary btn-lg" href="profile.jsp">Ver perfil</a>
-                                <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="sr-only">Desplegar</span>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= Properties.USER_GUEST%>">Invitado</a>
-                                    <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_USER, Properties.URL_CODIFICATION)%>">Usuario</a>
-                                    <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_SUPER, Properties.URL_CODIFICATION)%>">SuperUsuario</a>
-                                    <a class="dropdown-item" href="profile.jsp?<%= Properties.USER_SELECTED%>=<%= URLEncoder.encode(Properties.USER_EDITOR, Properties.URL_CODIFICATION)%>">Redactor</a>
-                                </div>
+                                <a class="btn btn-secondary btn-lg" id="signout-button">Logout</a>
                             </div>
+                        </li>
+                        <li class="nav-item" style="display: <% if (user == null) { %>block<% } else { %>none<% } %>;" id="nosession-group">
+                            <a class="btn btn-secondary btn-lg" id="authorize-button">Login</a>
                         </li>
                     </ul>
                 </div>
@@ -129,15 +117,15 @@
                 <tbody>
                     <tr>
                         <th class="text-right" scope="row">Nombre</th>
-                        <td><%= currentUser.getName()%></td>
+                        <td><%= user.getName()%></td>
                     </tr>
                     <tr>
                         <th class="text-right" scope="row">Apellidos</th>
-                        <td><%= currentUser.getSurname()%></td>
+                        <td><%= user.getSurname()%></td>
                     </tr>
                     <tr>
                         <th class="text-right" scope="row">Email</th>
-                        <td><%= currentUser.getEmail()%></td>
+                        <td><%= user.getEmail()%></td>
                     </tr>
                 </tbody>
             </table>
