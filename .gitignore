@@ -34,6 +34,10 @@ nbdist/
 /DiarioSur/nbproject/private/
 /DiarioSur/build/
 
+# Includes
+!/Agenda/lib/*.jar
+!/DiarioSur/lib/*.jar
+
 # Deprecated
 # /Agenda/Agenda-war/nbproject/private/
 # /Agenda/Agenda-ejb/nbproject/private/
