@@ -548,5 +548,6 @@
         </script>
         <script src="js/oauth.js"></script>
         <script async defer src="js/google-api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvwu9R5x0YwukwkoaynDNNKVR2z2RH6p4&callback=initMap"></script>
     </body>
 </html>
