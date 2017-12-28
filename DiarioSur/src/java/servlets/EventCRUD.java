@@ -296,12 +296,14 @@ public class EventCRUD extends HttpServlet {
     private String filterEvent(User user, Coordinates userCoords, double radius, String keywords, String category, String free, String own) {
         if (!checkFilterParams(keywords, category, free, own))
             return "";
+
         String answer = "";
         Map<Integer, Event> filteredEvents;
         List<Event> events = findAllEvents();
 
         if (events != null && !events.isEmpty()) {
             filteredEvents = new HashMap<>();
+
             if (own.equals("1")) {
                 for (Event e : events)
                     if (e.getAuthor().equals(user) && userCoords.inRadius(new Coordinates(e.getAddress()), radius))
@@ -312,10 +314,55 @@ public class EventCRUD extends HttpServlet {
                         filteredEvents.put(e.getId(), e);
             }
 
-            answer = buildCards(filteredEvents.values(), user);
+            answer = buildJSON(filteredEvents.values(), user);
         }
 
         return answer;
+    }
+
+    /**
+     * Builds a JSON containing both the info needed to build the map and the HTML code containing the event cards
+     * @param events collection of events to build the JSON
+     * @param user the user request the events filtering
+     * @return a String containing the JSON with all the filtered events info
+     */
+    private String buildJSON(Collection<Event> events, User user) {
+        StringBuilder sb = new StringBuilder("");
+
+        sb.append("{\n");
+        sb.append(buildMapInfo(events, user)).append(",\n");
+        sb.append(buildCards(events, user)).append("\n");
+        sb.append("}");
+
+        return sb.toString();
+    }
+
+    /**
+     * Builds the information needed to build the map on the user's browser
+     * @param events collection of events to build the map info
+     * @param user the user requesting the events filtering
+     * @return structured events information
+     */
+    private String buildMapInfo(Collection<Event> events, User user) {
+        StringBuilder sb = new StringBuilder("");
+        boolean first = true;
+
+        sb.append("  \"map\": [");
+        for (Event e : events) {
+            if (first) first = false;
+            else sb.append(",");
+            sb.append("{\n");
+            sb.append("    \"title\": \"").append(e.getName()).append("\",\n");
+            sb.append("    \"desc\": \"").append(e.getDescription()).append("\",\n");
+            Coordinates coords = new Coordinates(e.getAddress());
+            sb.append("    \"lat\": ").append(coords.getLatitude()).append(",\n");
+            sb.append("    \"lng\": ").append(coords.getLongitude()).append(",\n");
+            sb.append("    \"own\": ").append(e.getAuthor().equals(user) ? "true" : "false").append("\n");
+            sb.append("  }");
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 
     /**
@@ -327,40 +374,40 @@ public class EventCRUD extends HttpServlet {
     private String buildCards(Collection<Event> events, User user) {
         StringBuilder sb = new StringBuilder("");
 
+        sb.append("  \"cards\": \"");
         for (Event e : events) {
-            sb.append("<div class=\"card");
+            sb.append("<div class=\'card");
 
             if (e.getApproved().equals("0") && (user.getEmail().equals(e.getAuthor().getEmail()) || user.getEmail().equals(Properties.USER_EDITOR)))
                 sb.append(" border-danger");
             else
                 sb.append(" border-dark");
 
-            sb.append(" wow zoomIn\" data-wow-delay=\"0.5s\"><img class=\"card-img-top rounded\" src=\"");
+            sb.append(" wow zoomIn\' data-wow-delay=\'0.5s\'><img class=\'card-img-top rounded\' src=\'");
             sb.append(e.getImage());
-            sb.append("\" alt=\"");
+            sb.append("\' alt=\'");
             sb.append(e.getName());
-            sb.append("\" data-toggle=\"modal\" data-target=\"#eventModal");
+            sb.append("\' data-toggle=\'modal\' data-target=\'#eventModal");
             sb.append(e.getId());
-            sb.append("\" style=\"cursor: pointer;\"><div class=\"card-body\"><h4 class=\"card-title\">");
+            sb.append("\' style=\'cursor: pointer;\'><div class=\'card-body\'><h4 class=\'card-title\'>");
             sb.append(e.getName());
             sb.append("</h4>");
 
-            if (e.getApproved().equals("0") && (user.getEmail().equals(e.getAuthor().getEmail()) || user.getEmail().equals(Properties.USER_EDITOR))) {
-                sb.append("<p class=\"card-text text-danger\">Revisión pendiente</p>");
-            }
+            if (e.getApproved().equals("0") && (user.getEmail().equals(e.getAuthor().getEmail()) || user.getEmail().equals(Properties.USER_EDITOR)))
+                sb.append("<p class=\'card-text text-danger\'>Revisión pendiente</p>");
 
-            sb.append("<p class=\"card-text\">");
+            sb.append("<p class=\'card-text\'>");
 
-            if (e.getDescription().length() < 80) {
+            if (e.getDescription().length() < 80)
                 sb.append(e.getDescription());
-            } else {
+            else
                 sb.append(e.getDescription().substring(0, 80)).append("...");
-            }
 
-            sb.append("</p><button type=\"button\" class=\"btn btn-warning\" data-toggle=\"modal\" data-target=\"#eventModal");
+            sb.append("</p><button type=\'button\' class=\'btn btn-warning\' data-toggle=\'modal\' data-target=\'#eventModal");
             sb.append(e.getId());
-            sb.append("\">Ver evento</button></div></div>");
+            sb.append("\'>Ver evento</button></div></div>");
         }
+        sb.append("\"");
 
         return sb.toString();
     }
