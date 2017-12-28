@@ -1,7 +1,13 @@
 package util;
 
 public class Properties {
+    // URL Codification
     public static final String URL_CODIFICATION = "UTF-8";
+
+    // Default event search by radius data
+    public static final double DEFAULT_LATITUDE = 36.7212737;
+    public static final double DEFAULT_LONGITUDE = -4.4213988;
+    public static final double DEFAULT_RADIUS = 50.0;
 
     // Category not selected
     public static final String NIL_CATEGORY = "nil";
@@ -37,6 +43,9 @@ public class Properties {
     public static final String PARAM_PRICE = "price";
     public static final String PARAM_SHOPURL = "shopurl";
     public static final String PARAM_CATEGORY = "category";
+    public static final String PARAM_LATITUDE = "lat";
+    public static final String PARAM_LONGITUDE = "lng";
+    public static final String PARAM_RADIUS = "radius";
     public static final String PARAM_KEYWORDS = "keywords";
     public static final String PARAM_FREE = "free";
     public static final String PARAM_OWN = "own";

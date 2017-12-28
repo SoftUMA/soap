@@ -19,10 +19,21 @@ import util.Properties;
 import entity.*;
 import service.CategoryREST;
 import service.EventREST;
-import service.UserREST;
+import util.Coordinates;
 
 @WebServlet(name = "EventCRUD", urlPatterns = {"/EventCRUD"})
 public class EventCRUD extends HttpServlet {
+    public double x;
+    // ================================================
+    // Landing method
+
+    /**
+     * Main request processing method
+     * @param request the request made by the user browser
+     * @param response the response returned to the user browser
+     * @throws ServletException
+     * @throws IOException
+     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
 
@@ -42,6 +53,9 @@ public class EventCRUD extends HttpServlet {
         String price = request.getParameter(Properties.PARAM_PRICE);
         String shopUrl = request.getParameter(Properties.PARAM_SHOPURL);
         String category = request.getParameter(Properties.PARAM_CATEGORY);
+        String latitude_ = request.getParameter(Properties.PARAM_LATITUDE);
+        String longitude_ = request.getParameter(Properties.PARAM_LONGITUDE);
+        String radius_ = request.getParameter(Properties.PARAM_RADIUS);
         String keywords = request.getParameter(Properties.PARAM_KEYWORDS);
         String free = request.getParameter(Properties.PARAM_FREE);
         String own = request.getParameter(Properties.PARAM_OWN);
@@ -62,8 +76,22 @@ public class EventCRUD extends HttpServlet {
             case Properties.OP_FILTER:
                 response.setContentType("text/html;charset=UTF-8");
 
+                double radius = Properties.DEFAULT_RADIUS;
+                double latitude = Properties.DEFAULT_LATITUDE;
+                double longitude = Properties.DEFAULT_LONGITUDE;
+                try {
+                    radius = Double.parseDouble(radius_);
+                } catch (NullPointerException | NumberFormatException ex) { }
+                try {
+                    latitude = Double.parseDouble(latitude_);
+                } catch (NullPointerException | NumberFormatException ex) { }
+                try {
+                    longitude = Double.parseDouble(longitude_);
+                } catch (NullPointerException | NumberFormatException ex) { }
+
                 try (PrintWriter out = response.getWriter()) {
-                    out.print(filterEvent(user, keywords, category, free, own));
+                    Coordinates userCoords = new Coordinates(latitude, longitude);
+                    out.print(filterEvent(user, userCoords, radius, keywords, category, free, own));
                 }
 
                 return;
@@ -76,34 +104,74 @@ public class EventCRUD extends HttpServlet {
         rd.forward(request, response);
     }
 
+    // ================================================
+    // Final web services calls
+
+    /**
+     * Calls the API event creation method
+     * @param event the event to create
+     */
     private void createEvent(Event event) {
         EventREST.getInstance().create(event);
     }
 
+    /**
+     * Calls the API event edition method
+     * @param event the event to edit
+     */
     private void editEvent(Event event) {
         EventREST.getInstance().edit(event, event.getId());
     }
 
+    /**
+     * Calls the API event removal method
+     * @param event the event to remove
+     */
     private void removeEvent(Event event) {
         EventREST.getInstance().remove(event.getId());
     }
 
+    /**
+     * Calls the API event dump method
+     * @return a containing every event in the database
+     */
     private List<Event> findAllEvents() {
         return EventREST.getInstance().findAll();
     }
 
+    /**
+     * Calls the API event search method
+     * @param id the <code>id</code> of the event to search
+     * @return the found event, <code>null</code> if no event was found
+     */
     private Event findEvent(Integer id) {
         return EventREST.getInstance().find(id);
     }
 
-    private User findUser(String email) {
-        return UserREST.getInstance().find(email);
-    }
-
+    /**
+     * Calls the API category search method
+     * @param name the <code>name</code> of the category to search
+     * @return the found category, <code>null</code> if no category was found
+     */
     private Category findCategory(String name) {
         return CategoryREST.getInstance().find(name);
     }
 
+    // ================================================
+    // Actions processing
+
+    /**
+     * Process event creation
+     * @param name event name
+     * @param author event author
+     * @param desc event description
+     * @param date event start and end dates
+     * @param price event price
+     * @param address event address
+     * @param shopUrl event ticket shopping URL
+     * @param image event image URL
+     * @param category event category
+     */
     private void createEvent(String name, User author, String desc, String date, String price, String address, String shopUrl, String image, String category) {
         if (!checkCreateParams(name, author, desc, date, price, address, shopUrl, image, category))
             return;
@@ -139,6 +207,20 @@ public class EventCRUD extends HttpServlet {
         createEvent(refereeEvent);
     }
 
+    /**
+     * Process event edition
+     * @param id id of the event to edit
+     * @param name new event name
+     * @param user editing user
+     * @param desc new event description
+     * @param date new event start and end dates
+     * @param price new event price
+     * @param address new event address
+     * @param shopUrl new event ticket shopping URL
+     * @param image new event image URL
+     * @param tag tag to search the new event image by
+     * @param category new event category
+     */
     private void editEvent(int id, String name, User user, String desc, String date, String price, String address, String shopUrl, String image, String tag, String category) {
         if (!checkEditParams(name, user, desc, date, price, address, shopUrl, image, tag, category))
             return;
@@ -173,12 +255,22 @@ public class EventCRUD extends HttpServlet {
         }
     }
 
+    /**
+     * Process event removal
+     * @param id id of the event to remove
+     * @param user removing user
+     */
     private void removeEvent(int id, User user) {
         Event refereeEvent = findEvent(id);
         if (refereeEvent != null && (refereeEvent.getAuthor().getEmail().equals(user.getEmail()) || user.getRole().equals(Properties.ROLE_EDITOR)))
             removeEvent(refereeEvent);
     }
 
+    /**
+     * Process event approval
+     * @param id id of the event to approve
+     * @param user approving user
+     */
     private void approveEvent(int id, User user) {
         Event refereeEvent = findEvent(id);
         if (refereeEvent != null && user.getRole().equals(Properties.ROLE_EDITOR)) {
@@ -187,7 +279,21 @@ public class EventCRUD extends HttpServlet {
         }
     }
 
-    private String filterEvent(User user, String keywords, String category, String free, String own) {
+    // ================================================
+    // Event filtering
+
+    /**
+     * Filters events based on various characteristics
+     * @param user filtering user
+     * @param userCoords filtering user's browser coordinates
+     * @param radius radius to include events from, centered on <code>userCoords</code>
+     * @param keywords search field text
+     * @param category category to filter by
+     * @param free <code>1</code> to get only free events, <code>0</code> otherwise
+     * @param own <code>1</code> to get only events created by <code>user</code>, <code>0</code> otherwise
+     * @return a string containing the HTML code with all the filtered events
+     */
+    private String filterEvent(User user, Coordinates userCoords, double radius, String keywords, String category, String free, String own) {
         if (!checkFilterParams(keywords, category, free, own))
             return "";
         String answer = "";
@@ -198,23 +304,12 @@ public class EventCRUD extends HttpServlet {
             filteredEvents = new HashMap<>();
             if (own.equals("1")) {
                 for (Event e : events)
-                    if (e.getAuthor().equals(user))
+                    if (e.getAuthor().equals(user) && userCoords.inRadius(new Coordinates(e.getAddress()), radius))
                         filteredEvents.put(e.getId(), e);
             } else {
-                for (Event e : events) {
-                    if (!filteredEvents.containsKey(e.getId())
-                        && (free.equals("1") && e.getPrice().equals("0")
-                            || e.getCategory().getName().equals(category)
-                            || (keywords.length() > 0
-                                && (FuzzySearch.tokenSetPartialRatio(keywords, e.getName()) >= 90
-                                    || FuzzySearch.tokenSetPartialRatio(keywords, e.getDescription()) >= 75
-                                    || FuzzySearch.tokenSetPartialRatio(keywords, e.getAddress()) >= 90
-                                    || FuzzySearch.tokenSetPartialRatio(keywords, e.getAuthor().getName()) >= 80
-                                    || FuzzySearch.tokenSetPartialRatio(keywords, e.getStartDate().substring(0, e.getStartDate().length() - 13)) >= 80
-                                    || FuzzySearch.tokenSetPartialRatio(keywords, e.getEndDate().substring(0, e.getEndDate().length() - 13)) >= 80)))) {
+                for (Event e : events)
+                    if (inRadius(userCoords, e, radius) && filtersMatch(e, free, category, keywords))
                         filteredEvents.put(e.getId(), e);
-                    }
-                }
             }
 
             answer = buildCards(filteredEvents.values(), user);
@@ -223,6 +318,12 @@ public class EventCRUD extends HttpServlet {
         return answer;
     }
 
+    /**
+     * Builds the HTML code to embed in the DOM from a collection of events
+     * @param events collection of events to build the HTML code
+     * @param user the user requesting the events filtering
+     * @return HTML code with the cards to embed in the DOM
+     */
     private String buildCards(Collection<Event> events, User user) {
         StringBuilder sb = new StringBuilder("");
 
@@ -264,17 +365,117 @@ public class EventCRUD extends HttpServlet {
         return sb.toString();
     }
 
+    /**
+     * Checks if a event is within the radius of a user's coordinates
+     * @param user user's browser coordinates
+     * @param event event coordinates
+     * @param radius radius to check in
+     * @return <code>true</code> if the event is within the radius, centered on the user coordinates, <code>false</code> otherwise
+     */
+    private boolean inRadius(Coordinates user, Event event, double radius) {
+        return user.inRadius(new Coordinates(event.getAddress()), radius);
+    }
+
+    /**
+     * Check if a event matches the requested filters
+     * @param event event to check upon
+     * @param free <code>1</code> to get only free events, <code>0</code> otherwise
+     * @param category category to filter by
+     * @param keywords search field text
+     * @return <code>true</code> if the event matches the filters, <code>false</code> otherwise
+     */
+    private boolean filtersMatch(Event event, String free, String category, String keywords) {
+        return freeRequested(event, free) || categoryMatches(event, category) || keywordsMatch(event, keywords);
+    }
+
+    /**
+     * Checks if the user request only free events
+     * @param event event to check upon
+     * @param free <code>1</code> to get only free events, <code>0</code> otherwise
+     * @return <code>true</code> if the user requested only free events, <code>false</code> otherwise
+     */
+    private boolean freeRequested(Event event, String free) {
+        return free.equals("1") && event.getPrice().equals("0");
+    }
+
+    /**
+     * Checks if the event matches the requested category
+     * @param event event to check upon
+     * @param category category to check
+     * @return <code>true</code> if the event matches the category, <code>false</code> otherwise
+     */
+    private boolean categoryMatches(Event event, String category) {
+        return event.getCategory().getName().equals(category);
+    }
+
+    /**
+     * Checks if the event matches the search field text
+     * @param event event to check upon
+     * @param keywords search field text
+     * @return <code>true</code> if the event matches the keywords, <code>false</code> otherwise
+     */
+    private boolean keywordsMatch(Event event, String keywords) {
+        return keywords.length() > 0
+               && (FuzzySearch.tokenSetPartialRatio(keywords, event.getName()) >= 90
+                   || FuzzySearch.tokenSetPartialRatio(keywords, event.getDescription()) >= 75
+                   || FuzzySearch.tokenSetPartialRatio(keywords, event.getAddress()) >= 90
+                   || FuzzySearch.tokenSetPartialRatio(keywords, event.getAuthor().getName()) >= 80
+                   || FuzzySearch.tokenSetPartialRatio(keywords, event.getStartDate().substring(0, event.getStartDate().length() - 13)) >= 80
+                   || FuzzySearch.tokenSetPartialRatio(keywords, event.getEndDate().substring(0, event.getEndDate().length() - 13)) >= 80);
+    }
+
+    // ================================================
+    // Params checking
+
+    /**
+     * Checks if the event creation params are OK
+     * @param name event name
+     * @param author event author
+     * @param desc event description
+     * @param date event start and end dates
+     * @param price event price
+     * @param address event address
+     * @param shopUrl event ticket shopping URL
+     * @param image event image URL
+     * @param category event category
+     * @return <code>true</code> if the params are OK, <code>false</code> otherwise
+     */
     private boolean checkCreateParams(String name, User author, String desc, String date, String price, String address, String shopUrl, String image, String category) {
         return name != null && author != null && desc != null && date != null && price != null && address != null && shopUrl != null && image != null && category != null && !category.equals(Properties.NIL_CATEGORY);
     }
 
+    /**
+     * Checks if the event edition params are OK
+     * @param name new event name
+     * @param user editing user
+     * @param desc new event description
+     * @param date new event start and end dates
+     * @param price new event price
+     * @param address new event address
+     * @param shopUrl new event ticket shopping URL
+     * @param image new event image URL
+     * @param tag tag to search the new event image by
+     * @param category new event category
+     * @return <code>true</code> if the params are OK, <code>false</code> otherwise
+     */
     private boolean checkEditParams(String name, User user, String desc, String date, String price, String address, String shopUrl, String image, String tag, String category) {
         return name != null && user != null && desc != null && date != null && price != null && address != null && shopUrl != null && image != null && tag != null && category != null && !category.equals(Properties.NIL_CATEGORY);
     }
 
+    /**
+     * Checks if the event filtering params are OK
+     * @param keywords search field text
+     * @param category event category
+     * @param free search for free events ?
+     * @param own search for events owned by the user ?
+     * @return <code>true</code> if the params are OK, <code>false</code> otherwise
+     */
     private boolean checkFilterParams(String keywords, String category, String free, String own) {
         return keywords != null && category != null && free != null && own != null;
     }
+
+    // ================================================
+    // Servlet GET & POST processing methods
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -303,6 +504,9 @@ public class EventCRUD extends HttpServlet {
         throws ServletException, IOException {
         processRequest(request, response);
     }
+
+    // ================================================
+    // Servlet information
 
     /**
      * Returns a short description of the servlet.

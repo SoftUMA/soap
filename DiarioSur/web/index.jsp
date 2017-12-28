@@ -181,7 +181,6 @@
                         <%
                             for (int i = 0; events != null && i < events.size(); i++) {
                                 Event e = events.get(i);
-                                if (user != null) System.out.println("ROLROLROLROL... ROCKAN...ROL: " + user.getRole());
                                 if (e.getAuthor().equals(user) || e.getApproved().equals("1") || (user != null && user.getRole().equals(Properties.ROLE_EDITOR))) {
                         %>
                         <div class="card
@@ -370,7 +369,6 @@
                                                 String endDate = e.getEndDate();
                                                 endDate = endDate.substring(0, endDate.length() - 7);
                                                 String dates = startDate + " ~ " + endDate;
-                                                System.out.println(dates);
                                             %>
                                             <input type="text" class="form-control cal<%= e.getId()%>" id="dateInput<%= e.getId()%>" placeholder="Fecha y hora" value="<%= dates%>" name="<%= Properties.PARAM_DATE%>">
                                             <span class="input-group-addon" id="calendarTag<%= e.getId()%>"><i class="material-icons">date_range</i></span>
