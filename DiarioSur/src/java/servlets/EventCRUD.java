@@ -13,7 +13,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import me.xdrop.fuzzywuzzy.*;
 import util.Properties;
 import entity.*;
@@ -23,7 +22,6 @@ import util.Coordinates;
 
 @WebServlet(name = "EventCRUD", urlPatterns = {"/EventCRUD"})
 public class EventCRUD extends HttpServlet {
-    public double x;
     // ================================================
     // Landing method
 
@@ -35,8 +33,6 @@ public class EventCRUD extends HttpServlet {
      * @throws IOException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-
         Object tmp;
         User user = null;
         if ((tmp = request.getSession().getAttribute(Properties.USER_SELECTED)) != null)
@@ -88,6 +84,8 @@ public class EventCRUD extends HttpServlet {
                 try {
                     longitude = Double.parseDouble(longitude_);
                 } catch (NullPointerException | NumberFormatException ex) { }
+
+                radius *= 1000;
 
                 try (PrintWriter out = response.getWriter()) {
                     Coordinates userCoords = new Coordinates(latitude, longitude);
@@ -306,7 +304,7 @@ public class EventCRUD extends HttpServlet {
 
             if (own.equals("1")) {
                 for (Event e : events)
-                    if (e.getAuthor().equals(user) && userCoords.inRadius(new Coordinates(e.getAddress()), radius))
+                    if (e.getAuthor().equals(user) && inRadius(userCoords, e, radius))
                         filteredEvents.put(e.getId(), e);
             } else {
                 for (Event e : events)
@@ -378,7 +376,7 @@ public class EventCRUD extends HttpServlet {
         for (Event e : events) {
             sb.append("<div class=\'card");
 
-            if (e.getApproved().equals("0") && (user.getEmail().equals(e.getAuthor().getEmail()) || user.getEmail().equals(Properties.USER_EDITOR)))
+            if (e.getApproved().equals("0") && (user.equals(e.getAuthor()) || user.getRole().equals(Properties.ROLE_EDITOR)))
                 sb.append(" border-danger");
             else
                 sb.append(" border-dark");
@@ -393,7 +391,7 @@ public class EventCRUD extends HttpServlet {
             sb.append(e.getName());
             sb.append("</h4>");
 
-            if (e.getApproved().equals("0") && (user.getEmail().equals(e.getAuthor().getEmail()) || user.getEmail().equals(Properties.USER_EDITOR)))
+            if (e.getApproved().equals("0") && (user.equals(e.getAuthor()) || user.getRole().equals(Properties.ROLE_EDITOR)))
                 sb.append("<p class=\'card-text text-danger\'>Revisión pendiente</p>");
 
             sb.append("<p class=\'card-text\'>");

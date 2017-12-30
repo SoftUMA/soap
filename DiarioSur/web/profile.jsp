@@ -52,6 +52,7 @@
         <meta name="msapplication-square310x310logo" content="img/brand/largetile.png"/>
 
         <link rel="stylesheet" href="css/bootstrap-darkly.min.css">
+        <link rel="stylesheet" href="css/bootstrap-slider.min.css">
         <link rel="stylesheet" href="css/material-icons.css">
         <link rel="stylesheet" href="css/animate.css">
         <link rel="stylesheet" href="css/daterangepicker.css">
@@ -60,7 +61,10 @@
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/popper.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <script src="js/bootstrap-slider.min.js"></script>
+        <script src="js/wow.min.js"></script>
         <script src="js/moment.js"></script>
+        <script src="js/daterangepicker.js"></script>
     </head>
     <body>
         <!-------- #NAVBAR -------->

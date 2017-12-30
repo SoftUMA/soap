@@ -37,11 +37,29 @@ public class Coordinates {
         this.longitude = longitude;
     }
 
-    public double distance(Coordinates other) {
-        return Math.sqrt(Math.pow(latitude - other.latitude, 2) + Math.pow(longitude - other.longitude, 2));
+
+    public double drivingDistance(Coordinates destination) {
+        return GoogleMaps.getInstance().distance(this, destination);
     }
 
-    public boolean inRadius(Coordinates other, double radius) {
-        return distance(other) <= radius;
+    public double distance(Coordinates destination) {
+        return Math.toDegrees(
+            Math.acos(
+                Math.sin(Math.toRadians(latitude)) *
+                Math.sin(Math.toRadians(destination.latitude)) +
+                Math.cos(Math.toRadians(latitude)) *
+                Math.cos(Math.toRadians(destination.latitude)) *
+                Math.cos(Math.toRadians(longitude - destination.longitude))
+            )
+        ) * 69.09 * 1.6093;
+    }
+
+    public boolean inRadius(Coordinates destination, double radius) {
+        return distance(destination) <= radius;
+    }
+
+    @Override
+    public String toString() {
+        return latitude + "," + longitude;
     }
 }

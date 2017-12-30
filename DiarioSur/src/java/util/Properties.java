@@ -7,7 +7,10 @@ public class Properties {
     // Default event search by radius data
     public static final double DEFAULT_LATITUDE = 36.7212737;
     public static final double DEFAULT_LONGITUDE = -4.4213988;
-    public static final double DEFAULT_RADIUS = 50.0;
+    public static final double DEFAULT_RADIUS = 100;
+    public static final double MAXIMUM_RADIUS = 100;
+    public static final double MINIMUM_RADIUS = 1.0;
+    public static final double RADIUS_STEP = 1.0;
 
     // Category not selected
     public static final String NIL_CATEGORY = "nil";

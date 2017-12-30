@@ -1,3 +1,4 @@
+<%@page import="util.Coordinates"%>
 <%@page import="entity.User"%>
 <%@page import="service.CategoryREST"%>
 <%@page import="service.EventREST"%>
@@ -54,6 +55,7 @@
         <meta name="msapplication-square310x310logo" content="img/brand/largetile.png"/>
 
         <link rel="stylesheet" href="css/bootstrap-darkly.min.css">
+        <link rel="stylesheet" href="css/bootstrap-slider.min.css">
         <link rel="stylesheet" href="css/material-icons.css">
         <link rel="stylesheet" href="css/animate.css">
         <link rel="stylesheet" href="css/daterangepicker.css">
@@ -62,6 +64,7 @@
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/popper.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <script src="js/bootstrap-slider.min.js"></script>
         <script src="js/wow.min.js"></script>
         <script src="js/moment.js"></script>
         <script src="js/daterangepicker.js"></script>
@@ -101,6 +104,9 @@
                                 %>
                             </span>
                         </li>
+                        <li class="nav-item mr-1" style="display: <% if (user != null) { %>block<% } else { %>none<% } %>;" id="create-group">
+                            <a class="btn btn-secondary btn-lg" href="create.jsp">Crear evento</a>
+                        </li>
                         <li class="nav-item" style="display: <% if (user != null) { %>block<% } else { %>none<% } %>;" id="session-group">
                             <div class="btn-group">
                                 <a class="btn btn-secondary btn-lg" href="profile.jsp">Ver perfil</a>
@@ -118,15 +124,16 @@
 
         <div class="container mt-4">
             <!-------- #JUMBOTRON -------->
-            <div class="jumbotron pt-4">
+            <div class="jumbotron py-4">
                 <h1 class="display-4">¡Bienvenido!</h1>
                 <p class="lead">En esta página podrás descubrir todo tipo de eventos en tu zona.</p>
                 <p>Desde conciertos, eventos de gastronomía, tecnología, exposiciones, eSports, deportes, intercambio de idiomas... ¡hasta convenciones de cualquier tipo!</p>
-                <hr class="my-4">
-                <p>También puedes listar un evento para que aparezca junto a los demás y la gente pueda encontrarlo con facilidad.</p>
-                <p class="lead float-right">
-                    <a class="btn btn-warning btn-lg" href="create.jsp" role="button">Crear evento</a>
-                </p>
+                <!-- button class="btn btn-warning btn-lg" type="button" data-toggle="collapse" data-target="#mapContainer" aria-expanded="false" aria-controls="mapContainer">
+                    <i class="material-icons">map</i>
+                </button -->
+                <!-- div id="mapContainer" class="collapse mt-4" -->
+                <div id="map" style="height: 500px; border-radius: 5px;"></div>
+                <!-- /div -->
             </div>
             <!-------- #JUMBOTRONEND -------->
 
@@ -138,8 +145,12 @@
                         <!-- label for="filterKeywords"></label -->
                         <input type="text" class="form-control" id="filterKeywords" placeholder="Buscar..." name="<%= Properties.PARAM_KEYWORDS%>">
                     </div>
+                    <p id="filterRadiusLabel" class="badge badge-secondary mb-2">Radio: <span id="filterRadiusValue"><%= (int) Properties.DEFAULT_RADIUS%> Km</span></p>
+                    <div class="ml-2 my-2">
+                        <input id="filterRadius" data-slider-id="filterRadiusSlider" type="text" data-slider-min="<%= Properties.MINIMUM_RADIUS%>" data-slider-max="<%= Properties.MAXIMUM_RADIUS%>" data-slider-step="<%= Properties.RADIUS_STEP%>" data-slider-value="<%= Properties.DEFAULT_RADIUS%>"/>
+                    </div>
                     <div class="form-group">
-                        <label for="filterCategory">Categoría</label>
+                        <!-- label for="filterCategory">Categoría</label -->
                         <select class="form-control" id="filterCategory" name="<%= Properties.PARAM_CATEGORY%>">
                             <option value="nil" disabled selected>Categoría</option>
                             <%
@@ -476,6 +487,31 @@
         <!-------- #MODALSEND -------->
 
         <script>new WOW().init();</script>
+        <script>
+            var userLocation = {
+                lat: <%= Properties.DEFAULT_LATITUDE%>,
+                lng: <%= Properties.DEFAULT_LONGITUDE%>
+            };
+
+            if ("geolocation" in navigator) {
+                navigator.permissions.query({
+                    name: 'geolocation'
+                }).then(function (result) {
+                    if (result.state === 'prompt') {
+                        alert('Para poder usar la característica de filtrado de eventos en base a la distancia, necesitamos que nos des permiso para acceder a tu ubicación.\n\nSi estás de acuerdo con ello, acepta el diálogo que aparecerá después de éste.');
+                    }
+                });
+
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                });
+            } else {
+                alert('Tu navegador no soporta geolocalización.\n\nAlgunas características de esta aplicación, como el filtrado de los eventos en base a la distancia, no estará disponible.');
+            }
+        </script>
         <script type="text/javascript">
             <%
                 if (user != null && user.getRole().equals(Properties.ROLE_EDITOR)) {
@@ -524,28 +560,221 @@
             %>
 
             function filterEvents() {
-                var free = $('#filterFree').is(':checked') ? '1' : '0';
-                var own = $('#filterOwn').is(':checked') ? '1' : '0';
-
                 $.ajax({
                     type: 'post',
                     url: 'EventCRUD',
-                    data: '<%= Properties.PARAM_OPCODE%>=<%= Properties.OP_FILTER%>' + '&<%= Properties.PARAM_KEYWORDS%>=' + $('#filterKeywords').val() + '&<%= Properties.PARAM_CATEGORY%>=' + $('#filterCategory').val() + '&<%= Properties.PARAM_FREE%>=' + free + '&<%= Properties.PARAM_OWN%>=' + own,
+                    data: {
+                        <%= Properties.PARAM_OPCODE%>: <%= Properties.OP_FILTER%>,
+                        <%= Properties.PARAM_LATITUDE%>: userLocation.lat,
+                        <%= Properties.PARAM_LONGITUDE%>: userLocation.lng,
+                        <%= Properties.PARAM_RADIUS%>: $('#filterRadius').val(),
+                        <%= Properties.PARAM_KEYWORDS%>: $('#filterKeywords').val(),
+                        <%= Properties.PARAM_CATEGORY%>: $('#filterCategory').val(),
+                        <%= Properties.PARAM_FREE%>: $('#filterFree').is(':checked') ? '1' : '0',
+                        <%= Properties.PARAM_OWN%>: $('#filterOwn').is(':checked') ? '1' : '0'
+                    },
                     success: function (msg) {
+                        var response = JSON.parse(msg);
+                        removeMarkers();
+
+                        mapCenter = userLocation;
+                        map.panTo(mapCenter);
+                        setCircle(mapCenter, parseFloat($('#filterRadius').val()) * 1000);
+                        showCircle();
+
+                        response.map.forEach(function (event) {
+                            addMarker(event.title, event.desc, event.own, {
+                                lat: event.lat,
+                                lng: event.lng
+                            });
+                        });
+
                         $('.card-columns').empty();
-                        $('.card-columns').append(msg);
+                        $('.card-columns').append(response.cards);
                     }
                 });
             }
+        </script>
+        <script>
+            $('#filterRadius').slider({
+                tooltip: 'show',
+                ticks: [1, 50, 100],
+                ticks_labels: ['1', '50', '100'],
+                ticks_snap_bounds: 5,
+                formatter: function(value) {
+                    return 'Radio: ' + value;
+                }
+            });
 
+            $('#filterRadius').on('slide', function(event) {
+                $('#filterRadiusValue').text(event.value + ' Km');
+            });
+        </script>
+        <script>
+            var map;
+            var mapCenter;
+            var markers = [];
+            var circle;
+
+            function initMap() {
+                mapCenter = {
+                    lat: <%= Properties.DEFAULT_LATITUDE%>,
+                    lng: <%= Properties.DEFAULT_LONGITUDE%>
+                };
+
+                map = new google.maps.Map($("#map")[0], {
+                    center: mapCenter,
+                    zoom: 12,
+                    styles: [
+                        {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
+                        {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
+                        {elementType: 'labels.text.fill', stylers: [{color: '#746855'}]},
+                        {
+                            featureType: 'administrative.locality',
+                            elementType: 'labels.text.fill',
+                            stylers: [{color: '#d59563'}]
+                        },{
+                            featureType: 'poi',
+                            elementType: 'labels.text.fill',
+                            stylers: [{color: '#d59563'}]
+                        },{
+                            featureType: 'poi.park',
+                            elementType: 'geometry',
+                            stylers: [{color: '#263c3f'}]
+                        },{
+                            featureType: 'poi.park',
+                            elementType: 'labels.text.fill',
+                            stylers: [{color: '#6b9a76'}]
+                        },{
+                            featureType: 'road',
+                            elementType: 'geometry',
+                            stylers: [{color: '#38414e'}]
+                        },{
+                            featureType: 'road',
+                            elementType: 'geometry.stroke',
+                            stylers: [{color: '#212a37'}]
+                        },{
+                            featureType: 'road',
+                            elementType: 'labels.text.fill',
+                            stylers: [{color: '#9ca5b3'}]
+                        },{
+                            featureType: 'road.highway',
+                            elementType: 'geometry',
+                            stylers: [{color: '#746855'}]
+                        },{
+                            featureType: 'road.highway',
+                            elementType: 'geometry.stroke',
+                            stylers: [{color: '#1f2835'}]
+                        },{
+                            featureType: 'road.highway',
+                            elementType: 'labels.text.fill',
+                            stylers: [{color: '#f3d19c'}]
+                        },{
+                            featureType: 'transit',
+                            elementType: 'geometry',
+                            stylers: [{color: '#2f3948'}]
+                        },{
+                            featureType: 'transit.station',
+                            elementType: 'labels.text.fill',
+                            stylers: [{color: '#d59563'}]
+                        },{
+                            featureType: 'water',
+                            elementType: 'geometry',
+                            stylers: [{color: '#17263c'}]
+                        },{
+                            featureType: 'water',
+                            elementType: 'labels.text.fill',
+                            stylers: [{color: '#515c6d'}]
+                        },{
+                            featureType: 'water',
+                            elementType: 'labels.text.stroke',
+                            stylers: [{color: '#17263c'}]
+                        }
+                    ]
+                });
+
+                circle = new google.maps.Circle({
+                    strokeColor: '#F39C12',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#F39C12',
+                    fillOpacity: 0.15,
+                    map: null,
+                    center: mapCenter,
+                    radius: parseFloat($('#filterRadius').val()) * 1000
+                });
+            }
+
+            function setCircle(center, radius) {
+                circle.setCenter(center);
+                circle.setRadius(radius);
+            }
+
+            function showCircle() {
+                circle.setMap(map);
+            }
+
+            function hideCircle() {
+                circle.setMap(null);
+            }
+
+            function addMarker(title, desc, own, location) {
+                var tmp = {
+                    marker: new google.maps.Marker({
+                        title: title,
+                        position: location,
+                        map: map,
+                        animation: google.maps.Animation.DROP
+                    }),
+                    infoWindow: new google.maps.InfoWindow({
+                        content: '<div style="color: #000;"><h6>' + title + '</h6><p>' + desc + '</p></div>'
+                    })
+                };
+
+                tmp.marker.addListener('click', function() {
+                    tmp.infoWindow.open(map, tmp.marker);
+                });
+
+                markers.push(tmp);
+            }
+
+            function showMarkers() {
+                for (var i = 0; i < markers.length; i++)
+                    markers[i].marker.setMap(map);
+            }
+
+            function hideMarkers() {
+                for (var i = 0; i < markers.length; i++)
+                    markers[i].marker.setMap(null);
+            }
+
+            function removeMarkers() {
+                hideMarkers();
+                markers = [];
+            }
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvwu9R5x0YwukwkoaynDNNKVR2z2RH6p4&callback=initMap"></script>
+        <script>
             $(document).ready(function () {
                 window.history.pushState({
                     location: 'index'
                 }, '', 'index.jsp');
+
+                // TODO: place 'own' properly...
+                <%
+                    for (Event e : events) {
+                        Coordinates coords = new Coordinates(e.getAddress().replaceAll("(\\s+)", "+"));
+                %>
+                addMarker("<%= e.getName()%>", "<%= e.getDescription()%>", false, {
+                    lat: <%= coords.getLatitude()%>,
+                    lng: <%= coords.getLongitude()%>
+                });
+                <%
+                    }
+                %>
             });
         </script>
         <script src="js/oauth.js"></script>
         <script async defer src="js/google-api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvwu9R5x0YwukwkoaynDNNKVR2z2RH6p4&callback=initMap"></script>
     </body>
 </html>
