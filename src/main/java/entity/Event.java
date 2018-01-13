@@ -1,0 +1,212 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package entity;
+
+import java.io.Serializable;
+import java.util.Collection;
+
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import com.googlecode.objectify.annotation.Entity;
+
+/**
+ *
+ * @author neko250
+ */
+@Entity
+public class Event implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+   
+    private Integer id;
+ 
+    private String name;
+  
+    private String description;
+  
+    private String image;
+
+    private String startDate;
+
+    private String endDate;
+   
+    private String address;
+
+    private String price;
+   
+    private String shopUrl;
+
+    private String approved;
+
+ 
+    private Category category;
+    
+    private User author;
+    
+    private Collection<Review> reviewCollection;
+   
+    private Collection<Preferences> preferencesCollection;
+
+    public Event() {
+    }
+
+    public Event(Integer id) {
+        this.id = id;
+    }
+
+    public Event(Integer id, String name, String description, String image, String startDate, String endDate, String address, String price, String shopUrl, String approved) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.image = image;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.address = address;
+        this.price = price;
+        this.shopUrl = shopUrl;
+        this.approved = approved;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public String getShopUrl() {
+        return shopUrl;
+    }
+
+    public void setShopUrl(String shopUrl) {
+        this.shopUrl = shopUrl;
+    }
+
+    public String getApproved() {
+        return approved;
+    }
+
+    public void setApproved(String approved) {
+        this.approved = approved;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    @XmlTransient
+    public Collection<Review> getReviewCollection() {
+        return reviewCollection;
+    }
+
+    public void setReviewCollection(Collection<Review> reviewCollection) {
+        this.reviewCollection = reviewCollection;
+    }
+
+    @XmlTransient
+    public Collection<Preferences> getPreferencesCollection() {
+        return preferencesCollection;
+    }
+
+    public void setPreferencesCollection(Collection<Preferences> preferencesCollection) {
+        this.preferencesCollection = preferencesCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Event)) {
+            return false;
+        }
+        Event other = (Event) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "entity.Event[ id=" + id + " ]";
+    }
+
+}
