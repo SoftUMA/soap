@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import com.googlecode.objectify.annotation.Entity;
 
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 /**
  *
  * @author neko250
@@ -21,8 +23,8 @@ import com.googlecode.objectify.annotation.Entity;
 public class Event implements Serializable {
 
     private static final long serialVersionUID = 1L;
-   
-    private Integer id;
+   @Id
+    private Long  id;
  
     private String name;
   
@@ -47,18 +49,19 @@ public class Event implements Serializable {
     
     private User author;
     
+    @Index
     private Collection<Review> reviewCollection;
-   
+    @Index
     private Collection<Preferences> preferencesCollection;
 
     public Event() {
     }
 
-    public Event(Integer id) {
+    public Event(Long id) {
         this.id = id;
     }
 
-    public Event(Integer id, String name, String description, String image, String startDate, String endDate, String address, String price, String shopUrl, String approved) {
+    public Event(Long id, String name, String description, String image, String startDate, String endDate, String address, String price, String shopUrl, String approved) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -71,11 +74,11 @@ public class Event implements Serializable {
         this.approved = approved;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

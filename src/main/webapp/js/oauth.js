@@ -1,5 +1,5 @@
-CLIENT_ID = '154409279177-vv5vhce3h1sse9m0oa797q82o1rd2m66.apps.googleusercontent.com';
-API_KEY = 'AIzaSyBuxwd0blNu6muaEFNfAXYbA9yySah0_9s';
+CLIENT_ID = '473386188765-ng5e9fv7emva0vkipnm7gq836cflvefl.apps.googleusercontent.com';
+API_KEY = 'AIzaSyBZHQO43AFJKv9wgcFKWB85yUESqpZ1n8c';
 DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/people/v1/rest"];
 SCOPES = "https://www.googleapis.com/auth/contacts.readonly";
 

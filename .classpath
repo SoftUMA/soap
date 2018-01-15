@@ -22,5 +22,7 @@
 	<classpathentry kind="lib" path="C:/Users/andy/Downloads/gson-2.6.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/andy/Downloads/javax.ws.rs-api-2.0-m02.jar"/>
 	<classpathentry kind="lib" path="C:/Users/andy/Downloads/objectify-4.0b1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/andy/Downloads/fuzzywuzzy-1.1.9.jar"/>
+	<classpathentry kind="lib" path="C:/Users/andy/Downloads/javax.ws.rs-api-2.0.jar/javax.ws.rs-api-2.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

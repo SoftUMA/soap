@@ -11,6 +11,9 @@ import java.util.Collection;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
+
 /**
  *
  * @author neko250
@@ -21,13 +24,17 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
- 
+ @Id
     private String email;
     private String name;
     private String surname;
     private String role;
+    @Index
     private Collection<Event> eventCollection;
+    @Index
     private Collection<Review> reviewCollection;
+    @Index
+
     private Collection<Preferences> preferencesCollection;
 
     public User() {

@@ -1,3 +1,4 @@
+<%@page import="service.EventService"%>
 <%@page import="util.Coordinates"%>
 <%@page import="entity.User"%>
 
@@ -21,7 +22,7 @@
         session.setAttribute(Properties.USER_SELECTED, user = null);
     }
 
-    List<Event> events =new ArrayList(); //EventREST.getInstance().findAll();
+    List<Event> events =EventService.getInstance().findAll();
     List<Category> categories =new ArrayList() ;// CategoryREST.getInstance().findAll();
 %>
 
