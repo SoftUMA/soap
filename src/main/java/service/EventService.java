@@ -38,6 +38,7 @@ public class EventService {
 
 	public List<Event> findAll() {
 		// TODO Auto-generated method stub
+		System.out.println(Ofyservice.ofy().load().type(Event.class).list());
 		return Ofyservice.ofy().load().type(Event.class).list();
 	}
 

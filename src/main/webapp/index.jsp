@@ -1,3 +1,4 @@
+<%@page import="service.CategoryService"%>
 <%@page import="service.EventService"%>
 <%@page import="util.Coordinates"%>
 <%@page import="entity.User"%>
@@ -23,7 +24,7 @@
     }
 
     List<Event> events =EventService.getInstance().findAll();
-    List<Category> categories =new ArrayList() ;// CategoryREST.getInstance().findAll();
+    List<Category> categories = CategoryService.getInstance().findAll();
 %>
 
 <!DOCTYPE html>
@@ -192,6 +193,12 @@
                         <%
                             for (int i = 0; events != null && i < events.size(); i++) {
                                 Event e = events.get(i);
+                                System.out.println(i);   
+                                System.out.println(e);
+                                System.out.println(e.getAddress());
+								if(e.getAuthor()==null){
+	                                System.out.println("wtf");
+								}
                                 if (e.getAuthor().equals(user) || e.getApproved().equals("1") || (user != null && user.getRole().equals(Properties.ROLE_EDITOR))) {
                         %>
                         <div class="card
@@ -545,7 +552,7 @@
                     type: 'GET',
                     async: false,
                     dataType: 'json',
-                    url: 'http://api.giphy.com/v1/gifs/random',
+                    url: 'https://api.giphy.com/v1/gifs/random',
                     data: 'api_key=8oASGfTQFqfT4wHyh4PAgUphj9wYeimr&tag=' + $('#imgTag' + id).val() + '&rating=R',
                     success: function (msg) {
                         $('#imgInput' + id).val(msg.data.image_url);

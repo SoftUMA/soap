@@ -11,10 +11,12 @@ import java.util.Collection;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Load;
 /**
  *
  * @author neko250
@@ -44,15 +46,15 @@ public class Event implements Serializable {
 
     private String approved;
 
- 
-    private Category category;
     
-    private User author;
+    @Load private Ref<Category> category;
     
     @Index
-    private Collection<Review> reviewCollection;
+    @Load private Ref<User> author;    
     @Index
-    private Collection<Preferences> preferencesCollection;
+    @Load private Ref<Collection<Ref<Review>>> reviewCollection;    
+    @Index
+    @Load private Ref<Collection<Ref<Preferences>>> preferencesCollection;
 
     public Event() {
     }
@@ -155,37 +157,37 @@ public class Event implements Serializable {
     }
 
     public Category getCategory() {
-        return category;
+        return category.get();
     }
 
     public void setCategory(Category category) {
-        this.category = category;
+        this.category = Ref.create(category);
     }
 
     public User getAuthor() {
-        return author;
+        return author.get();
     }
 
     public void setAuthor(User author) {
-        this.author = author;
+        this.author =Ref.create(author);
     }
 
     @XmlTransient
-    public Collection<Review> getReviewCollection() {
-        return reviewCollection;
+    public Collection<Ref<Review>> getReviewCollection() {
+        return reviewCollection.get();
     }
 
     public void setReviewCollection(Collection<Review> reviewCollection) {
-        this.reviewCollection = reviewCollection;
+        this.reviewCollection.create(reviewCollection);
     }
 
     @XmlTransient
-    public Collection<Preferences> getPreferencesCollection() {
-        return preferencesCollection;
+    public Collection<Ref<Preferences>> getPreferencesCollection() {
+        return preferencesCollection.get();
     }
 
     public void setPreferencesCollection(Collection<Preferences> preferencesCollection) {
-        this.preferencesCollection = preferencesCollection;
+        this.preferencesCollection.create(preferencesCollection);
     }
 
     @Override

@@ -1,3 +1,4 @@
+<%@page import="service.CategoryService"%>
 <%@page import="entity.User"%>
 <%@page import="entity.Category"%>
 <%@page import="java.util.ArrayList"%>
@@ -23,7 +24,7 @@
         return;
     }
 
-    List<Category> categories = new ArrayList();//CategoryREST.getInstance().findAll();
+    List<Category> categories = CategoryService.getInstance().findAll();
 %>
 
 
@@ -242,7 +243,7 @@
                     type: 'GET',
                     async: false,
                     dataType: 'json',
-                    url: 'http://api.giphy.com/v1/gifs/random',
+                    url: 'https://api.giphy.com/v1/gifs/random',
                     data: 'api_key=8oASGfTQFqfT4wHyh4PAgUphj9wYeimr&tag=' + $('#imgTag').val() + '&rating=R',
                     success: function (msg) {
                         console.log(msg);

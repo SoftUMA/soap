@@ -7,6 +7,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import service.EventService;
 import service.UserService;
 import util.Properties;
 
@@ -23,9 +25,11 @@ public class UserCRUD extends HttpServlet {
         if (checkLoginParams(email, name, surname)) {
             User u;
             System.out.println(UserService.getInstance().find(email));
-            if ((u = UserService.getInstance().find(email)) == null)
+            System.out.println(EventService.getInstance().findAll());
+            if ((u = UserService.getInstance().find(email)) == null) {            	
             	UserService.getInstance().create(u = new User(email, name, surname, Properties.ROLE_USER));
-
+            	System.out.println("no entres aqui");
+            }
             request.getSession().setAttribute(Properties.USER_SELECTED, u);
         } else if (checkLogoutParam(logout))
             request.getSession().setAttribute(Properties.USER_SELECTED, null);
