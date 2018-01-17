@@ -28,12 +28,14 @@ public class EventService {
 
 	public void edit(Event event, Long long1) {
 		// TODO Auto-generated method stub
+		Ofyservice.ofy().save().entity(event).now();	
 		
 	}
 
-	public void remove(Long long1) {
+	public void remove(Event event) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("eliminando...");
+		Ofyservice.ofy().delete().entity(event).now();
 	}
 
 	public List<Event> findAll() {
@@ -42,8 +44,8 @@ public class EventService {
 		return Ofyservice.ofy().load().type(Event.class).list();
 	}
 
-	public Event find(Integer id) {
+	public Event find(Long id) {
 		// TODO Auto-generated method stub
-		return null;
+		return Ofyservice.ofy().load().type(Event.class).filter("id", id).list().get(0);
 	}
 }

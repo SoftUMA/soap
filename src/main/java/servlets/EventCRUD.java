@@ -127,7 +127,7 @@ public class EventCRUD extends HttpServlet {
      * @param event the event to remove
      */
     private void removeEvent(Event event) {
-    	EventService.getInstance().remove(event.getId());
+    	EventService.getInstance().remove(event);
     }
 
     /**
@@ -143,7 +143,7 @@ public class EventCRUD extends HttpServlet {
      * @param id the <code>id</code> of the event to search
      * @return the found event, <code>null</code> if no event was found
      */
-    private Event findEvent(Integer id) {
+    private Event findEvent(Long id) {
         return EventService.getInstance().find(id);
     }
 
@@ -220,7 +220,7 @@ public class EventCRUD extends HttpServlet {
      * @param tag tag to search the new event image by
      * @param category new event category
      */
-    private void editEvent(int id, String name, User user, String desc, String date, String price, String address, String shopUrl, String image, String tag, String category) {
+    private void editEvent(long id, String name, User user, String desc, String date, String price, String address, String shopUrl, String image, String tag, String category) {
         if (!checkEditParams(name, user, desc, date, price, address, shopUrl, image, tag, category))
             return;
 
@@ -259,7 +259,7 @@ public class EventCRUD extends HttpServlet {
      * @param id id of the event to remove
      * @param user removing user
      */
-    private void removeEvent(int id, User user) {
+    private void removeEvent(long id, User user) {
         Event refereeEvent = findEvent(id);
         if (refereeEvent != null && (refereeEvent.getAuthor().getEmail().equals(user.getEmail()) || user.getRole().equals(Properties.ROLE_EDITOR)))
             removeEvent(refereeEvent);
@@ -270,7 +270,7 @@ public class EventCRUD extends HttpServlet {
      * @param id id of the event to approve
      * @param user approving user
      */
-    private void approveEvent(int id, User user) {
+    private void approveEvent(long id, User user) {
         Event refereeEvent = findEvent(id);
         if (refereeEvent != null && user.getRole().equals(Properties.ROLE_EDITOR)) {
             refereeEvent.setApproved("1");
