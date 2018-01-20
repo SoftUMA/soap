@@ -15,26 +15,7 @@ public class CategoryService {
 	        if (instance == null)
 	            instance = new CategoryService();
 	        	if(Ofyservice.ofy().load().type(Category.class).list().size()==0) {
-	        		Category c= new Category();
-	        		c.setName("e-sports");
-	        		c.setEventCollection(new ArrayList<>());
-	        		Ofyservice.ofy().save().entity(c).now();
-	        		c= new Category();
-	        		c.setName("cine");
-	        		c.setEventCollection(new ArrayList<>());
-	        		Ofyservice.ofy().save().entity(c).now();
-	        		c= new Category();
-	        		c.setName("Música");
-	        		c.setEventCollection(new ArrayList<>());
-	        		Ofyservice.ofy().save().entity(c).now();
-	        		c= new Category();
-	        		c.setName("Deportes");
-	        		c.setEventCollection(new ArrayList<>());
-	        		Ofyservice.ofy().save().entity(c).now();
-	        		c= new Category();
-	        		c.setName("Cultura");
-	        		c.setEventCollection(new ArrayList<>());
-	        		Ofyservice.ofy().save().entity(c).now();	        		
+	        		        		
 	        		System.out.println("creando categorias...");
 	        	}
 	        return instance;

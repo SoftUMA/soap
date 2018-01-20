@@ -1,5 +1,7 @@
 package util;
 
+import service.GoogleMaps;
+
 //import service.GoogleMaps;
 
 public class Coordinates {
@@ -16,9 +18,9 @@ public class Coordinates {
     }
 
     public Coordinates(String address) {
-//        Coordinates tmp = GoogleMaps.getInstance().address2Coords(address);
-//        this.latitude = tmp.latitude;
-//        this.longitude = tmp.longitude;
+        Coordinates tmp = GoogleMaps.getInstance().address2Coords(address);
+        this.latitude = tmp.latitude;
+        this.longitude = tmp.longitude;
     }
 
     public double getLatitude() {

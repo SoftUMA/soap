@@ -12,9 +12,26 @@ public class Ofyservice {
         ObjectifyService.register(Event.class);
         ObjectifyService.register(Category.class);        
         ObjectifyService.register(User.class);
-        Category c = new Category();
-        c.setName("categoria1");
-        c.setEventCollection(new ArrayList<>());
+        Category c = new Category();  
+		c.setName("e-sports");
+		c.setEventCollection(new ArrayList<>());
+		Ofyservice.ofy().save().entity(c).now();
+		c= new Category();
+		c.setName("cine");
+		c.setEventCollection(new ArrayList<>());
+		Ofyservice.ofy().save().entity(c).now();
+		c= new Category();
+		c.setName("Música");
+		c.setEventCollection(new ArrayList<>());
+		Ofyservice.ofy().save().entity(c).now();
+		c= new Category();
+		c.setName("Deportes");
+		c.setEventCollection(new ArrayList<>());
+		Ofyservice.ofy().save().entity(c).now();
+		c= new Category();
+		c.setName("Cultura");
+		c.setEventCollection(new ArrayList<>());
+		Ofyservice.ofy().save().entity(c).now();	
         Ofyservice.ofy().save().entity(c);
     }
     public static Objectify ofy(){
