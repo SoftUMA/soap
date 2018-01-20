@@ -4,6 +4,7 @@
 	<classpathentry kind="src" output="build/test-classes" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
+			<attribute name="module" value="true"/>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
@@ -19,10 +20,18 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/andy/Downloads/gson-2.6.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/andy/Downloads/javax.ws.rs-api-2.0-m02.jar"/>
-	<classpathentry kind="lib" path="C:/Users/andy/Downloads/objectify-4.0b1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/andy/Downloads/fuzzywuzzy-1.1.9.jar"/>
-	<classpathentry kind="lib" path="C:/Users/andy/Downloads/javax.ws.rs-api-2.0.jar/javax.ws.rs-api-2.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Lorena/git/dependencias/gson-2.6.2.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Lorena/git/dependencias/javax.ws.rs-api-2.0-m02.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Lorena/git/dependencias/objectify-4.0b1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Lorena/git/dependencias/fuzzywuzzy-1.1.9.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Lorena/git/dependencias/javax.ws.rs-api-2.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
