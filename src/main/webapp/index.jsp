@@ -759,6 +759,7 @@
                 hideMarkers();
                 markers = [];
             }
+           
         </script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvwu9R5x0YwukwkoaynDNNKVR2z2RH6p4&callback=initMap"></script>
         <script>
@@ -772,7 +773,7 @@
                     for (Event e : events) {
                         Coordinates coords = new Coordinates(e.getAddress().replaceAll("(\\s+)", "+"));
                 %>
-                addMarker("<%= e.getName()%>", "<%= e.getDescription()%>", false, {
+                addMarker("<%= e.getName()%>" , "<%= e.getDescription()%>", false, {
                     lat: <%= coords.getLatitude()%>,
                     lng: <%= coords.getLongitude()%>
                 });
