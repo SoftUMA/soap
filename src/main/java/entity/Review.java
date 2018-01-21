@@ -7,47 +7,44 @@ package entity;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import com.googlecode.objectify.Ref;
+import com.googlecode.objectify.annotation.Entity;
+
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Load;
 
 /**
  *
- * @author neko250
+ * @author Lore
  */
-@com.googlecode.objectify.annotation.Entity
 
+@Entity
 public class Review implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    protected ReviewPK reviewPK;
+    
+    @Id
+    private Long  id;
+
     private String comment;
     private String score;
-    private User user;
     
-    private Event event1;
-
+    @Index
+    @Load private Ref<User> author;  
+    @Index
+    @Load private Ref<Event> event;
+    
+    
+    
     public Review() {
     }
 
-    public Review(ReviewPK reviewPK) {
-        this.reviewPK = reviewPK;
-    }
-
-    public Review(ReviewPK reviewPK, String comment, String score) {
-        this.reviewPK = reviewPK;
+    public Review(Long id, String comment, String score) {
+        this.id = id;
         this.comment = comment;
         this.score = score;
-    }
-
-    public Review(Integer event, String author) {
-        this.reviewPK = new ReviewPK(event, author);
-    }
-
-    public ReviewPK getReviewPK() {
-        return reviewPK;
-    }
-
-    public void setReviewPK(ReviewPK reviewPK) {
-        this.reviewPK = reviewPK;
+       
     }
 
     public String getComment() {
@@ -66,29 +63,30 @@ public class Review implements Serializable {
         this.score = score;
     }
 
-    public User getUser() {
-        return user;
+    public User getAuthor() {
+        return author.get();
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setAuthor(User author) {
+        this.author = Ref.create(author);
     }
 
-    public Event getEvent1() {
-        return event1;
+    public Event getEvent() {
+		return event.get();
     }
 
-    public void setEvent1(Event event1) {
-        this.event1 = event1;
+    public void setEvent(Event event) {
+        this.event = Ref.create(event);
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (reviewPK != null ? reviewPK.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
+    
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
@@ -96,14 +94,14 @@ public class Review implements Serializable {
             return false;
         }
         Review other = (Review) object;
-        if ((this.reviewPK == null && other.reviewPK != null) || (this.reviewPK != null && !this.reviewPK.equals(other.reviewPK)))
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "entity.Review[ reviewPK=" + reviewPK + " ]";
+        return "entity.Review[ id=" + id + " ]";
     }
 
 }
