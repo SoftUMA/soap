@@ -772,6 +772,25 @@
                     center: mapCenter,
                     radius: parseFloat($('#filterRadius').val()) * 1000
                 });
+                
+                //$(document).ready(function () {
+                    window.history.pushState({
+                        location: 'index'
+                    }, '', 'index.jsp');
+
+                    // TODO: place 'own' properly...
+                    <%
+                        for (Event e : events) {
+                            Coordinates coords = new Coordinates(e.getAddress().replaceAll("(\\s+)", "+"));
+                    %>
+                    addMarker("<%= e.getName()%>" , "<%= e.getDescription()%>", false, {
+                        lat: <%= coords.getLatitude()%>,
+                        lng: <%= coords.getLongitude()%>
+                    });
+                    <%
+                        }
+                    %>
+                //});
             }
 
             function setCircle(center, radius) {
@@ -825,24 +844,7 @@
         </script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvwu9R5x0YwukwkoaynDNNKVR2z2RH6p4&callback=initMap"></script>
         <script>
-            $(document).ready(function () {
-                window.history.pushState({
-                    location: 'index'
-                }, '', 'index.jsp');
-
-                // TODO: place 'own' properly...
-                <%
-                    for (Event e : events) {
-                        Coordinates coords = new Coordinates(e.getAddress().replaceAll("(\\s+)", "+"));
-                %>
-                addMarker("<%= e.getName()%>" , "<%= e.getDescription()%>", false, {
-                    lat: <%= coords.getLatitude()%>,
-                    lng: <%= coords.getLongitude()%>
-                });
-                <%
-                    }
-                %>
-            });
+            
         </script>
         <script src="js/oauth.js"></script>
         <script async defer src="js/google-api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
