@@ -331,6 +331,61 @@
                                         <iframe width="100%" height="450" frameborder="0" style="border: 0;" src="<%= gmaps%>" allowfullscreen></iframe>
                                     </div>
                                 </div>
+                                <div class="panel panel-primary">
+  									<div class="panel-heading">Reseñas</div>
+ 								    <div class="panel-body" style=" max-height: 150px;overflow-y: scroll;">
+ 								    	<div class="row">
+ 								    		<div class="col-sm-8">comentario </div>
+ 								    		<div class="col-sm-2">puntuacion </div>
+ 								    		<div class="col-sm-2">puntuacion </div> 								    		
+ 								    	</div>
+ 								    	<div class="row">
+ 								    		<div class="col-sm-8">comentario </div>
+ 								    		<div class="col-sm-2">puntuacion </div>
+ 								    		<div class="col-sm-2">puntuacion </div> 								    		
+ 								    	</div> 	
+ 								    	<div class="row">
+ 								    		<div class="col-sm-8">comentario </div>
+ 								    		<div class="col-sm-2">puntuacion </div>
+ 								    		<div class="col-sm-2">puntuacion </div> 								    		
+ 								    	</div> 	
+ 								    	<div class="row">
+ 								    		<div class="col-sm-8">comentario </div>
+ 								    		<div class="col-sm-2">puntuacion </div>
+ 								    		<div class="col-sm-2">puntuacion </div> 								    		
+ 								    	</div>
+ 								    	<div class="row">
+ 								    		<div class="col-sm-8">comentario </div>
+ 								    		<div class="col-sm-2">puntuacion </div>
+ 								    		<div class="col-sm-2">puntuacion </div> 								    		
+ 								    	</div> 	
+ 								    	<div class="row">
+ 								    		<div class="col-sm-8">comentario </div>
+ 								    		<div class="col-sm-2">puntuacion </div>
+ 								    		<div class="col-sm-2">puntuacion </div> 								    		
+ 								    	</div> 	
+ 								    	<div class="row">
+ 								    		<div class="col-sm-8">comentario </div>
+ 								    		<div class="col-sm-2">puntuacion </div>
+ 								    		<div class="col-sm-2">puntuacion </div> 								    		
+ 								    	</div> 	 	 								    	
+ 								    </div>
+ 								    <hr>¿Que pinta tiene el evento?</hr>
+ 								    <div class="row">
+ 								    		<div class="col-sm-6"> <input type="text" class="form-control" id="comentario" name="comentario"></input> </div>
+ 								    		<div class="col-sm-3 review-padding">
+ 								    			<div class="rating">
+    												<span><input type="radio" name="rating" id="str5" value="5"><label for="str5"></label></span>
+    												<span><input type="radio" name="rating" id="str4" value="4"><label for="str4"></label></span>
+												    <span><input type="radio" name="rating" id="str3" value="3"><label for="str3"></label></span>
+    												<span><input type="radio" name="rating" id="str2" value="2"><label for="str2"></label></span>
+    												<span><input type="radio" name="rating" id="str1" value="1"><label for="str1"></label></span>
+												</div>
+ 								    		</div>
+ 								    		<div class="col-sm-3"> <button class=" btn btn-warning" onclick="sendReview(123, 123, 123)"> enviar </button>
+ 								    		</div>
+ 								    </div>
+							    </div>
                                 <hr>
                                 <center>
                                     <%
@@ -524,6 +579,13 @@
             }
         </script>
         <script type="text/javascript">
+        function sendReview(comentario,autor,idevento){
+        	if(ratting==null){
+        		ratting=0;
+        	}
+        	
+			console.log(ratting+' '+' '+idevento+' '+autor);
+		}
             <%
                 if (user != null && user.getRole().equals(Properties.ROLE_EDITOR)) {
             %>
@@ -532,7 +594,7 @@
                     window.location.replace('EventCRUD?opcode=<%= Properties.OP_APPROVE%>&id=' + id);
                 }
             }
-
+			
             function rejectEvent(id) {
                 if (confirm('¿Desea rechazar este evento definitivamente?')) {
                     window.location.replace('EventCRUD?opcode=<%= Properties.OP_DELETE%>&id=' + id);
@@ -714,6 +776,25 @@
                     center: mapCenter,
                     radius: parseFloat($('#filterRadius').val()) * 1000
                 });
+                
+                //$(document).ready(function () {
+                    window.history.pushState({
+                        location: 'index'
+                    }, '', 'index.jsp');
+
+                    // TODO: place 'own' properly...
+                    <%
+                        for (Event e : events) {
+                            Coordinates coords = new Coordinates(e.getAddress().replaceAll("(\\s+)", "+"));
+                    %>
+                    addMarker("<%= e.getName()%>" , "<%= e.getDescription()%>", false, {
+                        lat: <%= coords.getLatitude()%>,
+                        lng: <%= coords.getLongitude()%>
+                    });
+                    <%
+                        }
+                    %>
+                //});
             }
 
             function setCircle(center, radius) {
@@ -767,26 +848,28 @@
         </script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvwu9R5x0YwukwkoaynDNNKVR2z2RH6p4&callback=initMap"></script>
         <script>
-            $(document).ready(function () {
-                window.history.pushState({
-                    location: 'index'
-                }, '', 'index.jsp');
-
-                // TODO: place 'own' properly...
-                <%
-                    for (Event e : events) {
-                        Coordinates coords = new Coordinates(e.getAddress().replaceAll("(\\s+)", "+"));
-                %>
-                addMarker("<%= e.getName()%>" , "<%= e.getDescription()%>", false, {
-                    lat: <%= coords.getLatitude()%>,
-                    lng: <%= coords.getLongitude()%>
-                });
-                <%
-                    }
-                %>
-            });
+            
         </script>
         <script src="js/oauth.js"></script>
         <script async defer src="js/google-api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+    	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script type="text/javascript">
+var ratting;
+$(document).ready(function(){
+    // Check Radio-box
+    $(".rating input:radio").attr("checked", false);
+
+    $('.rating input').click(function () {
+        $(".rating span").removeClass('checked');
+        $(this).parent().addClass('checked');
+    });
+
+    $('input:radio').change(
+      function(){
+        var userRating = this.value;
+        ratting = userRating;
+    }); 
+});
+</script>
     </body>
 </html>
