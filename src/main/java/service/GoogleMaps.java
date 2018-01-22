@@ -2,10 +2,12 @@ package service;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+
 import javax.ws.rs.core.MediaType;
 import util.Coordinates;
 
@@ -25,11 +27,15 @@ public class GoogleMaps {
 
     private GoogleMaps() {
         client = ClientBuilder.newClient();
+    //    jclient = JerseyClientFactory.clientBuilder().build();
     }
 
-    public Coordinates address2Coords(String address) throws ClientErrorException {
-        webTarget = (WebTarget) client.target(API_GEOCODE.replaceAll("(%ADDRESS)", address.replaceAll("(\\s+)", "+")));
-        String response = webTarget.request(MediaType.APPLICATION_JSON).get(String.class);
+    public Coordinates address2Coords(String address) throws ClientErrorException {//la llamada a las apis en google se hace sin espacio en su lugar se utilizan +
+       System.out.println(API_GEOCODE.replaceAll("(%ADDRESS)", address.replaceAll("(\\s+)", "+")));
+    	webTarget = (WebTarget) client.target(API_GEOCODE.replaceAll("(%ADDRESS)", address.replaceAll("(\\s+)", "+")));
+//        webTarget = (WebTarget) jclient.target(API_GEOCODE.replaceAll("(%ADDRESS)", address.replaceAll("(\\s+)", "+")));
+     
+    	String response = webTarget.request(MediaType.APPLICATION_JSON).get(String.class);
         JsonObject loc = (new JsonParser()).parse(response).getAsJsonObject().getAsJsonArray("results").get(0).getAsJsonObject().getAsJsonObject("geometry").getAsJsonObject("location");
 
         return new Coordinates(loc.get("lat").getAsDouble(), loc.get("lng").getAsDouble());
@@ -37,6 +43,8 @@ public class GoogleMaps {
 
     public String time(String origin, String destination) throws ClientErrorException {
         webTarget = (WebTarget) client.target(API_DISTANCEMATRIX
+//        webTarget = (WebTarget) jclient.target(API_DISTANCEMATRIX
+
             .replaceAll("(%ORIGIN)", origin.replaceAll("(\\s+)", "+"))
             .replaceAll("(%DESTINATION)", destination.replaceAll("(\\s+)", "+"))
         );
@@ -62,6 +70,10 @@ public class GoogleMaps {
             .replaceAll("(%ORIGIN)", origin.replaceAll("(\\s+)", "+"))
             .replaceAll("(%DESTINATION)", destination.replaceAll("(\\s+)", "+"))
         );
+     /*   webTarget = (WebTarget) jclient.target(API_DISTANCEMATRIX
+                .replaceAll("(%ORIGIN)", origin.replaceAll("(\\s+)", "+"))
+                .replaceAll("(%DESTINATION)", destination.replaceAll("(\\s+)", "+"))
+            );*/
 
         String response = webTarget.request(MediaType.APPLICATION_JSON).get(String.class);
         return (new JsonParser()).parse(response).getAsJsonObject().getAsJsonArray("rows").get(0).getAsJsonObject().getAsJsonArray("elements").get(0).getAsJsonObject().getAsJsonObject("distance").get("value").getAsDouble();
