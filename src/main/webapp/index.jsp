@@ -50,6 +50,7 @@
         <link rel="icon" type="image/png" href="img/brand/favicon-32x32.png" sizes="32x32">
         <link rel="icon" type="image/png" href="img/brand/favicon-96x96.png" sizes="96x96">
         <link rel="icon" type="image/png" href="img/brand/android-chrome-192x192.png" sizes="192x192">
+        <link rel="icon" type="image/png" href="img/F-compartir.png">
         
         <meta name="msapplication-square70x70logo" content="img/brand/smalltile.png"/>
         <meta name="msapplication-square150x150logo" content="img/brand/mediumtile.png"/>
@@ -399,8 +400,9 @@
                                         }
                                     %>
                                     <a class="btn btn-warning" href="<%= e.getShopUrl()%>" target="_blank">Comprar entradas</a>
-                                                              
-                                	<a href="javascript:var dir=window.document.URL;var tit<%=e.getName()%>;var tit2=encodeURIComponent(tit);var dir2= encodeURIComponent(dir);window.location.href=('http://www.facebook.com/share.php?u='+dir2+'&amp;t='+tit2+'');"><img src="../img/icon/F-compartir.png" border="0" width="128" height="52" alt="Compartir" /></a>
+                                	
+                                    <a class="btn btn-warning" href="javascript: void(0);" onclick="window.open('http://www.facebook.com/sharer.php?u=https://agendasur-1513880101345.appspot.com/','CompartirEvento', 'toolbar=0, status=0, width=650, height=450');">Compartir Evento</a>
+
 
                                 </center>
                             </div>
