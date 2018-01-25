@@ -33,6 +33,12 @@
         <meta charset="UTF-8">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        
+        <meta property="og:url" content="https://agendasur-1513880101345.appspot.com" />
+		<meta property="og:title" content="Evento de " />
+		<meta property="og:description" content="descripcion del evento" />
+		<meta property="og:image" content="/img/logo.png" />
+        
         <title>Agenda - Diario Sur</title>
 
         <link rel="icon" href="img/brand/favicon.ico"/>
@@ -401,7 +407,12 @@
                                     %>
                                     <a class="btn btn-warning" href="<%= e.getShopUrl()%>" target="_blank">Comprar entradas</a>
                                 	
-                                    <a class="btn btn-warning" href="javascript: void(0);" onclick="window.open('http://www.facebook.com/sharer.php?u=https://agendasur-1513880101345.appspot.com/','CompartirEvento', 'toolbar=0, status=0, width=650, height=450');">Compartir Evento</a>
+                                	
+                                	
+									<a class="btn btn-warning" src="/img/F-compartir.png" href="javascript: void(0);" onclick="window.open('http://www.facebook.com/sharer.php?s=100&p[url]=https://agendasur-1513880101345.appspot.com/index.jsp?s=100&p[title]<%=e.getName()%>&p[images][0]=/img/logo.png&p[summary]<%=e.getDescription()%>','Evento', 'toolbar=0, status=0, width=650, height=450');">Compartir</a>
+
+
+
 
 
                                 </center>
